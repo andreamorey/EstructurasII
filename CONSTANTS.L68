@@ -1,0 +1,117 @@
+0000145E Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 05/12/2019 12:58:39
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; CONSTANTS
+00000000                             3  ; =============================================================================
+00000000                             4  
+00000000                             5  ; --- PLAYER RELATED CONSTANTS ------------------------------------------------
+00000000                             6  
+00000000                             7  
+00000000                             8  
+00000000                             9  
+00000000                            10  
+00000000                            11  ;PLRINIEN    EQU     500                     ; PLAYER INITIAL ENERGY (<SCRWIDTH)
+00000000                            12  ;PLRSPEED    EQU     7                       ; PLAYER SPEED (PIXELS PER INT)
+00000000                            13  
+00000000                            14  ;PLRDMGCL    EQU     $00FFFFFF               ; PLAYER DAMAGED COLOR
+00000000                            15  ;PLRTXTCL    EQU     $00FFFFFF               ; FONT COLOR
+00000000                            16  ;PLRTXTX     EQU     65                       ; SCORE X COORDINATE
+00000000                            17  ;PLRTXTY     EQU     10                       ; SCORE Y COORDINATE
+00000000                            18  ;PLRLIFEH    EQU     20                      ; HEIGHT OF LIFE BAR
+00000000                            19  ;PLRLIFEY    EQU     SCRHEIGH-PLRLIFEH*2     ; LIFE BAR Y POS
+00000000                            20  ;PLRLIFEC    EQU     $000000FF               ; LIFE BAR COLOR
+00000000                            21  ;PLRUMDMG    EQU     %00000001               ; UPDATE DAMAGE MASK
+00000000                            22  ;PLRPMDMG    EQU     %00000010               ; PLOT DAMAGE MASK
+00000000                            23  ;PLRUBDMG    EQU     0                       ; UPDATE DAMAGE BIT
+00000000                            24  ;PLRPBDMG    EQU     1                       ; PLOT DAMAGE BIT
+00000000                            25  
+00000000                            26  
+00000000                            27  ; --- INTRO STATE RELATED CONSTANTS -------------------------------------------
+00000000                            28  
+00000000  =00000009                 29  INTTITX     EQU     9                      ; TITLE X COORDINATE
+00000000  =00000004                 30  INTTITY     EQU     4                       ; TITLE Y COORDINATE
+00000000  =00DCAA7C                 31  INTTITC     EQU     $00DCAA7C               ; TITLE COLOR
+00000000  =0000001C                 32  INTPRSX     EQU     28                      ; PRESS FIRE X COORDINATE
+00000000  =0000001F                 33  INTPRSY     EQU     31                      ; PRESS FIRE Y COORDINATE
+00000000  =00FFFFFF                 34  INTPRSC     EQU     $00FFFFFF               ; PRESS FIRE COLOR
+00000000                            35  
+00000000                            36  ; STATES GAME ---------------------------------------------------------------
+00000000  =FFFFFFFF                 37  STANONE     EQU     -1                      ; PLACEHOLDER TO FORCE CHANGE
+00000000  =00000000                 38  STAINTR     EQU     0                       ; INTRO/PRESS FIRE STATE
+00000000  =00000001                 39  STAPLAY     EQU     1                       ; NORMAL GAME STATE
+00000000  =00000002                 40  STAGOVR     EQU     2                       ; GAME OVER STATE
+00000000                            41  ;----------------------------------------------------------------------------
+00000000                            42  
+00000000                            43  ; --- GAME OVER STATE RELATED CONSTANTS ---------------------------------------
+00000000                            44  
+00000000  =00000023                 45  GOVSTRX     EQU     35                      ; TITLE X COORDINATE
+00000000  =0000000F                 46  GOVSTRY     EQU     15                      ; TITLE Y COORDINATE
+00000000  =00FFFFFF                 47  GOVSTRC     EQU     $00FFFFFF               ; TITLE COLOR
+00000000                            48  
+00000000                            49  
+00000000                            50  
+00000000                            51  
+00000000                            52  ; SCREENCTRL---------------------------------------------------------------------
+Line 53 ERROR: Undefined symbol
+00000000                            53  SCRCTRL     EQU     SCRWIDTH/2+SCRWIDTH/6   ;
+00000000                            54  ;----------------------------------------------------------------------------
+00000000                            55  
+00000000                            56  
+00000000                            57  ; PLAYER --------------------------------------------------------------------
+00000000                            58  
+00000000  =00000064                 59  PINWIDTH    EQU     100                      ; PLAYER INITIAL WIDTH (PIXELS)
+00000000  =00000014                 60  PHEIGHT     EQU     20                      ; PLAYER HEIGHT (PIXELS)
+00000000  =00ECD59D                 61  PCOLOR      EQU     $00ECD59D               ; PLAYER NORMAL COLOR
+00000000  =00000003                 62  PINLIVE     EQU     3                       ;PLAYER INTIAL LIVES 
+00000000  =0000000F                 63  PMOVE       EQU     15                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
+Line 64 ERROR: Undefined symbol
+00000000                            64  PPOSY       EQU     SCRHEIGH-PHEIGHT-10      ;POSICION DE LA PLATAFORMA Y
+Line 65 ERROR: Undefined symbol
+00000000                            65  PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
+00000000                            66  ; ---------------------------------------------------------------------------
+00000000                            67  
+00000000                            68  ; BALL ----------------------------------------------------------------------
+00000000  =00000005                 69  BHEIGHT     EQU     5                       ;ALTURA DE LA BOLA
+00000000  =00000005                 70  BWEIGHT     EQU     5                       ;ANCHURA DE LA BOLA
+00000000  =00000028                 71  BINPOSX     EQU     40                      ;POSICION DE LA PELOTA X INICIAL
+00000000  =00000041                 72  BINPOSY     EQU     70-BHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
+00000000  =00000005                 73  BINSPEED    EQU     5                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
+00000000                            74  
+00000000                            75  ; ---------------------------------------------------------------------------
+00000000                            76  
+00000000                            77  
+00000000                            78  
+Line 79 WARNING: END directive missing, starting address not set
+
+3 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BHEIGHT             5
+BINPOSX             28
+BINPOSY             41
+BINSPEED            5
+BWEIGHT             5
+GOVSTRC             FFFFFF
+GOVSTRX             23
+GOVSTRY             F
+INTPRSC             FFFFFF
+INTPRSX             1C
+INTPRSY             1F
+INTTITC             DCAA7C
+INTTITX             9
+INTTITY             4
+PCOLOR              ECD59D
+PHEIGHT             14
+PINLIVE             3
+PINWIDTH            64
+PMOVE               F
+STAGOVR             2
+STAINTR             0
+STANONE             FFFFFFFF
+STAPLAY             1
