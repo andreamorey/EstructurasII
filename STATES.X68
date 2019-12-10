@@ -83,7 +83,7 @@ STAPLAYI    EQU     PLRINIT
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
-
+           
 ; -----------------------------------------------------------------------------
 STAPLAYU
 ; PLAY STATE UPDATE
@@ -92,9 +92,8 @@ STAPLAYU
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
             JSR     PLRUPD
-            ;JSR     BUPD
-
-
+            JSR     BUPD                    
+            RTS
 ; -----------------------------------------------------------------------------
 STAPLAYP
 ; PLAY STATE PLOT
@@ -102,14 +101,12 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-
+            MOVEM.L D0-D4,-(A7)
             JSR     PPLOT
             JSR     BPLOT
 
-            MOVEM.L  D0-D4,-(A7)
-            
-            MOVEM.L  D0-D4,-(A7)
-            
+      
+                        
             MOVE.L  #$00FFFFFF,D1  ;COLOR
             MOVE.B  #80,D0
             TRAP    #15
@@ -127,7 +124,7 @@ STAPLAYP
             
             MOVEM.L  (A7)+,D0-D4
 
-;            BRA     PLRPLOT
+            RTS
 
 ; -----------------------------------------------------------------------------
 STAINTRI    EQU     DMMINIT                 ;VACIA LA MEMORIA DEL JUEGO
@@ -232,6 +229,7 @@ STAGOVRP
 
 .GOVSTR     DC.B    'GAME  OVER',0
             DS.W    0
+
 
 
 

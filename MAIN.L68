@@ -1,6 +1,6 @@
-000014E6 Starting Address
+000014E0 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 10/12/2019 15:04:33
+Created On: 10/12/2019 15:59:03
 
 00000000                             1  ; =============================================================================
 00000000                             2  ; TITLE    : EXAMPLE GAME
@@ -162,8 +162,8 @@ Created On: 10/12/2019 15:04:33
 00001068  7614                     158              MOVE.L  #SCRTIM,D3
 0000106A  4E4F                     159              TRAP    #15
 0000106C                           160              ; - CLEAR SCRINTCT AND SCRCYCCT
-0000106C  4239 00001510            161              CLR.B   SCRINTCT
-00001072  4239 00001511            162              CLR.B   SCRCYCCT
+0000106C  4239 0000150A            161              CLR.B   SCRINTCT
+00001072  4239 0000150B            162              CLR.B   SCRCYCCT
 00001078                           163              ; - ENABLE INTS (SET INT BITS IN SR TO 000)
 00001078  027C F8FF                164              ANDI.W  #$F8FF,SR
 0000107C  4E75                     165              RTS
@@ -175,8 +175,8 @@ Created On: 10/12/2019 15:04:33
 0000107E                           171  ; OUTPUT   - NONE
 0000107E                           172  ; MODIFIES - NONE
 0000107E                           173  ; -----------------------------------------------------------------------------
-0000107E  5239 00001510            174              ADDQ.B  #1,(SCRINTCT)           ; UPDATE INT FLAG/COUNTER
-00001084  5239 00001511            175              ADDQ.B  #1,(SCRCYCCT)           ; UPDATE CYCLE COUNTER
+0000107E  5239 0000150A            174              ADDQ.B  #1,(SCRINTCT)           ; UPDATE INT FLAG/COUNTER
+00001084  5239 0000150B            175              ADDQ.B  #1,(SCRCYCCT)           ; UPDATE CYCLE COUNTER
 0000108A  4E73                     176              RTE
 0000108C                           177  
 0000108C                           178  ; -----------------------------------------------------------------------------
@@ -208,8 +208,8 @@ Created On: 10/12/2019 15:04:33
 000010A6                           204  ; OUTPUT   - NONE
 000010A6                           205  ; MODIFIES - NONE
 000010A6                           206  ; -----------------------------------------------------------------------------
-000010A6  4239 0000150E            207              CLR.B   (KBDVAL)                ; INIT VARS
-000010AC  4239 0000150F            208              CLR.B   (KBDEDGE)
+000010A6  4239 00001508            207              CLR.B   (KBDVAL)                ; INIT VARS
+000010AC  4239 00001509            208              CLR.B   (KBDEDGE)
 000010B2  21FC 000010BC 0080       209              MOVE.L  #KBDREAD,($80+KBDTRAP*4) ; INSTALL
 000010BA  4E75                     210              RTS
 000010BC                           211  
@@ -260,11 +260,11 @@ Created On: 10/12/2019 15:04:33
 000010FE                           256              ;D2 = KBDPAUSE KBDFIRE3 KBDFIRE2 KBDFIRE1 KBDDOWN KBDRIGHT KBDUP KBDLEFT
 000010FE                           257              
 000010FE                           258              ;UPDATE KBDVAL AND KBDEDGE
-000010FE  1639 0000150E            259              MOVE.B  KBDVAL,D3
+000010FE  1639 00001508            259              MOVE.B  KBDVAL,D3
 00001104  4603                     260              NOT.B   D3
-00001106  13C2 0000150E            261              MOVE.B  D2,KBDVAL
+00001106  13C2 00001508            261              MOVE.B  D2,KBDVAL
 0000110C  C602                     262              AND.B   D2,D3
-0000110E  13C3 0000150F            263              MOVE.B  D3,KBDEDGE
+0000110E  13C3 00001509            263              MOVE.B  D3,KBDEDGE
 00001114  4CDF 001F                264              MOVEM.L (A7)+,D0-D4
 00001118  4E73                     265              RTE
 0000111A                           266  
@@ -487,489 +487,488 @@ Created On: 10/12/2019 15:04:33
 000011DC                           483  
 000011DC                           484  
 000011DC                           485  
-000011DC                           486  -------------------- end include --------------------
-000011DC                           487              INCLUDE "PLAYER.X68"            ;EL JUGADOR
-000011DC                           488  ; -----------------------------------------------------------------------------
-000011DC                           489  ;           PLAYER
-000011DC                           490  ; -----------------------------------------------------------------------------
-000011DC                           491  PLRINIT
-000011DC                           492  ; INITIALIZES THE PLAYER
-000011DC                           493  ; INPUT    - NONE
-000011DC                           494  ; OUTPUT   - NONE
-000011DC                           495  ; MODIFIES - NONE
-000011DC                           496  ; -----------------------------------------------------------------------------
-000011DC  4EB9 0000145E            497              JSR     BINIT
-000011E2  33FC 00A3 000021C4       498              MOVE.W  #PINPOSX,PPOSX
-000011EA  33FC 0064 000021C6       499              MOVE.W  #PINWIDTH,PWIDTH
-000011F2  33FC 0003 000021C8       500              MOVE.W  #PINLIVE,PLIVES
-000011FA  4279 000021CA            501              CLR.W   PSCORE
-00001200                           502             
-00001200  4E75                     503              RTS
-00001202                           504  
+000011DC                           486  
+000011DC                           487  -------------------- end include --------------------
+000011DC                           488              INCLUDE "PLAYER.X68"            ;EL JUGADOR
+000011DC                           489  ; -----------------------------------------------------------------------------
+000011DC                           490  ;           PLAYER
+000011DC                           491  ; -----------------------------------------------------------------------------
+000011DC                           492  PLRINIT
+000011DC                           493  ; INITIALIZES THE PLAYER
+000011DC                           494  ; INPUT    - NONE
+000011DC                           495  ; OUTPUT   - NONE
+000011DC                           496  ; MODIFIES - NONE
+000011DC                           497  ; -----------------------------------------------------------------------------
+000011DC  4EB9 00001474            498              JSR     BINIT
+000011E2  33FC 00A3 000021C4       499              MOVE.W  #PINPOSX,PPOSX
+000011EA  33FC 0064 000021C6       500              MOVE.W  #PINWIDTH,PWIDTH
+000011F2  33FC 0003 000021C8       501              MOVE.W  #PINLIVE,PLIVES
+000011FA  4279 000021CA            502              CLR.W   PSCORE
+00001200                           503             
+00001200  4E75                     504              RTS
 00001202                           505  
-00001202                           506  ; -----------------------------------------------------------------------------
-00001202                           507  
-00001202                           508  PLRUPD      
-00001202  48E7 6000                509              MOVEM.L D1-D2,-(A7)
-00001206                           510              
+00001202                           506  
+00001202                           507  ; -----------------------------------------------------------------------------
+00001202                           508  
+00001202                           509  PLRUPD      
+00001202  48E7 6000                510              MOVEM.L D1-D2,-(A7)
 00001206                           511              
-00001206  1239 0000150E            512              MOVE.B  (KBDVAL),D1  
-0000120C  E219                     513              ROR.B   #1,D1                   ;IZQUIERDA
-0000120E  6400 0018                514              BCC     .RIGHTKEY                  ;CUANDO C = 0
-00001212                           515              ;CUANDO PPOSX ES 0 NO TINENE QUE MOVERSE MAS A LA IZQ
-00001212  3439 000021C4            516              MOVE.W  (PPOSX),D2
-00001218  B47C 0000                517              CMP.W    #0,D2
-0000121C  6F00 000A                518              BLE     .RIGHTKEY
-00001220  0479 000F 000021C4       519              SUB.W   #PMOVE,(PPOSX)
-00001228                           520  .RIGHTKEY
-00001228  E209                     521              LSR.B   #1,D1                   ;NO NOS IMPORTA EL DE ARRIBA
-0000122A  E219                     522              ROR.B   #1,D1                   ;
-0000122C  6400 0022                523              BCC     .END
-00001230                           524              ;CUANDO PPOSX ES IGUAL A SCRWIDTH+PWIDTH NO TIENE QUE MOVERSE A LA DERECHA
-00001230  3439 000021C4            525              MOVE.W  (PPOSX),D2
-00001236  D479 000021C6            526              ADD.W   (PWIDTH),D2 
-0000123C  0642 000F                527              ADD.W   #PMOVE,D2 
-00001240  B47C 01AA                528              CMP.W    #SCRCTRL,D2
-00001244  6C00 000A                529              BGE     .END
-00001248  0679 000F 000021C4       530              ADD.W   #PMOVE,(PPOSX)
-00001250                           531  .END
-00001250  4CDF 0006                532              MOVEM.L (A7)+,D1-D2
-00001254  4E75                     533              RTS
-00001256                           534  
+00001206                           512              
+00001206  1239 00001508            513              MOVE.B  (KBDVAL),D1  
+0000120C  E219                     514              ROR.B   #1,D1                   ;IZQUIERDA
+0000120E  6400 0018                515              BCC     .RIGHTKEY                  ;CUANDO C = 0
+00001212                           516              ;CUANDO PPOSX ES 0 NO TINENE QUE MOVERSE MAS A LA IZQ
+00001212  3439 000021C4            517              MOVE.W  (PPOSX),D2
+00001218  B47C 0000                518              CMP.W    #0,D2
+0000121C  6F00 000A                519              BLE     .RIGHTKEY
+00001220  0479 000F 000021C4       520              SUB.W   #PMOVE,(PPOSX)
+00001228                           521  .RIGHTKEY
+00001228  E209                     522              LSR.B   #1,D1                   ;NO NOS IMPORTA EL DE ARRIBA
+0000122A  E219                     523              ROR.B   #1,D1                   ;
+0000122C  6400 0022                524              BCC     .END
+00001230                           525              ;CUANDO PPOSX ES IGUAL A SCRWIDTH+PWIDTH NO TIENE QUE MOVERSE A LA DERECHA
+00001230  3439 000021C4            526              MOVE.W  (PPOSX),D2
+00001236  D479 000021C6            527              ADD.W   (PWIDTH),D2 
+0000123C  0642 000F                528              ADD.W   #PMOVE,D2 
+00001240  B47C 01AA                529              CMP.W    #SCRCTRL,D2
+00001244  6C00 000A                530              BGE     .END
+00001248  0679 000F 000021C4       531              ADD.W   #PMOVE,(PPOSX)
+00001250                           532  .END
+00001250  4CDF 0006                533              MOVEM.L (A7)+,D1-D2
+00001254  4E75                     534              RTS
 00001256                           535  
-00001256                           536  PPLOT
-00001256  48E7 FC00                537              MOVEM.L  D0-D5,-(A7)
-0000125A                           538              ;CONTOUR COLOR
-0000125A  223C 00ECD59D            539              MOVE.L  #PCOLOR,D1  
-00001260  103C 0050                540              MOVE.B  #80,D0
-00001264  4E4F                     541              TRAP    #15
-00001266                           542      
+00001256                           536  
+00001256                           537  PPLOT
+00001256  48E7 FC00                538              MOVEM.L  D0-D5,-(A7)
+0000125A                           539              ;CONTOUR COLOR
+0000125A  223C 00ECD59D            540              MOVE.L  #PCOLOR,D1  
+00001260  103C 0050                541              MOVE.B  #80,D0
+00001264  4E4F                     542              TRAP    #15
 00001266                           543      
-00001266                           544               ;FILL COLOR
-00001266  C2BC 00ECD59D            545              AND.L   #PCOLOR,D1  
-0000126C  103C 0051                546              MOVE.B  #81,D0
-00001270  4E4F                     547              TRAP    #15
-00001272                           548   
-00001272                           549  
-00001272                           550               ;SQUARE
-00001272  3A39 000021C6            551              MOVE.W  (PWIDTH),D5                     
-00001278                           552       
-00001278  0645 000F                553              ADD.W   #PMOVE,D5
-0000127C                           554      
-0000127C  3639 000021C4            555              MOVE.W  (PPOSX),D3
-00001282  383C 01D6                556              MOVE.W  #PPOSY+PHEIGHT,D4
-00001286  D645                     557              ADD.W   D5,D3
-00001288                           558      
-00001288  3239 000021C4            559              MOVE.W  (PPOSX),D1
-0000128E  343C 01C2                560              MOVE.W  #PPOSY,D2
-00001292                           561             
-00001292                           562              ;ADD.W   D5,D2
-00001292                           563      
-00001292  303C 0057                564              MOVE.W  #87,D0
-00001296  4E4F                     565              TRAP    #15
-00001298                           566      
-00001298  4CDF 003F                567              MOVEM.L  (A7)+,D0-D5
-0000129C                           568  
-0000129C  4E75                     569              RTS
-0000129E                           570      
-0000129E                           571  
+00001266                           544      
+00001266                           545               ;FILL COLOR
+00001266  C2BC 00ECD59D            546              AND.L   #PCOLOR,D1  
+0000126C  103C 0051                547              MOVE.B  #81,D0
+00001270  4E4F                     548              TRAP    #15
+00001272                           549   
+00001272                           550  
+00001272                           551               ;SQUARE
+00001272  3A39 000021C6            552              MOVE.W  (PWIDTH),D5                     
+00001278                           553       
+00001278  0645 000F                554              ADD.W   #PMOVE,D5
+0000127C                           555      
+0000127C  3639 000021C4            556              MOVE.W  (PPOSX),D3
+00001282  383C 01D6                557              MOVE.W  #PPOSY+PHEIGHT,D4
+00001286  D645                     558              ADD.W   D5,D3
+00001288                           559      
+00001288  3239 000021C4            560              MOVE.W  (PPOSX),D1
+0000128E  343C 01C2                561              MOVE.W  #PPOSY,D2
+00001292                           562             
+00001292                           563              ;ADD.W   D5,D2
+00001292                           564      
+00001292  303C 0057                565              MOVE.W  #87,D0
+00001296  4E4F                     566              TRAP    #15
+00001298                           567      
+00001298  4CDF 003F                568              MOVEM.L  (A7)+,D0-D5
+0000129C                           569  
+0000129C  4E75                     570              RTS
+0000129E                           571      
 0000129E                           572  
 0000129E                           573  
 0000129E                           574  
 0000129E                           575  
 0000129E                           576  
-0000129E                           577  -------------------- end include --------------------
-0000129E                           578              INCLUDE "STATES.X68"            ;
-0000129E                           579  ; =============================================================================
-0000129E                           580  ; GAME STATE MANAGEMENT
+0000129E                           577  
+0000129E                           578  
+0000129E                           579  -------------------- end include --------------------
+0000129E                           580              INCLUDE "STATES.X68"            ;
 0000129E                           581  ; =============================================================================
-0000129E                           582  
-0000129E                           583  ; -----------------------------------------------------------------------------
-0000129E                           584  STAINIT
-0000129E                           585  ; INITALIZES THE STATE MANAGER
-0000129E                           586  ; INPUT    - NONE
-0000129E                           587  ; OUTPUT   - NONE
-0000129E                           588  ; MODIFIES - NONE
-0000129E                           589  ; -----------------------------------------------------------------------------
-0000129E  33FC FFFF 000021C0       590              MOVE.W  #STANONE,(STACUR)       ;STACUR = -1 
-000012A6                           591             ; TENEMOS QUE SABER SI -1 = CAMBIO O SE QUEDA EN EL MISMO
-000012A6  33FC 0000 000021C2       592              MOVE.W  #STAINTR,(STANEXT)      ;STAINTR = LA PANTALLA INTRO = 0
-000012AE  4E75                     593              RTS
-000012B0                           594  
-000012B0                           595  ; -----------------------------------------------------------------------------
-000012B0                           596  STAUPD
-000012B0                           597  ; PERFORMS STATE UPDATE AND INIT IF NECESSARY
-000012B0                           598  ; INPUT    - NONE
-000012B0                           599  ; OUTPUT   - NONE
-000012B0                           600  ; MODIFIES - NONE
-000012B0                           601  ; -----------------------------------------------------------------------------
-000012B0  48E7 8080                602              MOVEM.L D0/A0,-(A7)
-000012B4  4280                     603              CLR.L   D0
-000012B6  3039 000021C2            604              MOVE.W  (STANEXT),D0
-000012BC  B079 000021C0            605              CMP.W   (STACUR),D0
-000012C2  6700 0012                606              BEQ     .DOUPD
-000012C6  33C0 000021C0            607              MOVE.W  D0,(STACUR)             ;AHORA ES LA PANTALLA DE INTRO
-000012CC  E588                     608              LSL.L   #2,D0
-000012CE  2040                     609              MOVE.L  D0,A0
-000012D0  2068 12EE                610              MOVE.L  .INITBL(A0),A0
-000012D4  4E90                     611              JSR     (A0)
-000012D6  4280                     612  .DOUPD      CLR.L   D0                      ; IN ANY CASE, DO UPDATE
-000012D8  3039 000021C0            613              MOVE.W  (STACUR),D0
-000012DE  E588                     614              LSL.L   #2,D0
-000012E0  2040                     615              MOVE.L  D0,A0
-000012E2  2068 12FA                616              MOVE.L  .UPDTBL(A0),A0
-000012E6  4E90                     617              JSR     (A0)
-000012E8  4CDF 0101                618              MOVEM.L (A7)+,D0/A0
-000012EC  4E75                     619              RTS
-000012EE= 0000111A 000011DC ...    620  .INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY     ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
-000012FA                           621                                               ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
-000012FA                           622                                               ;EL 2 ES NO HACER NADA 
-000012FA= 00001368 00001330 ...    623  .UPDTBL     DC.L    STAINTRU,STAPLAYU,STAGOVRU
-00001306                           624                                              ;EL 0 ES SI SE PULSA ESPACIO CAMBIAR EL STANEXT A PLAY
-00001306                           625                                              ;EL 2 HACE QUE SE UPDATE 
-00001306                           626  
-00001306                           627  ; -----------------------------------------------------------------------------
-00001306                           628  STAPLOT
-00001306                           629  ; PERFORMS STATE PLOT
-00001306                           630  ; INPUT    - NONE
-00001306                           631  ; OUTPUT   - NONE
-00001306                           632  ; MODIFIES - NONE
-00001306                           633  ; -----------------------------------------------------------------------------
-00001306  48E7 8080                634              MOVEM.L D0/A0,-(A7)
-0000130A  4280                     635              CLR.L   D0
-0000130C  3039 000021C0            636              MOVE.W  (STACUR),D0
-00001312  E588                     637              LSL.L   #2,D0
-00001314  2040                     638              MOVE.L  D0,A0
-00001316  2068 1322                639              MOVE.L  .PLTTBL(A0),A0          ;ELIGE QUE HACER
-0000131A  4E90                     640              JSR     (A0)
-0000131C  4CDF 0101                641              MOVEM.L (A7)+,D0/A0
-00001320  4E75                     642              RTS
-00001322= 0000137E 00001334 ...    643  .PLTTBL     DC.L    STAINTRP,STAPLAYP,STAGOVRP
-0000132E                           644                                               ; EL 0 ES DIBUJAR LA PANTALLA DE INICIO
-0000132E                           645  
-0000132E                           646  ; -----------------------------------------------------------------------------
-0000132E                           647  STAEMPTY
-0000132E                           648  ; EMPTY SUBROUTINE FOR CASES WITH NOTHING TO DO
-0000132E                           649  ; INPUT    - NONE
-0000132E                           650  ; OUTPUT   - NONE
-0000132E                           651  ; MODIFIES - NONE
-0000132E                           652  ; NOTE     - JUST A PLACEHOLDER. NOTHING TO DO.
-0000132E                           653  ; -----------------------------------------------------------------------------
-0000132E  4E75                     654              RTS
-00001330                           655  
-00001330                           656  ; -----------------------------------------------------------------------------
-00001330  =000011DC                657  STAPLAYI    EQU     PLRINIT
-00001330                           658  ; PLAY STATE INITIALIZATION.
-00001330                           659  ; INPUT    - NONE
-00001330                           660  ; OUTPUT   - NONE
-00001330                           661  ; MODIFIES - NONE
-00001330                           662  ; NOTE     - JUST A WRAPPER FOR PLRINIT
-00001330                           663  ; -----------------------------------------------------------------------------
-00001330                           664  
+0000129E                           582  ; GAME STATE MANAGEMENT
+0000129E                           583  ; =============================================================================
+0000129E                           584  
+0000129E                           585  ; -----------------------------------------------------------------------------
+0000129E                           586  STAINIT
+0000129E                           587  ; INITALIZES THE STATE MANAGER
+0000129E                           588  ; INPUT    - NONE
+0000129E                           589  ; OUTPUT   - NONE
+0000129E                           590  ; MODIFIES - NONE
+0000129E                           591  ; -----------------------------------------------------------------------------
+0000129E  33FC FFFF 000021C0       592              MOVE.W  #STANONE,(STACUR)       ;STACUR = -1 
+000012A6                           593             ; TENEMOS QUE SABER SI -1 = CAMBIO O SE QUEDA EN EL MISMO
+000012A6  33FC 0000 000021C2       594              MOVE.W  #STAINTR,(STANEXT)      ;STAINTR = LA PANTALLA INTRO = 0
+000012AE  4E75                     595              RTS
+000012B0                           596  
+000012B0                           597  ; -----------------------------------------------------------------------------
+000012B0                           598  STAUPD
+000012B0                           599  ; PERFORMS STATE UPDATE AND INIT IF NECESSARY
+000012B0                           600  ; INPUT    - NONE
+000012B0                           601  ; OUTPUT   - NONE
+000012B0                           602  ; MODIFIES - NONE
+000012B0                           603  ; -----------------------------------------------------------------------------
+000012B0  48E7 8080                604              MOVEM.L D0/A0,-(A7)
+000012B4  4280                     605              CLR.L   D0
+000012B6  3039 000021C2            606              MOVE.W  (STANEXT),D0
+000012BC  B079 000021C0            607              CMP.W   (STACUR),D0
+000012C2  6700 0012                608              BEQ     .DOUPD
+000012C6  33C0 000021C0            609              MOVE.W  D0,(STACUR)             ;AHORA ES LA PANTALLA DE INTRO
+000012CC  E588                     610              LSL.L   #2,D0
+000012CE  2040                     611              MOVE.L  D0,A0
+000012D0  2068 12EE                612              MOVE.L  .INITBL(A0),A0
+000012D4  4E90                     613              JSR     (A0)
+000012D6  4280                     614  .DOUPD      CLR.L   D0                      ; IN ANY CASE, DO UPDATE
+000012D8  3039 000021C0            615              MOVE.W  (STACUR),D0
+000012DE  E588                     616              LSL.L   #2,D0
+000012E0  2040                     617              MOVE.L  D0,A0
+000012E2  2068 12FA                618              MOVE.L  .UPDTBL(A0),A0
+000012E6  4E90                     619              JSR     (A0)
+000012E8  4CDF 0101                620              MOVEM.L (A7)+,D0/A0
+000012EC  4E75                     621              RTS
+000012EE= 0000111A 000011DC ...    622  .INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY     ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
+000012FA                           623                                               ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
+000012FA                           624                                               ;EL 2 ES NO HACER NADA 
+000012FA= 0000137E 00001330 ...    625  .UPDTBL     DC.L    STAINTRU,STAPLAYU,STAGOVRU
+00001306                           626                                              ;EL 0 ES SI SE PULSA ESPACIO CAMBIAR EL STANEXT A PLAY
+00001306                           627                                              ;EL 2 HACE QUE SE UPDATE 
+00001306                           628  
+00001306                           629  ; -----------------------------------------------------------------------------
+00001306                           630  STAPLOT
+00001306                           631  ; PERFORMS STATE PLOT
+00001306                           632  ; INPUT    - NONE
+00001306                           633  ; OUTPUT   - NONE
+00001306                           634  ; MODIFIES - NONE
+00001306                           635  ; -----------------------------------------------------------------------------
+00001306  48E7 8080                636              MOVEM.L D0/A0,-(A7)
+0000130A  4280                     637              CLR.L   D0
+0000130C  3039 000021C0            638              MOVE.W  (STACUR),D0
+00001312  E588                     639              LSL.L   #2,D0
+00001314  2040                     640              MOVE.L  D0,A0
+00001316  2068 1322                641              MOVE.L  .PLTTBL(A0),A0          ;ELIGE QUE HACER
+0000131A  4E90                     642              JSR     (A0)
+0000131C  4CDF 0101                643              MOVEM.L (A7)+,D0/A0
+00001320  4E75                     644              RTS
+00001322= 00001394 0000133C ...    645  .PLTTBL     DC.L    STAINTRP,STAPLAYP,STAGOVRP
+0000132E                           646                                               ; EL 0 ES DIBUJAR LA PANTALLA DE INICIO
+0000132E                           647  
+0000132E                           648  ; -----------------------------------------------------------------------------
+0000132E                           649  STAEMPTY
+0000132E                           650  ; EMPTY SUBROUTINE FOR CASES WITH NOTHING TO DO
+0000132E                           651  ; INPUT    - NONE
+0000132E                           652  ; OUTPUT   - NONE
+0000132E                           653  ; MODIFIES - NONE
+0000132E                           654  ; NOTE     - JUST A PLACEHOLDER. NOTHING TO DO.
+0000132E                           655  ; -----------------------------------------------------------------------------
+0000132E  4E75                     656              RTS
+00001330                           657  
+00001330                           658  ; -----------------------------------------------------------------------------
+00001330  =000011DC                659  STAPLAYI    EQU     PLRINIT
+00001330                           660  ; PLAY STATE INITIALIZATION.
+00001330                           661  ; INPUT    - NONE
+00001330                           662  ; OUTPUT   - NONE
+00001330                           663  ; MODIFIES - NONE
+00001330                           664  ; NOTE     - JUST A WRAPPER FOR PLRINIT
 00001330                           665  ; -----------------------------------------------------------------------------
-00001330                           666  STAPLAYU
-00001330                           667  ; PLAY STATE UPDATE
-00001330                           668  ; INPUT    - NONE
-00001330                           669  ; OUTPUT   - NONE
-00001330                           670  ; MODIFIES - NONE
-00001330                           671  ; -----------------------------------------------------------------------------
-00001330  4EB8 1202                672              JSR     PLRUPD
-00001334                           673              ;JSR     BUPD
-00001334                           674  
-00001334                           675  
-00001334                           676  ; -----------------------------------------------------------------------------
-00001334                           677  STAPLAYP
-00001334                           678  ; PLAY STATE PLOT
-00001334                           679  ; INPUT    - NONE
-00001334                           680  ; OUTPUT   - NONE
-00001334                           681  ; MODIFIES - NONE
-00001334                           682  ; -----------------------------------------------------------------------------
-00001334                           683  
-00001334  4EB8 1256                684              JSR     PPLOT
-00001338  4EB9 0000149A            685              JSR     BPLOT
-0000133E                           686  
-0000133E  48E7 F800                687              MOVEM.L  D0-D4,-(A7)
-00001342                           688              
-00001342  223C 00FFFFFF            689              MOVE.L  #$00FFFFFF,D1  
-00001348  103C 0050                690              MOVE.B  #80,D0
-0000134C  4E4F                     691              TRAP    #15
-0000134E                           692              
-0000134E  103C 0054                693              MOVE.B  #84,D0
-00001352  323C 01AA                694              MOVE.W  #SCRCTRL,D1
-00001356  363C 01AA                695              MOVE.W  #SCRCTRL,D3
-0000135A  343C 0000                696              MOVE.W  #0,D2
-0000135E  383C 01E0                697              MOVE.W  #SCRHEIGH,D4
-00001362  4E4F                     698              TRAP    #15
-00001364                           699              
-00001364  4CDF 001F                700              MOVEM.L  (A7)+,D0-D4
-00001368                           701  
-00001368                           702  ;            BRA     PLRPLOT
-00001368                           703  
-00001368                           704  ; -----------------------------------------------------------------------------
-00001368  =0000111A                705  STAINTRI    EQU     DMMINIT                 ;VACIA LA MEMORIA DEL JUEGO
-00001368                           706  ; PARA QUE EL SCORE LA VIDA SE VUELVAN A REINICIAR
-00001368                           707  
-00001368                           708  ; INTRO STATE INIT
-00001368                           709  ; INPUT    - NONE
-00001368                           710  ; OUTPUT   - NONE
-00001368                           711  ; MODIFIES - NONE
-00001368                           712  ; NOTE     - JUST A WRAPPER FOR DMMINIT TO RELEASE ALL MEMORY
-00001368                           713  ; -----------------------------------------------------------------------------
-00001368                           714  
-00001368                           715  ; -----------------------------------------------------------------------------
-00001368                           716  STAINTRU
-00001368                           717  ; INTRO STATE UPDATE
-00001368                           718  ; INPUT    - NONE
-00001368                           719  ; OUTPUT   - NONE
-00001368                           720  ; MODIFIES - NONE
-00001368                           721  ; -----------------------------------------------------------------------------
-00001368  0839 0004 0000150F       722              BTST.B  #KBDBITF1,(KBDEDGE)
-00001370  6700 000A                723              BEQ     .END
-00001374  33FC 0001 000021C2       724              MOVE.W  #STAPLAY,(STANEXT)
-0000137C  4E75                     725  .END        RTS
-0000137E                           726  
-0000137E                           727  ; -----------------------------------------------------------------------------
-0000137E                           728  STAINTRP
-0000137E                           729  ; INTRO STATE PLOT
-0000137E                           730  ; INPUT    - NONE
-0000137E                           731  ; OUTPUT   - NONE
-0000137E                           732  ; MODIFIES - NONE
-0000137E                           733  ; -----------------------------------------------------------------------------
-0000137E  48E7 C040                734              MOVEM.L A1/D0-D1,-(A7)
-00001382  323C 0807                735              MOVE.W  #INTTITX<<8|INTTITY, D1 ;COORDENADAS DEL TEXTO TITULO
-00001386  103C 000B                736              MOVE.B  #11,D0
-0000138A  4E4F                     737              TRAP    #15
-0000138C                           738              
-0000138C  223C 00DCAA7C            739              MOVE.L  #INTTITC,D1
-00001392  243C 00120001            740              MOVE.L  #18<<16|1,D2
-00001398  103C 0015                741              MOVE.B  #21,D0
-0000139C  4E4F                     742              TRAP    #15
-0000139E                           743  
-0000139E  43F9 000013D8            744              LEA     .TITSTR,A1              ;PONE EL TEXTO
-000013A4  103C 000E                745              MOVE.B  #14,D0
-000013A8  4E4F                     746              TRAP    #15
-000013AA                           747  
-000013AA  323C 1732                748              MOVE.W  #INTPRSX<<8|INTPRSY, D1 ;COORDENADAS DEL TEXTO START
-000013AE  103C 000B                749              MOVE.B  #11,D0
-000013B2  4E4F                     750              TRAP    #15
-000013B4                           751              
-000013B4  223C 00FFFFFF            752              MOVE.L  #INTPRSC,D1
-000013BA  243C 000A0001            753              MOVE.L  #10<<16|1,D2
-000013C0  103C 0015                754              MOVE.B  #21,D0
-000013C4  4E4F                     755              TRAP    #15
-000013C6                           756              
-000013C6  43F9 000013EE            757              LEA     .PRSSTR,A1
-000013CC  103C 000E                758              MOVE.B  #14,D0
-000013D0  4E4F                     759              TRAP    #15
-000013D2  4CDF 0203                760              MOVEM.L (A7)+,A1/D0-D1
-000013D6  4E75                     761              RTS
-000013D8                           762  
-000013D8= 20 20 20 42 72 65 ...    763  .TITSTR     DC.B    '   Breaking Blocks   ',0
-000013EE= 20 50 55 53 48 20 ...    764  .PRSSTR     DC.B    ' PUSH FIRE TO START ',0
-00001404                           765              DS.W    0
-00001404                           766  
-00001404                           767  ; -----------------------------------------------------------------------------
-00001404                           768  STAGOVRU
-00001404                           769  ; GAME OVER STATE UPDATE
-00001404                           770  ; INPUT    - NONE
-00001404                           771  ; OUTPUT   - NONE
-00001404                           772  ; MODIFIES - NONE
-00001404                           773  ; -----------------------------------------------------------------------------
-00001404  0839 0004 0000150F       774              BTST.B  #KBDBITF1,(KBDEDGE)
-0000140C  6700 000A                775              BEQ     .END
-00001410  33FC 0000 000021C2       776              MOVE.W  #STAINTR,(STANEXT)
-00001418  4E75                     777  .END        RTS
-0000141A                           778  
-0000141A                           779  ; -----------------------------------------------------------------------------
-0000141A                           780  STAGOVRP
-0000141A                           781  ; GAME OVER STATE PLOT
-0000141A                           782  ; INPUT    - NONE
-0000141A                           783  ; OUTPUT   - NONE
-0000141A                           784  ; MODIFIES - NONE
-0000141A                           785  ; -----------------------------------------------------------------------------
-0000141A  48E7 C040                786              MOVEM.L A1/D0-D1,-(A7)
-0000141E  323C 230F                787              MOVE.W  #GOVSTRX<<8|GOVSTRY, D1 ;COORDENADAS DEL TEXTO TITULO
-00001422  103C 000B                788              MOVE.B  #11,D0
-00001426  4E4F                     789              TRAP    #15
-00001428                           790              
-00001428  103C 0050                791              MOVE.B  #80,D0                  ;DEFINIMOS COLOR DE TITULO
-0000142C  223C 00FFFFFF            792              MOVE.L  #GOVSTRC,D1
-00001432  4E4F                     793              TRAP    #15
-00001434                           794              
-00001434  103C 0051                795              MOVE.B  #81,D0                  ;RELLENA COLOR 
-00001438  223C 00FF0000            796              MOVE.L  #$00FF0000,D1
-0000143E  4E4F                     797              TRAP    #15
-00001440                           798              
-00001440  43F9 00001452            799              LEA     .GOVSTR,A1
-00001446  103C 000E                800              MOVE.B  #14,D0
-0000144A  4E4F                     801              TRAP    #15
-0000144C  4CDF 0203                802              MOVEM.L (A7)+,A1/D0-D1
-00001450  4E75                     803              RTS
-00001452                           804  
-00001452= 47 41 4D 45 20 20 ...    805  .GOVSTR     DC.B    'GAME  OVER',0
-0000145E                           806              DS.W    0
-0000145E                           807  
-0000145E                           808  
-0000145E                           809  
-0000145E                           810  
-0000145E                           811  -------------------- end include --------------------
-0000145E                           812              INCLUDE "BALL.X68"              ;LA PELOTA
-0000145E                           813  ; =============================================================================
-0000145E                           814  ; BALL
-0000145E                           815  ; =============================================================================
-0000145E                           816  
-0000145E                           817  BINIT
-0000145E  33FC 00D0 000021CE       818              MOVE.W  #BINPOSX,BPOSX
-00001466  33FC 01AE 000021D0       819              MOVE.W  #BINPOSY,BPOSY
-0000146E  33FC 0005 000021D2       820              MOVE.W  #BINSPEED,BSPEEDX
-00001476  33FC 0005 000021D4       821              MOVE.W  #BINSPEED,BSPEEDY
-0000147E  4E75                     822              RTS
-00001480                           823              
-00001480                           824  BUPD        
-00001480  48E7 6000                825              MOVEM.L D1-D2,-(A7)
-00001484                           826              
-00001484                           827              
-00001484  33FC 00D0 000021CE       828              MOVE.W  #BINPOSX,BPOSX
-0000148C  33FC 01AE 000021D0       829              MOVE.W  #BINPOSY,BPOSY
-00001494                           830  ;.LEFT       MOVE.W  BPOSX,D1
-00001494                           831  ;            CMP.W    #0,D1                  ;CHOCA
-00001494                           832  ;            BGT     .RIGHT                  ;SALTA SI CHOCA
-00001494                           833  ;            MOVE.W  BSPEEDX,D2
-00001494                           834  
-00001494  4CDF 0006                835              MOVEM.L (A7)+,D1-D2
-00001498                           836              
-00001498  4E75                     837              RTS
-0000149A                           838              
-0000149A                           839  BPLOT       
-0000149A  48E7 FC00                840              MOVEM.L  D0-D5,-(A7)
-0000149E                           841              ;CONTOUR COLOR
-0000149E  223C 0FFFFFFF            842              MOVE.L  #BINCOLOR,D1  
-000014A4  103C 0050                843              MOVE.B  #80,D0
-000014A8  4E4F                     844              TRAP    #15
-000014AA                           845      
-000014AA                           846               ;FILL COLOR
-000014AA  C2BC 0FFFFFFF            847              AND.L   #BINCOLOR,D1  
-000014B0  103C 0051                848              MOVE.B  #81,D0
-000014B4  4E4F                     849              TRAP    #15
-000014B6                           850   
-000014B6                           851              ;CIRCLE
-000014B6                           852              
-000014B6  3A3C 0005                853              MOVE.W  #BWIDTH,D5 
-000014BA  DA79 000021D2            854              ADD.W   (BSPEEDX),D5
-000014C0                           855      
-000014C0  3639 000021CE            856              MOVE.W  BPOSX,D3
-000014C6  3839 000021D5            857              MOVE.W  (BPOSY)+BHEIGHT,D4
-000014CC  D645                     858              ADD.W   D5,D3
-000014CE                           859      
-000014CE  3239 000021CE            860              MOVE.W  BPOSX,D1
-000014D4  3439 000021D0            861              MOVE.W  BPOSY,D2
-000014DA                           862      
-000014DA  303C 0058                863              MOVE.W  #88,D0
-000014DE  4E4F                     864              TRAP    #15
-000014E0                           865      
-000014E0  4CDF 003F                866              MOVEM.L  (A7)+,D0-D5
-000014E4                           867  
-000014E4  4E75                     868              RTS
-000014E6                           869  
-000014E6                           870  
-000014E6                           871  -------------------- end include --------------------
-000014E6                           872  
-000014E6                           873  ; --- INITIALIZE --------------------------------------------------------------
-000014E6                           874              
-000014E6  4EB8 1000                875  START       JSR     SYSINIT
-000014EA                           876              ; TO DO: CALL GAME INITIALIZATION CODE HERE
-000014EA  4EB8 129E                877              JSR     STAINIT                 ;INICIA LAS PANTALLAS            
-000014EE                           878              
-000014EE                           879  ; --- UPDATE ------------------------------------------------------------------
-000014EE                           880  
-000014EE  4E40                     881  .LOOP       TRAP    #KBDTRAP                ; READ KEYBOARD                 
-000014F0                           882                                              ; UPDATE DEPENDING ON THE STATE
-000014F0                           883              ; TO DO: CALL GAME UPDATE CODE HERE
-000014F0  4EB8 12B0                884              JSR     STAUPD
-000014F4                           885  
-000014F4                           886  ; --- WAIT SYNCH --------------------------------------------------------------
-000014F4                           887  
-000014F4  4A39 00001510            888  .WINT       TST.B   (SCRINTCT)              ; WAIT FOR INTERRUPT
-000014FA  67F8                     889              BEQ     .WINT
-000014FC                           890              
-000014FC  4239 00001510            891              CLR.B   (SCRINTCT)
-00001502                           892  
-00001502                           893  ; --- PLOT --------------------------------------------------------------------
-00001502                           894              
-00001502                           895              ; TO DO: CALL GAME PLOT CODE HERE
-00001502  4EB8 1306                896              JSR     STAPLOT
-00001506                           897  
-00001506  4E41                     898              TRAP    #SCRTRAP                ; SHOW GRAPHICS
-00001508  60E4                     899              BRA     .LOOP
-0000150A  FFFF FFFF                900              SIMHALT
-0000150E                           901  
-0000150E                           902  ; --- VARIABLES ---------------------------------------------------------------
-0000150E                           903  
-0000150E                           904              INCLUDE "SYSVAR.X68"
-0000150E                           905  ; =============================================================================
-0000150E                           906  ; SYSTEM VARS
-0000150E                           907  ; NOTE THAT ALL THESE VARS ARE USED TO SHARE DATA FROM SYSTEM TO USER. THUS
-0000150E                           908  ; THEY MUST NOT BE IN PROTECTED MEMORY.
-0000150E                           909  ; NOTE THAT USING DMMDATA IN SUCH WAY IS A BAD IDEA, AS USER APPLICATIONS CAN
-0000150E                           910  ; ALSO FREE OR CHANGE OWNERSHIP. NONETHELESS, FOR THE SAKE OF THIS EXAMPLE
-0000150E                           911  ; THIS IS GOOD ENOUGH.
-0000150E                           912  ; =============================================================================
-0000150E                           913  
-0000150E                           914  ; --- KEYBOARD RELATED VARIABLES ----------------------------------------------
-0000150E                           915  
-0000150E                           916  KBDVAL      DS.B    1                       ; KEY PRESSED=1
-0000150F                           917  KBDEDGE     DS.B    1                       ; KEY CHANGED=1
-00001510                           918  
-00001510                           919              DS.W    0
-00001510                           920  
-00001510                           921  ; --- SCREEN RELATED VARIABLES ------------------------------------------------
-00001510                           922  
-00001510                           923  SCRINTCT    DS.B    1                       ; INTERRUPT COUNTER/FLAG
-00001511                           924  SCRCYCCT    DS.B    1                       ; CYCLE COUNTER
-00001512                           925              DS.W    0
-00001512                           926  
-00001512                           927  ; --- DYNAMIC MEMORY VARIABLES ------------------------------------------------
-00001512                           928  
-00001540                           929              ORG     (*+DMMBSIZE-1)&-DMMBSIZE ; ALIGN TO DMMBSIZE
-00001540                           930  DMMDATA     DS.B    DMMBSIZE*DMMBNUM        ; DYNAMIC MEMORY ALLOCATION SPACE
-000021C0                           931              DS.W    0                       ; JUST IN CASE (SIZE IS POW OF TWO)
+00001330                           666             
+00001330                           667  ; -----------------------------------------------------------------------------
+00001330                           668  STAPLAYU
+00001330                           669  ; PLAY STATE UPDATE
+00001330                           670  ; INPUT    - NONE
+00001330                           671  ; OUTPUT   - NONE
+00001330                           672  ; MODIFIES - NONE
+00001330                           673  ; -----------------------------------------------------------------------------
+00001330  4EB8 1202                674              JSR     PLRUPD
+00001334  4EB9 00001496            675              JSR     BUPD                    
+0000133A  4E75                     676              RTS
+0000133C                           677  ; -----------------------------------------------------------------------------
+0000133C                           678  STAPLAYP
+0000133C                           679  ; PLAY STATE PLOT
+0000133C                           680  ; INPUT    - NONE
+0000133C                           681  ; OUTPUT   - NONE
+0000133C                           682  ; MODIFIES - NONE
+0000133C                           683  ; -----------------------------------------------------------------------------
+0000133C  48E7 F800                684              MOVEM.L D0-D4,-(A7)
+00001340  4EB8 1256                685              JSR     PPLOT
+00001344  4EB9 000014A8            686              JSR     BPLOT
+0000134A                           687  
+0000134A                           688        
+0000134A                           689                          
+0000134A  223C 00FFFFFF            690              MOVE.L  #$00FFFFFF,D1  ;COLOR
+00001350  103C 0050                691              MOVE.B  #80,D0
+00001354  4E4F                     692              TRAP    #15
+00001356                           693              
+00001356  C2BC 00FFFFFF            694              AND.L   #$00FFFFFF,D1  ;COLOR
+0000135C  103C 0051                695              MOVE.B  #81,D0
+00001360  4E4F                     696              TRAP    #15
+00001362                           697              
+00001362  103C 0057                698              MOVE.B  #87,D0
+00001366  323C 01AA                699              MOVE.W  #SCRCTRL,D1
+0000136A  363C 01B4                700              MOVE.W  #SCRCTRL+10,D3
+0000136E  343C 0000                701              MOVE.W  #0,D2
+00001372  383C 01E0                702              MOVE.W  #SCRHEIGH,D4
+00001376  4E4F                     703              TRAP    #15
+00001378                           704              
+00001378  4CDF 001F                705              MOVEM.L  (A7)+,D0-D4
+0000137C                           706  
+0000137C  4E75                     707              RTS
+0000137E                           708  
+0000137E                           709  ; -----------------------------------------------------------------------------
+0000137E  =0000111A                710  STAINTRI    EQU     DMMINIT                 ;VACIA LA MEMORIA DEL JUEGO
+0000137E                           711  ; PARA QUE EL SCORE LA VIDA SE VUELVAN A REINICIAR
+0000137E                           712  
+0000137E                           713  ; INTRO STATE INIT
+0000137E                           714  ; INPUT    - NONE
+0000137E                           715  ; OUTPUT   - NONE
+0000137E                           716  ; MODIFIES - NONE
+0000137E                           717  ; NOTE     - JUST A WRAPPER FOR DMMINIT TO RELEASE ALL MEMORY
+0000137E                           718  ; -----------------------------------------------------------------------------
+0000137E                           719  
+0000137E                           720  ; -----------------------------------------------------------------------------
+0000137E                           721  STAINTRU
+0000137E                           722  ; INTRO STATE UPDATE
+0000137E                           723  ; INPUT    - NONE
+0000137E                           724  ; OUTPUT   - NONE
+0000137E                           725  ; MODIFIES - NONE
+0000137E                           726  ; -----------------------------------------------------------------------------
+0000137E  0839 0004 00001509       727              BTST.B  #KBDBITF1,(KBDEDGE)
+00001386  6700 000A                728              BEQ     .END
+0000138A  33FC 0001 000021C2       729              MOVE.W  #STAPLAY,(STANEXT)
+00001392  4E75                     730  .END        RTS
+00001394                           731  
+00001394                           732  ; -----------------------------------------------------------------------------
+00001394                           733  STAINTRP
+00001394                           734  ; INTRO STATE PLOT
+00001394                           735  ; INPUT    - NONE
+00001394                           736  ; OUTPUT   - NONE
+00001394                           737  ; MODIFIES - NONE
+00001394                           738  ; -----------------------------------------------------------------------------
+00001394  48E7 C040                739              MOVEM.L A1/D0-D1,-(A7)
+00001398  323C 0807                740              MOVE.W  #INTTITX<<8|INTTITY, D1 ;COORDENADAS DEL TEXTO TITULO
+0000139C  103C 000B                741              MOVE.B  #11,D0
+000013A0  4E4F                     742              TRAP    #15
+000013A2                           743              
+000013A2  223C 00DCAA7C            744              MOVE.L  #INTTITC,D1
+000013A8  243C 00120001            745              MOVE.L  #18<<16|1,D2
+000013AE  103C 0015                746              MOVE.B  #21,D0
+000013B2  4E4F                     747              TRAP    #15
+000013B4                           748  
+000013B4  43F9 000013EE            749              LEA     .TITSTR,A1              ;PONE EL TEXTO
+000013BA  103C 000E                750              MOVE.B  #14,D0
+000013BE  4E4F                     751              TRAP    #15
+000013C0                           752  
+000013C0  323C 1732                753              MOVE.W  #INTPRSX<<8|INTPRSY, D1 ;COORDENADAS DEL TEXTO START
+000013C4  103C 000B                754              MOVE.B  #11,D0
+000013C8  4E4F                     755              TRAP    #15
+000013CA                           756              
+000013CA  223C 00FFFFFF            757              MOVE.L  #INTPRSC,D1
+000013D0  243C 000A0001            758              MOVE.L  #10<<16|1,D2
+000013D6  103C 0015                759              MOVE.B  #21,D0
+000013DA  4E4F                     760              TRAP    #15
+000013DC                           761              
+000013DC  43F9 00001404            762              LEA     .PRSSTR,A1
+000013E2  103C 000E                763              MOVE.B  #14,D0
+000013E6  4E4F                     764              TRAP    #15
+000013E8  4CDF 0203                765              MOVEM.L (A7)+,A1/D0-D1
+000013EC  4E75                     766              RTS
+000013EE                           767  
+000013EE= 20 20 20 42 72 65 ...    768  .TITSTR     DC.B    '   Breaking Blocks   ',0
+00001404= 20 50 55 53 48 20 ...    769  .PRSSTR     DC.B    ' PUSH FIRE TO START ',0
+0000141A                           770              DS.W    0
+0000141A                           771  
+0000141A                           772  ; -----------------------------------------------------------------------------
+0000141A                           773  STAGOVRU
+0000141A                           774  ; GAME OVER STATE UPDATE
+0000141A                           775  ; INPUT    - NONE
+0000141A                           776  ; OUTPUT   - NONE
+0000141A                           777  ; MODIFIES - NONE
+0000141A                           778  ; -----------------------------------------------------------------------------
+0000141A  0839 0004 00001509       779              BTST.B  #KBDBITF1,(KBDEDGE)
+00001422  6700 000A                780              BEQ     .END
+00001426  33FC 0000 000021C2       781              MOVE.W  #STAINTR,(STANEXT)
+0000142E  4E75                     782  .END        RTS
+00001430                           783  
+00001430                           784  ; -----------------------------------------------------------------------------
+00001430                           785  STAGOVRP
+00001430                           786  ; GAME OVER STATE PLOT
+00001430                           787  ; INPUT    - NONE
+00001430                           788  ; OUTPUT   - NONE
+00001430                           789  ; MODIFIES - NONE
+00001430                           790  ; -----------------------------------------------------------------------------
+00001430  48E7 C040                791              MOVEM.L A1/D0-D1,-(A7)
+00001434  323C 230F                792              MOVE.W  #GOVSTRX<<8|GOVSTRY, D1 ;COORDENADAS DEL TEXTO TITULO
+00001438  103C 000B                793              MOVE.B  #11,D0
+0000143C  4E4F                     794              TRAP    #15
+0000143E                           795              
+0000143E  103C 0050                796              MOVE.B  #80,D0                  ;DEFINIMOS COLOR DE TITULO
+00001442  223C 00FFFFFF            797              MOVE.L  #GOVSTRC,D1
+00001448  4E4F                     798              TRAP    #15
+0000144A                           799              
+0000144A  103C 0051                800              MOVE.B  #81,D0                  ;RELLENA COLOR 
+0000144E  223C 00FF0000            801              MOVE.L  #$00FF0000,D1
+00001454  4E4F                     802              TRAP    #15
+00001456                           803              
+00001456  43F9 00001468            804              LEA     .GOVSTR,A1
+0000145C  103C 000E                805              MOVE.B  #14,D0
+00001460  4E4F                     806              TRAP    #15
+00001462  4CDF 0203                807              MOVEM.L (A7)+,A1/D0-D1
+00001466  4E75                     808              RTS
+00001468                           809  
+00001468= 47 41 4D 45 20 20 ...    810  .GOVSTR     DC.B    'GAME  OVER',0
+00001474                           811              DS.W    0
+00001474                           812  
+00001474                           813  
+00001474                           814  
+00001474                           815  
+00001474                           816  
+00001474                           817  -------------------- end include --------------------
+00001474                           818              INCLUDE "BALL.X68"              ;LA PELOTA
+00001474                           819  ; =============================================================================
+00001474                           820  ; BALL
+00001474                           821  ; =============================================================================
+00001474                           822  
+00001474                           823  BINIT
+00001474  33FC 00D0 000021CE       824              MOVE.W  #BINPOSX,BPOSX
+0000147C  33FC 01AE 000021D0       825              MOVE.W  #BINPOSY,BPOSY
+00001484  33FC 0005 000021D2       826              MOVE.W  #BINSPEED,BSPEEDX
+0000148C  33FC 0005 000021D4       827              MOVE.W  #BINSPEED,BSPEEDY
+00001494  4E75                     828              RTS
+00001496                           829              
+00001496                           830  BUPD        
+00001496                           831              
+00001496                           832              
+00001496  33FC 00D0 000021CE       833              MOVE.W  #BINPOSX,BPOSX
+0000149E  33FC 01AE 000021D0       834              MOVE.W  #BINPOSY,BPOSY
+000014A6                           835  ;.LEFT       MOVE.W  BPOSX,D1
+000014A6                           836  ;            CMP.W    #0,D1                  ;CHOCA
+000014A6                           837  ;            BGT     .RIGHT                  ;SALTA SI CHOCA
+000014A6                           838  ;            MOVE.W  BSPEEDX,D2
+000014A6                           839  
+000014A6                           840              
+000014A6  4E75                     841              RTS
+000014A8                           842              
+000014A8                           843  BPLOT       
+000014A8  48E7 FC00                844              MOVEM.L  D0-D5,-(A7)
+000014AC                           845              ;CONTOUR COLOR
+000014AC  223C 0FFFFFFF            846              MOVE.L  #BINCOLOR,D1  
+000014B2  103C 0050                847              MOVE.B  #80,D0
+000014B6  4E4F                     848              TRAP    #15
+000014B8                           849      
+000014B8                           850               ;FILL COLOR
+000014B8  C2BC 0FFFFFFF            851              AND.L   #BINCOLOR,D1  
+000014BE  103C 0051                852              MOVE.B  #81,D0
+000014C2  4E4F                     853              TRAP    #15
+000014C4                           854   
+000014C4                           855              ;CIRCLE
+000014C4  323C 0064                856              MOVE.W  #100,D1
+000014C8  343C 0064                857              MOVE.W  #100,D2
+000014CC  363C 0096                858              MOVE.W  #150,D3
+000014D0  383C 0096                859              MOVE.W  #150,D4
+000014D4                           860      
+000014D4  303C 0058                861              MOVE.W  #88,D0
+000014D8  4E4F                     862              TRAP    #15
+000014DA                           863      
+000014DA  4CDF 003F                864              MOVEM.L  (A7)+,D0-D5
+000014DE                           865  
+000014DE  4E75                     866              RTS
+000014E0                           867  
+000014E0                           868  
+000014E0                           869  
+000014E0                           870  -------------------- end include --------------------
+000014E0                           871  
+000014E0                           872  ; --- INITIALIZE --------------------------------------------------------------
+000014E0                           873              
+000014E0  4EB8 1000                874  START       JSR     SYSINIT
+000014E4                           875              ; TO DO: CALL GAME INITIALIZATION CODE HERE
+000014E4  4EB8 129E                876              JSR     STAINIT                 ;INICIA LAS PANTALLAS            
+000014E8                           877              
+000014E8                           878  ; --- UPDATE ------------------------------------------------------------------
+000014E8                           879  
+000014E8  4E40                     880  .LOOP       TRAP    #KBDTRAP                ; READ KEYBOARD                 
+000014EA                           881                                              ; UPDATE DEPENDING ON THE STATE
+000014EA                           882              ; TO DO: CALL GAME UPDATE CODE HERE
+000014EA  4EB8 12B0                883              JSR     STAUPD
+000014EE                           884  
+000014EE                           885  ; --- WAIT SYNCH --------------------------------------------------------------
+000014EE                           886  
+000014EE  4A39 0000150A            887  .WINT       TST.B   (SCRINTCT)              ; WAIT FOR INTERRUPT
+000014F4  67F8                     888              BEQ     .WINT
+000014F6                           889              
+000014F6  4239 0000150A            890              CLR.B   (SCRINTCT)
+000014FC                           891  
+000014FC                           892  ; --- PLOT --------------------------------------------------------------------
+000014FC                           893              
+000014FC                           894              ; TO DO: CALL GAME PLOT CODE HERE
+000014FC  4EB8 1306                895              JSR     STAPLOT
+00001500                           896  
+00001500  4E41                     897              TRAP    #SCRTRAP                ; SHOW GRAPHICS
+00001502  60E4                     898              BRA     .LOOP
+00001504  FFFF FFFF                899              SIMHALT
+00001508                           900  
+00001508                           901  ; --- VARIABLES ---------------------------------------------------------------
+00001508                           902  
+00001508                           903              INCLUDE "SYSVAR.X68"
+00001508                           904  ; =============================================================================
+00001508                           905  ; SYSTEM VARS
+00001508                           906  ; NOTE THAT ALL THESE VARS ARE USED TO SHARE DATA FROM SYSTEM TO USER. THUS
+00001508                           907  ; THEY MUST NOT BE IN PROTECTED MEMORY.
+00001508                           908  ; NOTE THAT USING DMMDATA IN SUCH WAY IS A BAD IDEA, AS USER APPLICATIONS CAN
+00001508                           909  ; ALSO FREE OR CHANGE OWNERSHIP. NONETHELESS, FOR THE SAKE OF THIS EXAMPLE
+00001508                           910  ; THIS IS GOOD ENOUGH.
+00001508                           911  ; =============================================================================
+00001508                           912  
+00001508                           913  ; --- KEYBOARD RELATED VARIABLES ----------------------------------------------
+00001508                           914  
+00001508                           915  KBDVAL      DS.B    1                       ; KEY PRESSED=1
+00001509                           916  KBDEDGE     DS.B    1                       ; KEY CHANGED=1
+0000150A                           917  
+0000150A                           918              DS.W    0
+0000150A                           919  
+0000150A                           920  ; --- SCREEN RELATED VARIABLES ------------------------------------------------
+0000150A                           921  
+0000150A                           922  SCRINTCT    DS.B    1                       ; INTERRUPT COUNTER/FLAG
+0000150B                           923  SCRCYCCT    DS.B    1                       ; CYCLE COUNTER
+0000150C                           924              DS.W    0
+0000150C                           925  
+0000150C                           926  ; --- DYNAMIC MEMORY VARIABLES ------------------------------------------------
+0000150C                           927  
+00001540                           928              ORG     (*+DMMBSIZE-1)&-DMMBSIZE ; ALIGN TO DMMBSIZE
+00001540                           929  DMMDATA     DS.B    DMMBSIZE*DMMBNUM        ; DYNAMIC MEMORY ALLOCATION SPACE
+000021C0                           930              DS.W    0                       ; JUST IN CASE (SIZE IS POW OF TWO)
+000021C0                           931  
 000021C0                           932  
 000021C0                           933  
-000021C0                           934  
-000021C0                           935  -------------------- end include --------------------
-000021C0                           936              INCLUDE "VAR.X68"
-000021C0                           937  ; =============================================================================
-000021C0                           938  ; GAME VARS
-000021C0                           939  ; =============================================================================
-000021C0                           940  
-000021C0                           941  ; TO DO: DECLARE GAME VARIABLES HERE.
-000021C0                           942  
-000021C0                           943  ; --- GAME STATE RELATED VARIABLES ------------------------------------------
-000021C0                           944  
-000021C0                           945  STACUR      DS.W    1                       ; CURRENT GAME STATE
-000021C2                           946  STANEXT     DS.W    1                       ; NEXT GAME STATE
-000021C4                           947  ;----------------------------------------------------------------------------
-000021C4                           948  
-000021C4                           949  ; PLAYER --------------------------------------------------------------------
-000021C4                           950  PPOSX       DS.W    1                       ;POSICION DE LA PLATAFORMA
-000021C6                           951  PWIDTH      DS.W    1                       ; PLAYER WIDTH (PIXELS)
-000021C8                           952  PLIVES      DS.W    1                       ;LIVES LEFT
-000021CA                           953  PSCORE      DS.W    1                       ;SCORE DEL PLAYER
-000021CC                           954  PSPEED      DS.W    1
-000021CE                           955  ;----------------------------------------------------------------------------
-000021CE                           956  
-000021CE                           957  ; BALL ----------------------------------------------------------------------
-000021CE                           958  BPOSX       DS.W    1                       ;POSICION DE LA PELOTA X
-000021D0                           959  BPOSY       DS.W    1                       ;POSICION DE LA PELOTA Y
-000021D2                           960  BSPEEDX     DS.W    1                       ;VELOCIDAD DE LA PELOTA
-000021D4                           961  BSPEEDY     DS.W    1
-000021D6                           962  BCOLOR      DS.W    1
+000021C0                           934  -------------------- end include --------------------
+000021C0                           935              INCLUDE "VAR.X68"
+000021C0                           936  ; =============================================================================
+000021C0                           937  ; GAME VARS
+000021C0                           938  ; =============================================================================
+000021C0                           939  
+000021C0                           940  ; TO DO: DECLARE GAME VARIABLES HERE.
+000021C0                           941  
+000021C0                           942  ; --- GAME STATE RELATED VARIABLES ------------------------------------------
+000021C0                           943  
+000021C0                           944  STACUR      DS.W    1                       ; CURRENT GAME STATE
+000021C2                           945  STANEXT     DS.W    1                       ; NEXT GAME STATE
+000021C4                           946  ;----------------------------------------------------------------------------
+000021C4                           947  
+000021C4                           948  ; PLAYER --------------------------------------------------------------------
+000021C4                           949  PPOSX       DS.W    1                       ;POSICION DE LA PLATAFORMA
+000021C6                           950  PWIDTH      DS.W    1                       ; PLAYER WIDTH (PIXELS)
+000021C8                           951  PLIVES      DS.W    1                       ;LIVES LEFT
+000021CA                           952  PSCORE      DS.W    1                       ;SCORE DEL PLAYER
+000021CC                           953  PSPEED      DS.W    1
+000021CE                           954  ;----------------------------------------------------------------------------
+000021CE                           955  
+000021CE                           956  ; BALL ----------------------------------------------------------------------
+000021CE                           957  BPOSX       DS.W    1                       ;POSICION DE LA PELOTA X
+000021D0                           958  BPOSY       DS.W    1                       ;POSICION DE LA PELOTA Y
+000021D2                           959  BSPEEDX     DS.W    1                       ;VELOCIDAD DE LA PELOTA
+000021D4                           960  BSPEEDY     DS.W    1
+000021D6                           961  BCOLOR      DS.W    1
+000021D8                           962  
 000021D8                           963  
 000021D8                           964  
 000021D8                           965  
-000021D8                           966  
-000021D8                           967  -------------------- end include --------------------
-000021D8                           968              END    START
+000021D8                           966  -------------------- end include --------------------
+000021D8                           967              END    START
 
 No errors detected
 No warnings generated
@@ -981,16 +980,16 @@ Symbol-name         Value
 BCOLOR              21D6
 BHEIGHT             5
 BINCOLOR            FFFFFFF
-BINIT               145E
+BINIT               1474
 BINPOSX             D0
 BINPOSY             1AE
 BINSPEED            5
-BPLOT               149A
+BPLOT               14A8
 BPOSX               21CE
 BPOSY               21D0
 BSPEEDX             21D2
 BSPEEDY             21D4
-BUPD                1480
+BUPD                1496
 BWIDTH              5
 DMMALLOC            11AC
 DMMALLOC:END        11C4
@@ -1037,7 +1036,7 @@ KBDCHRSH            10
 KBDCHRSP            20
 KBDCHRUP            26
 KBDDOWN             28
-KBDEDGE             150F
+KBDEDGE             1509
 KBDFIRE1            20
 KBDFIRE2            4D
 KBDFIRE3            10
@@ -1058,7 +1057,7 @@ KBDREAD:LOOP2       10EE
 KBDRIGHT            27
 KBDTRAP             0
 KBDUP               26
-KBDVAL              150E
+KBDVAL              1508
 PCOLOR              ECD59D
 PHEIGHT             14
 PINLIVE             3
@@ -1077,10 +1076,10 @@ PSCORE              21CA
 PSPEED              21CC
 PWIDTH              21C6
 SCRCTRL             1AA
-SCRCYCCT            1511
+SCRCYCCT            150B
 SCRHEIGH            1E0
 SCRINIT             101C
-SCRINTCT            1510
+SCRINTCT            150A
 SCRIRQ              1
 SCRISR              107E
 SCRTIM              14
@@ -1090,29 +1089,29 @@ SCRWIDTH            280
 STACUR              21C0
 STAEMPTY            132E
 STAGOVR             2
-STAGOVRP            141A
-STAGOVRP:GOVSTR     1452
-STAGOVRU            1404
-STAGOVRU:END        1418
+STAGOVRP            1430
+STAGOVRP:GOVSTR     1468
+STAGOVRU            141A
+STAGOVRU:END        142E
 STAINIT             129E
 STAINTR             0
 STAINTRI            111A
-STAINTRP            137E
-STAINTRP:PRSSTR     13EE
-STAINTRP:TITSTR     13D8
-STAINTRU            1368
-STAINTRU:END        137C
+STAINTRP            1394
+STAINTRP:PRSSTR     1404
+STAINTRP:TITSTR     13EE
+STAINTRU            137E
+STAINTRU:END        1392
 STANEXT             21C2
 STANONE             FFFFFFFF
 STAPLAY             1
 STAPLAYI            11DC
-STAPLAYP            1334
+STAPLAYP            133C
 STAPLAYU            1330
 STAPLOT             1306
 STAPLOT:PLTTBL      1322
-START               14E6
-START:LOOP          14EE
-START:WINT          14F4
+START               14E0
+START:LOOP          14E8
+START:WINT          14EE
 STAUPD              12B0
 STAUPD:DOUPD        12D6
 STAUPD:INITBL       12EE

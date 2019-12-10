@@ -10,7 +10,7 @@ BINIT
             RTS
             
 BUPD        
-            MOVEM.L D1-D2,-(A7)
+*            MOVEM.L D1-D2,-(A7)
             
             
             MOVE.W  #BINPOSX,BPOSX
@@ -40,7 +40,7 @@ BUPD
 *            ADD.W   D2,BPOSY
 *            
 
-            MOVEM.L (A7)+,D1-D2
+*            MOVEM.L (A7)+,D1-D2
             
             RTS
             
@@ -57,16 +57,20 @@ BPLOT
             TRAP    #15
  
             ;CIRCLE
-            
-            MOVE.W  #BWIDTH,D5 
-            ADD.W   (BSPEEDX),D5
-    
-            MOVE.W  BPOSX,D3
-            MOVE.W  (BPOSY)+BHEIGHT,D4
-            ADD.W   D5,D3
-    
-            MOVE.W  BPOSX,D1
-            MOVE.W  BPOSY,D2
+            MOVE.W  #100,D1
+            MOVE.W  #100,D2
+            MOVE.W  #150,D3
+            MOVE.W  #150,D4
+*            MOVE.W  #BWIDTH,D5 
+*            ADD.W   (BSPEEDX),D5
+*    
+*            MOVE.W  BPOSX,D3
+*            MOVE.W  BPOSY,D4
+*            ADD.W   #BHEIGHT,D4
+*            ADD.W   D5,D3
+*    
+*            MOVE.W  BPOSX,D1
+*            MOVE.W  BPOSY,D2
     
             MOVE.W  #88,D0
             TRAP    #15
@@ -74,6 +78,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 *~Font name~Courier New~
