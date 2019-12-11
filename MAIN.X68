@@ -10,8 +10,6 @@
 
             INCLUDE "SYSCONST.X68"          ; SYSTEM CONSTANTS
             INCLUDE "SYSTEM.X68"            ; SYSTEM CODE
-            
-            ; TO DO: PUT YOUR GAME-RELATED INCLUDES HERE
             INCLUDE "CONSTANTS.X68"         ;CONSTANTES DEL JUEGO
             INCLUDE "PLAYER.X68"            ;EL JUGADOR
             INCLUDE "STATES.X68"            ;
@@ -51,6 +49,8 @@ START       JSR     SYSINIT
             INCLUDE "SYSVAR.X68"
             INCLUDE "VAR.X68"
             END    START
+
+
 
 
 

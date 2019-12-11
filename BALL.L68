@@ -1,6 +1,6 @@
-000014F6 Starting Address
+0000154A Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 10/12/2019 15:53:35
+Created On: 10/12/2019 22:39:38
 
 00000000                             1  ; =============================================================================
 00000000                             2  ; BALL
@@ -18,83 +18,99 @@ Line 9 ERROR: Undefined symbol
 00000020  4E75                      10              RTS
 00000022                            11              
 00000022                            12  BUPD        
-00000022                            13  *            MOVEM.L D1-D2,-(A7)
-00000022                            14              
-00000022                            15              
-Line 16 ERROR: Undefined symbol
-00000022  33FC BD16 005455B8        16              MOVE.W  #BINPOSX,BPOSX
-Line 17 ERROR: Undefined symbol
-0000002A  33FC BD16 005455B8        17              MOVE.W  #BINPOSY,BPOSY
-00000032                            18  ;.LEFT       MOVE.W  BPOSX,D1
-00000032                            19  ;            CMP.W    #0,D1                  ;CHOCA
-00000032                            20  ;            BGT     .RIGHT                  ;SALTA SI CHOCA
-00000032                            21  ;            MOVE.W  BSPEEDX,D2
-00000032                            22  *            MULS.W  #$FFFF,D2
-00000032                            23  *            MOVE.W  D2,BSPEEDX
-00000032                            24  *.RIGHT       
-00000032                            25  *            ADD.W   D2,BPOSX
-00000032                            26  *            MOVE.W  BSPEEDY,D2
-00000032                            27  *            ADD.W   D2,BPOSY
-00000032                            28  *            
-00000032                            29  *            MOVE.W  BPOSX,D1
-00000032                            30  *            MOVE.W  SCRCTRL,D2
-00000032                            31  *            SUB.W   #BWIDTH,D2
-00000032                            32  *            CMP.W    D2,D1
-00000032                            33  *            BLT     .END
-00000032                            34  *            MOVE.W  BSPEEDX,D2
-00000032                            35  *            MULS.W  #$FFFF,D2
-00000032                            36  *            MOVE.W  D2,BSPEEDX
-00000032                            37  *.END            
-00000032                            38  *            ADD.W   D2,BPOSX
-00000032                            39  *            MOVE.W  BSPEEDY,D2
-00000032                            40  *            ADD.W   D2,BPOSY
-00000032                            41  *            
-00000032                            42  
-00000032                            43  *            MOVEM.L (A7)+,D1-D2
-00000032                            44              
-00000032  4E75                      45              RTS
-00000034                            46              
-00000034                            47  BPLOT       
-00000034  48E7 FC00                 48              MOVEM.L  D0-D5,-(A7)
-00000038                            49              ;CONTOUR COLOR
-Line 50 ERROR: Undefined symbol
-00000038  223C 004DBD16             50              MOVE.L  #BINCOLOR,D1  
-0000003E  103C 0050                 51              MOVE.B  #80,D0
-00000042  4E4F                      52              TRAP    #15
-00000044                            53      
-00000044                            54               ;FILL COLOR
-Line 55 ERROR: Undefined symbol
-00000044  C2BC 004DBD16             55              AND.L   #BINCOLOR,D1  
-0000004A  103C 0051                 56              MOVE.B  #81,D0
-0000004E  4E4F                      57              TRAP    #15
-00000050                            58   
-00000050                            59              ;CIRCLE
-00000050  323C 0032                 60              MOVE.W  #50,D1
-00000054  343C 0032                 61              MOVE.W  #50,D2
-00000058  363C 0041                 62              MOVE.W  #65,D3
-0000005C  383C 0041                 63              MOVE.W  #65,D4
-00000060                            64  *            MOVE.W  #BWIDTH,D5 
-00000060                            65  *            ADD.W   (BSPEEDX),D5
-00000060                            66  *    
-00000060                            67  *            MOVE.W  BPOSX,D3
-00000060                            68  *            MOVE.W  BPOSY,D4
-00000060                            69  *            ADD.W   #BHEIGHT,D4
-00000060                            70  *            ADD.W   D5,D3
-00000060                            71  *    
-00000060                            72  *            MOVE.W  BPOSX,D1
-00000060                            73  *            MOVE.W  BPOSY,D2
-00000060                            74      
-00000060  303C 0058                 75              MOVE.W  #88,D0
-00000064  4E4F                      76              TRAP    #15
-00000066                            77      
-00000066  4CDF 003F                 78              MOVEM.L  (A7)+,D0-D5
-0000006A                            79  
-0000006A  4E75                      80              RTS
-0000006C                            81  
-0000006C                            82  
-Line 83 WARNING: END directive missing, starting address not set
+00000022  48E7 6000                 13              MOVEM.L D1-D2,-(A7)
+00000026                            14    
+Line 15 ERROR: Undefined symbol
+00000026  3239 004DBD16             15  .LEFT       MOVE.W  BPOSX,D1
+0000002C  B27C 0000                 16              CMP.W    #0,D1                  ;CHOCA
+00000030  6E00 0012                 17              BGT     .RIGHT                  ;SALTA SI CHOCA
+Line 18 ERROR: Undefined symbol
+00000034  3439 004DBD16             18              MOVE.W  BSPEEDX,D2
+0000003A  C5FC FFFF                 19              MULS.W  #$FFFF,D2
+Line 20 ERROR: Undefined symbol
+0000003E  33C2 005455B8             20              MOVE.W  D2,BSPEEDX
+00000044                            21  .RIGHT       
+Line 22 ERROR: Undefined symbol
+00000044  D579 005455B8             22              ADD.W   D2,BPOSX
+Line 23 ERROR: Undefined symbol
+0000004A  3439 004DBD16             23              MOVE.W  BSPEEDY,D2
+Line 24 ERROR: Undefined symbol
+00000050  D579 005455B8             24              ADD.W   D2,BPOSY
+00000056                            25              
+Line 26 ERROR: Undefined symbol
+00000056  3239 004DBD16             26              MOVE.W  BPOSX,D1
+Line 27 ERROR: Undefined symbol
+0000005C  3439 004DBD16             27              MOVE.W  SCRCTRL,D2
+Line 28 ERROR: Undefined symbol
+00000062  0442 BD16                 28              SUB.W   #BWIDTH,D2
+00000066  B242                      29              CMP.W    D2,D1
+00000068  6D00 0012                 30              BLT     .END
+Line 31 ERROR: Undefined symbol
+0000006C  3439 004DBD16             31              MOVE.W  BSPEEDX,D2
+00000072  C5FC FFFF                 32              MULS.W  #$FFFF,D2
+Line 33 ERROR: Undefined symbol
+00000076  33C2 005455B8             33              MOVE.W  D2,BSPEEDX
+0000007C                            34  .END            
+Line 35 ERROR: Undefined symbol
+0000007C  D579 005455B8             35              ADD.W   D2,BPOSX
+Line 36 ERROR: Undefined symbol
+00000082  3439 004DBD16             36              MOVE.W  BSPEEDY,D2
+Line 37 ERROR: Undefined symbol
+00000088  D579 005455B8             37              ADD.W   D2,BPOSY
+0000008E                            38              
+0000008E                            39  
+0000008E  4CDF 0006                 40              MOVEM.L (A7)+,D1-D2
+00000092                            41              
+00000092  4E75                      42              RTS
+00000094                            43              
+00000094                            44  BPLOT       
+00000094  48E7 FC00                 45              MOVEM.L  D0-D5,-(A7)
+00000098                            46              ;CONTOUR COLOR
+Line 47 ERROR: Undefined symbol
+00000098  223C 004DBD16             47              MOVE.L  #BINCOLOR,D1  
+0000009E  103C 0050                 48              MOVE.B  #80,D0
+000000A2  4E4F                      49              TRAP    #15
+000000A4                            50      
+000000A4                            51               ;FILL COLOR
+Line 52 ERROR: Undefined symbol
+000000A4  223C 004DBD16             52              MOVE.L   #BINCOLOR,D1  
+000000AA  103C 0051                 53              MOVE.B  #81,D0
+000000AE  4E4F                      54              TRAP    #15
+000000B0                            55   
+000000B0                            56              ;CIRCLE
+000000B0                            57  
+Line 58 ERROR: Undefined symbol
+000000B0  3A3C BD16                 58              MOVE.W  #BWIDTH,D5 
+Line 59 ERROR: Undefined symbol
+000000B4  DA79 004DBD16             59              ADD.W   (BSPEEDX),D5
+000000BA                            60      
+Line 61 ERROR: Undefined symbol
+000000BA  3639 004DBD16             61              MOVE.W  BPOSX,D3
+Line 62 ERROR: Undefined symbol
+000000C0  3839 004DBD16             62              MOVE.W  BPOSY,D4
+Line 63 ERROR: Undefined symbol
+000000C6  0644 BD16                 63              ADD.W   #BHEIGHT,D4
+000000CA  D645                      64              ADD.W   D5,D3
+000000CC                            65      
+Line 66 ERROR: Undefined symbol
+000000CC  3239 004DBD16             66              MOVE.W  BPOSX,D1
+Line 67 ERROR: Undefined symbol
+000000D2  3439 004DBD16             67              MOVE.W  BPOSY,D2
+000000D8                            68      
+000000D8  103C 0058                 69              MOVE.B  #88,D0
+000000DC  4E4F                      70              TRAP    #15
+000000DE                            71      
+000000DE  4CDF 003F                 72              MOVEM.L  (A7)+,D0-D5
+000000E2                            73  
+000000E2  4E75                      74              RTS
+000000E4                            75  
+000000E4                            76  
+000000E4                            77  
+000000E4                            78  
+000000E4                            79  
+Line 80 WARNING: END directive missing, starting address not set
 
-8 errors detected
+27 errors detected
 1 warning generated
 
 
@@ -102,5 +118,8 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 BINIT               0
-BPLOT               34
+BPLOT               94
 BUPD                22
+BUPD:END            7C
+BUPD:LEFT           26
+BUPD:RIGHT          44
