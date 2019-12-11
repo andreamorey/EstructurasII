@@ -4,52 +4,47 @@
 
 BINIT
             MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY,BPOSY
+            MOVE.W  #BINPOSY,BPOSY  
             MOVE.W  #BINSPEED,BSPEEDX
-            MOVE.W  #BINSPEED,BSPEEDY
+            MOVE.W  #BINSPEED,D0
+            NEG.W   D0
+            MOVE.W  D0,BSPEEDY
             RTS
             
 BUPD        
             MOVEM.L D0-D2,-(A7)
-  
-            MOVE.W  PPOSX,D0                
-            MOVE.W  (PWIDTH),D1
-            LSR.W   #1,D1                   ;divide entre 2 
-            ADD.W   D1,D0
-            MOVE.W  #BWIDTH,D1
-            LSR.W   #1,D1
-            SUB.W   D1,D0
-            MOVE.W  D0,BPOSX                ;actualizo la posición 
-                    ;a partir de la plataforma
             
-            MOVE.W  #PPOSY,D0
-            SUB.W   #BWIDTH,D0
-            MOVE.W  D0,BPOSY
             
-*.LEFT       MOVE.W  BPOSX,D1
-*            CMP.W    #0,D1                  ;CHOCA
-*            BGT     .RIGHT                  ;SALTA SI CHOCA
-*            MOVE.W  BSPEEDX,D2
-*            MULS.W  #$FFFF,D2
-*            MOVE.W  D2,BSPEEDX
-*.RIGHT       
-*            ADD.W   D2,BPOSX
-*            MOVE.W  BSPEEDY,D2
-*            ADD.W   D2,BPOSY
-*            
-*            MOVE.W  BPOSX,D1
-*            MOVE.W  SCRCTRL,D2
-*            SUB.W   #BWIDTH,D2
-*            CMP.W    D2,D1
-*            BLT     .END
-*            MOVE.W  BSPEEDX,D2
-*            MULS.W  #$FFFF,D2
-*            MOVE.W  D2,BSPEEDX
-*.END            
-*            ADD.W   D2,BPOSX
-*            MOVE.W  BSPEEDY,D2
-*            ADD.W   D2,BPOSY
-*            
+.UP         MOVE.W  BPOSY,D1
+            CMP.W   #0,D1
+            BGT     .LEFT
+            NEG.W   BSPEEDY
+            
+.LEFT       MOVE.W  BPOSX,D1                ;CHOQUE IZQUIERDA
+            CMP.W    #0,D1                 
+            BGT     .RIGHT     
+            NEG.W   BSPEEDX
+
+.RIGHT     
+            MOVE.W  BPOSX,D1
+            MOVE.W  #SCRCTRL,D2
+            ADD.W   #BWIDTH,D1
+            CMP.W    D2,D1
+            BLT     .DOWN
+            NEG.W   BSPEEDX
+            
+.DOWN       
+            MOVE.W  BPOSY,D1
+            CMP.W   #SCRHEIGH,D1
+            BLT     .END
+            MOVE.W   #STAGOVR,(STANEXT)
+.END            
+
+            MOVE.W  BSPEEDX,D0
+            ADD.W   D0,BPOSX
+            
+            MOVE.W  BSPEEDY,D1
+            ADD.W   D1,BPOSY
 
             MOVEM.L (A7)+,D0-D2
             

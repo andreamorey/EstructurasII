@@ -36,28 +36,28 @@ INTPRSC     EQU     $00FFFFFF               ; PRESS FIRE COLOR
 ; STATES GAME ---------------------------------------------------------------
 STANONE     EQU     -1                      ; PLACEHOLDER TO FORCE CHANGE
 STAINTR     EQU     0                       ; INTRO/PRESS FIRE STATE
-STAPLAY     EQU     1                       ; NORMAL GAME STATE
-STAGOVR     EQU     2                       ; GAME OVER STATE
+STASPACE    EQU     1                       ; ESPERA EL ESPACIO PARA DISPARAR LA BOLA 
+STAPLAY     EQU     2                       ; NORMAL GAME STATE
+STAGOVR     EQU     3                       ; GAME OVER STATE
 ;----------------------------------------------------------------------------
 
 ; --- GAME OVER STATE RELATED CONSTANTS ---------------------------------------
 
-GOVSTRX     EQU     35                      ; TITLE X COORDINATE
-GOVSTRY     EQU     15                      ; TITLE Y COORDINATE
-GOVSTRC     EQU     $00FFFFFF               ; TITLE COLOR
+
+GOCOLOR     EQU     $0000FFFF               ; TITLE COLOR
 
 
 
 
 ; SCREENCTRL---------------------------------------------------------------------
-SCRCTRL     EQU     SCRWIDTH/2+SCRWIDTH/6   ;
+SCRCTRL     EQU     SCRWIDTH/2+SCRWIDTH/5   ;
 ;----------------------------------------------------------------------------
 
 
 ; PLAYER --------------------------------------------------------------------
 
-PINWIDTH    EQU     100                      ; PLAYER INITIAL WIDTH (PIXELS)
-PHEIGHT     EQU     20                      ; PLAYER HEIGHT (PIXELS)
+PINWIDTH    EQU     64                      ; PLAYER INITIAL WIDTH (PIXELS)
+PHEIGHT     EQU     12                      ; PLAYER HEIGHT (PIXELS)
 PCOLOR      EQU     $00ECD59D               ; PLAYER NORMAL COLOR
 PINLIVE     EQU     3                       ;PLAYER INTIAL LIVES 
 PMOVE       EQU     12                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
@@ -66,15 +66,16 @@ PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
 ; ---------------------------------------------------------------------------
 
 ; BALL ----------------------------------------------------------------------
-BHEIGHT     EQU     15                       ;ALTURA DE LA BOLA
-BWIDTH      EQU     15                       ;ANCHURA DE LA BOLA
+BHEIGHT     EQU     8                       ;ALTURA DE LA BOLA
+BWIDTH      EQU     8                       ;ANCHURA DE LA BOLA
 BINPOSX     EQU     PINPOSX+PINWIDTH/2-BWIDTH                      ;POSICION DE LA PELOTA X INICIAL
-BINPOSY     EQU     PPOSY-PHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
-BINSPEED    EQU     5                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
+BINPOSY     EQU     PPOSY-BHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
+BINSPEED    EQU     4                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
 BINCOLOR    EQU     $00FFFFFF
 ; ---------------------------------------------------------------------------
 
 
+;ARROW-------------------------------------------------------------------------
 
 
 

@@ -7,7 +7,7 @@ PLRINIT
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            JSR     BINIT
+            
             MOVE.W  #PINPOSX,PPOSX
             MOVE.W  #PINWIDTH,PWIDTH
             MOVE.W  #PINLIVE,PLIVES
@@ -81,6 +81,7 @@ PPLOT
 
             RTS
     
+
 
 
 

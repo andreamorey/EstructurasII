@@ -42,7 +42,7 @@ STAUPD
 .INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY     ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
                                              ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
                                              ;EL 2 ES NO HACER NADA 
-.UPDTBL     DC.L    STAINTRU,STAPLAYU,STAGOVRU
+.UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAGOVRU
                                             ;EL 0 ES SI SE PULSA ESPACIO CAMBIAR EL STANEXT A PLAY
                                             ;EL 2 HACE QUE SE UPDATE 
 
@@ -62,7 +62,7 @@ STAPLOT
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAGOVRP
+.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAPLAYP,STAGOVRP
                                              ; EL 0 ES DIBUJAR LA PANTALLA DE INICIO
 
 ; -----------------------------------------------------------------------------
@@ -76,14 +76,32 @@ STAEMPTY
             RTS
 
 ; -----------------------------------------------------------------------------
-STAPLAYI    EQU     PLRINIT
+STAPLAYI    
 ; PLAY STATE INITIALIZATION.
 ; INPUT    - NONE
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
+            JSR     PLRINIT
+            JSR     BINIT
+            RTS
+            
+; -----------------------------------------------------------------------------
+STASPACEU
+; WAITS FOR SPACE TO BE PRESSED, AND BEGIN THE GAME
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; -----------------------------------------------------------------------------
            
+            BTST.B  #KBDBITF1,(KBDEDGE)
+            BEQ     .END
+            MOVE.W  #STAPLAY,(STANEXT)
+.END        
+            RTS
+                             
+
 ; -----------------------------------------------------------------------------
 STAPLAYU
 ; PLAY STATE UPDATE
@@ -101,29 +119,9 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            MOVEM.L D0-D4,-(A7)
             JSR     PPLOT
             JSR     BPLOT
-
-      
-                        
-            MOVE.L  #$00FFFFFF,D1  ;COLOR
-            MOVE.B  #80,D0
-            TRAP    #15
-            
-            AND.L   #$00FFFFFF,D1  ;COLOR
-            MOVE.B  #81,D0
-            TRAP    #15
-            
-            MOVE.B  #87,D0
-            MOVE.W  #SCRCTRL,D1
-            MOVE.W  #SCRCTRL+10,D3
-            MOVE.W  #0,D2
-            MOVE.W  #SCRHEIGH,D4
-            TRAP    #15
-            
-            MOVEM.L  (A7)+,D0-D4
-
+            JSR     SCTRLINIT
             RTS
 
 ; -----------------------------------------------------------------------------
@@ -146,7 +144,7 @@ STAINTRU
 ; -----------------------------------------------------------------------------
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
-            MOVE.W  #STAPLAY,(STANEXT)
+            MOVE.W  #STASPACE,(STANEXT)
 .END        RTS
 
 ; -----------------------------------------------------------------------------
@@ -185,7 +183,7 @@ STAINTRP
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.TITSTR     DC.B    '   Breaking Blocks   ',0
+.TITSTR     DC.B    '     Breaking Blocks   ',0
 .PRSSTR     DC.B    ' PUSH FIRE TO START ',0
             DS.W    0
 
@@ -208,27 +206,31 @@ STAGOVRP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+
             MOVEM.L A1/D0-D1,-(A7)
-            MOVE.W  #GOVSTRX<<8|GOVSTRY, D1 ;COORDENADAS DEL TEXTO TITULO
+            MOVE.W  #INTTITX<<8|INTTITY, D1 ;COORDENADAS DEL TEXTO TITULO
             MOVE.B  #11,D0
             TRAP    #15
             
-            MOVE.B  #80,D0                  ;DEFINIMOS COLOR DE TITULO
-            MOVE.L  #GOVSTRC,D1
+            MOVE.L  #GOCOLOR,D1
+            MOVE.L  #18<<16|1,D2
+            MOVE.B  #21,D0
             TRAP    #15
             
-            MOVE.B  #81,D0                  ;RELLENA COLOR 
-            MOVE.L  #$00FF0000,D1
+            MOVE.L  #$00000000,D1
+            MOVE.B  #81,D0
             TRAP    #15
-            
-            LEA     .GOVSTR,A1
+
+            LEA     .GOVSTR,A1              ;PONE EL TEXTO
             MOVE.B  #14,D0
             TRAP    #15
+            
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.GOVSTR     DC.B    'GAME  OVER',0
+.GOVSTR     DC.B    '      GAME  OVER    ',0
             DS.W    0
+
 
 
 
