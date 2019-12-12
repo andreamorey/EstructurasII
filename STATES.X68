@@ -183,7 +183,7 @@ STAINTRP
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.TITSTR     DC.B    '     Breaking Blocks   ',0
+.TITSTR     DC.B    '   Breaking Blocks   ',0
 .PRSSTR     DC.B    ' PUSH FIRE TO START ',0
             DS.W    0
 
@@ -228,8 +228,9 @@ STAGOVRP
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.GOVSTR     DC.B    '      GAME  OVER    ',0
+.GOVSTR     DC.B    '    GAME  OVER    ',0
             DS.W    0
+
 
 
 

@@ -1,11 +1,11 @@
 ; =============================================================================
 ; TITLE    : EXAMPLE GAME
 ; AUTHOR   :
-; CREATION :
+; CREATION : 
 ; =============================================================================
 
             ORG     $1000
-
+            
 ; --- CODE INCLUDES -----------------------------------------------------------
 
             INCLUDE "SYSCONST.X68"          ; SYSTEM CONSTANTS
@@ -50,6 +50,9 @@ START       JSR     SYSINIT
             INCLUDE "SYSVAR.X68"
             INCLUDE "VAR.X68"
             END    START
+
+
+
 
 
 

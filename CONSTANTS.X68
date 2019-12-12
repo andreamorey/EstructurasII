@@ -50,7 +50,7 @@ GOCOLOR     EQU     $0000FFFF               ; TITLE COLOR
 
 
 ; SCREENCTRL---------------------------------------------------------------------
-SCRCTRL     EQU     SCRWIDTH/2+SCRWIDTH/5   ;
+SCRCTRL     EQU     512   ;
 ;----------------------------------------------------------------------------
 
 
@@ -60,8 +60,8 @@ PINWIDTH    EQU     64                      ; PLAYER INITIAL WIDTH (PIXELS)
 PHEIGHT     EQU     12                      ; PLAYER HEIGHT (PIXELS)
 PCOLOR      EQU     $00ECD59D               ; PLAYER NORMAL COLOR
 PINLIVE     EQU     3                       ;PLAYER INTIAL LIVES 
-PMOVE       EQU     12                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
-PPOSY       EQU     SCRHEIGH-PHEIGHT-10      ;POSICION DE LA PLATAFORMA Y
+PMOVE       EQU     16                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
+PPOSY       EQU     SCRHEIGH-PHEIGHT-4      ;POSICION DE LA PLATAFORMA Y
 PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
 ; ---------------------------------------------------------------------------
 
@@ -69,13 +69,27 @@ PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
 BHEIGHT     EQU     8                       ;ALTURA DE LA BOLA
 BWIDTH      EQU     8                       ;ANCHURA DE LA BOLA
 BINPOSX     EQU     PINPOSX+PINWIDTH/2-BWIDTH                      ;POSICION DE LA PELOTA X INICIAL
-BINPOSY     EQU     PPOSY-BHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
+BINPOSY     EQU     PPOSY-BHEIGHT-2              ;POSICION DE LA PELOTA Y INICIAL
 BINSPEED    EQU     4                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
 BINCOLOR    EQU     $00FFFFFF
+
 ; ---------------------------------------------------------------------------
 
 
-;ARROW-------------------------------------------------------------------------
+;BLOCKS-------------------------------------------------------------------------
+BLWIDTH     EQU     64
+BLWDITH     EQU     16
+
+
+
+;COLORS-------------------------------------------------------------
+ORANGE      EQU     $004E8CF3
+BLUE        EQU     $00F7E78E
+PURPLE      EQU     $00FFACAC
+YELLOW      EQU     $0038EEF8
+GREEN       EQU     $0095FF8C
+
+
 
 
 

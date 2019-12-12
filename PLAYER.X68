@@ -62,17 +62,12 @@ PPLOT
 
              ;SQUARE
             MOVE.W  (PWIDTH),D5                     
-     
-            ADD.W   #PMOVE,D5
-    
             MOVE.W  (PPOSX),D3
             MOVE.W  #PPOSY+PHEIGHT,D4
             ADD.W   D5,D3
     
             MOVE.W  (PPOSX),D1
             MOVE.W  #PPOSY,D2
-           
-            ;ADD.W   D5,D2
     
             MOVE.W  #87,D0
             TRAP    #15
@@ -81,6 +76,7 @@ PPLOT
 
             RTS
     
+
 
 
 
