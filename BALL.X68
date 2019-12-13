@@ -4,7 +4,7 @@
 
 BINIT
             MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY,BPOSY  
+            MOVE.W  #BINPOSY-2,BPOSY  
             MOVE.W  #BINSPEED,BSPEEDX
             MOVE.W  #BINSPEED,D0
             NEG.W   D0
@@ -35,11 +35,12 @@ BUPD
 
 .PLRY
             MOVE.W  BPOSY,D1
-            ADD.W   #BWIDTH+2,D1
-            MOVE.W  #PPOSY,D2
+            ADD.W   #BWIDTH,D1
+            MOVE.W  #PPOSY,D2               ;D2-D1
             CMP.W   D1,D2                   ;SI LA Y SE CORRESPONDE
-            BGT     .END
-            MOVE.W  #BINPOSY,BPOSY
+            BGT     .END                    ;SI LA BPOSY+WIDHT ES MAYOR QUE PPOSY,
+                                            ;ESPERAR A QUE CHOQUE CON ABAJO
+            ;MOVE.W  #BINPOSY,BPOSY
 .PLRXLEFT   
             
             MOVE.W  BPOSX,D1
@@ -81,7 +82,8 @@ BUPD
 *            BGT     .PLRXLEFT
 .DOWN       
             MOVE.W  BPOSY,D1
-            CMP.W   #PPOSY,D1
+            ADD.W   #BHEIGHT,D1
+            CMP.W   #SCRHEIGH,D1
             BLT     .END
             MOVE.W   #STAGOVR,(STANEXT)
 .END            
@@ -127,6 +129,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 

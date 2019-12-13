@@ -119,6 +119,7 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            JSR     BLPLOT
             JSR     PPLOT
             JSR     BPLOT
             JSR     SCTRLINIT
@@ -183,8 +184,8 @@ STAINTRP
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.TITSTR     DC.B    '   Breaking Blocks   ',0
-.PRSSTR     DC.B    ' PUSH FIRE TO START ',0
+.TITSTR     DC.B    'Breaking Blocks',0
+.PRSSTR     DC.B    'PUSH FIRE TO START',0
             DS.W    0
 
 ; -----------------------------------------------------------------------------
@@ -208,11 +209,11 @@ STAGOVRP
 ; -----------------------------------------------------------------------------
 
             MOVEM.L A1/D0-D1,-(A7)
-            MOVE.W  #INTTITX<<8|INTTITY, D1 ;COORDENADAS DEL TEXTO TITULO
+            MOVE.W  #GOVERX<<8|GOVERY, D1 ;COORDENADAS DEL TEXTO TITULO
             MOVE.B  #11,D0
             TRAP    #15
             
-            MOVE.L  #GOCOLOR,D1
+            MOVE.L  #GOVERC,D1
             MOVE.L  #18<<16|1,D2
             MOVE.B  #21,D0
             TRAP    #15
@@ -228,8 +229,9 @@ STAGOVRP
             MOVEM.L (A7)+,A1/D0-D1
             RTS
 
-.GOVSTR     DC.B    '    GAME  OVER    ',0
+.GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

@@ -26,12 +26,13 @@
 
 ; --- INTRO STATE RELATED CONSTANTS -------------------------------------------
 
-INTTITX     EQU     8                      ; TITLE X COORDINATE
+INTTITX     EQU     14                      ; TITLE X COORDINATE
 INTTITY     EQU     7                       ; TITLE Y COORDINATE
 INTTITC     EQU     $00DCAA7C               ; TITLE COLOR
-INTPRSX     EQU     23                      ; PRESS FIRE X COORDINATE
-INTPRSY     EQU     50                      ; PRESS FIRE Y COORDINATE
+INTPRSX     EQU     32                      ; PRESS FIRE X COORDINATE
+INTPRSY     EQU     82                      ; PRESS FIRE Y COORDINATE
 INTPRSC     EQU     $00FFFFFF               ; PRESS FIRE COLOR
+
 
 ; STATES GAME ---------------------------------------------------------------
 STANONE     EQU     -1                      ; PLACEHOLDER TO FORCE CHANGE
@@ -43,11 +44,9 @@ STAGOVR     EQU     3                       ; GAME OVER STATE
 
 ; --- GAME OVER STATE RELATED CONSTANTS ---------------------------------------
 
-
-GOCOLOR     EQU     $0000FFFF               ; TITLE COLOR
-
-
-
+GOVERX      EQU     16                      ; GAME OVER X COORDINATE
+GOVERY      EQU     7                       ; GAME OVER Y COORDINATE
+GOVERC      EQU     $0000FFFF               ; GAME OVER COLOR
 
 ; SCREENCTRL---------------------------------------------------------------------
 SCRCTRL     EQU     512   ;
@@ -60,7 +59,7 @@ PINWIDTH    EQU     64                      ; PLAYER INITIAL WIDTH (PIXELS)
 PHEIGHT     EQU     12                      ; PLAYER HEIGHT (PIXELS)
 PCOLOR      EQU     $00ECD59D               ; PLAYER NORMAL COLOR
 PINLIVE     EQU     3                       ;PLAYER INTIAL LIVES 
-PMOVE       EQU     16                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
+PMOVE       EQU     8                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
 PPOSY       EQU     SCRHEIGH-PHEIGHT-4      ;POSICION DE LA PLATAFORMA Y
 PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
 ; ---------------------------------------------------------------------------
@@ -69,7 +68,7 @@ PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
 BHEIGHT     EQU     8                       ;ALTURA DE LA BOLA
 BWIDTH      EQU     8                       ;ANCHURA DE LA BOLA
 BINPOSX     EQU     PINPOSX+PINWIDTH/2-BWIDTH                      ;POSICION DE LA PELOTA X INICIAL
-BINPOSY     EQU     PPOSY-BHEIGHT-2              ;POSICION DE LA PELOTA Y INICIAL
+BINPOSY     EQU     PPOSY-BHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
 BINSPEED    EQU     4                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
 BINCOLOR    EQU     $00FFFFFF
 
@@ -78,9 +77,17 @@ BINCOLOR    EQU     $00FFFFFF
 
 ;BLOCKS-------------------------------------------------------------------------
 BLWIDTH     EQU     64
-BLWDITH     EQU     16
+BLHEIGHT     EQU     16
+COLORS      DC.L    BLUE,ORANGE,PURPLE,YELLOW,GREEN,BLUE,ORANGE,PURPLE,YELLOW,GREEN
+BLROW       EQU     10
+BLCOL       EQU     8
+VCOLORS      DC.L    0,1,2,3,4,5,6,7
+            DC.L    8,9,10,11,12,13,14,15
+            DC.L    16,17,18,19,20,21,22,23
+            DC.L    24,25,26,27,28,29,30,31
+            DC.L    32,33,34,35,36,37,38,39
 
-
+;-------------------------------------------------------------------------------
 
 ;COLORS-------------------------------------------------------------
 ORANGE      EQU     $004E8CF3
@@ -88,6 +95,10 @@ BLUE        EQU     $00F7E78E
 PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
+;-------------------------------------------------------------------
+
+
+
 
 
 

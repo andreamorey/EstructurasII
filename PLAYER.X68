@@ -22,11 +22,11 @@ PLRUPD
             MOVEM.L D1-D2,-(A7)
             
             
-            MOVE.B  (KBDVAL),D1  
+            MOVE.B  KBDVAL,D1  
             ROR.B   #1,D1                   ;IZQUIERDA
             BCC     .RIGHTKEY                  ;CUANDO C = 0
             ;CUANDO PPOSX ES 0 NO TINENE QUE MOVERSE MAS A LA IZQ
-            MOVE.W  (PPOSX),D2
+            MOVE.W  PPOSX,D2
             CMP.W    #0,D2
             BLE     .RIGHTKEY
             SUB.W   #PMOVE,(PPOSX)
@@ -35,12 +35,12 @@ PLRUPD
             ROR.B   #1,D1                   ;
             BCC     .END
             ;CUANDO PPOSX ES IGUAL A SCRWIDTH+PWIDTH NO TIENE QUE MOVERSE A LA DERECHA
-            MOVE.W  (PPOSX),D2
-            ADD.W   (PWIDTH),D2 
-            ADD.W   #PMOVE,D2 
+            MOVE.W  PPOSX,D2
+            ADD.W   PWIDTH,D2 
+
             CMP.W    #SCRCTRL,D2
             BGE     .END
-            ADD.W   #PMOVE,(PPOSX)
+            ADD.W   #PMOVE,PPOSX
 .END
             MOVEM.L (A7)+,D1-D2
             RTS
@@ -61,12 +61,12 @@ PPLOT
  
 
              ;SQUARE
-            MOVE.W  (PWIDTH),D5                     
-            MOVE.W  (PPOSX),D3
+            MOVE.W  PWIDTH,D5                     
+            MOVE.W  PPOSX,D3
             MOVE.W  #PPOSY+PHEIGHT,D4
             ADD.W   D5,D3
     
-            MOVE.W  (PPOSX),D1
+            MOVE.W  PPOSX,D1
             MOVE.W  #PPOSY,D2
     
             MOVE.W  #87,D0
@@ -76,6 +76,7 @@ PPLOT
 
             RTS
     
+
 
 
 

@@ -1,0 +1,124 @@
+00001706 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 13/12/2019 16:23:03
+
+00000000                             1  ; -----------------------------------------------------------------------------
+00000000                             2  ;           PLAYER
+00000000                             3  ; -----------------------------------------------------------------------------
+00000000                             4  PLRINIT
+00000000                             5  ; INITIALIZES THE PLAYER
+00000000                             6  ; INPUT    - NONE
+00000000                             7  ; OUTPUT   - NONE
+00000000                             8  ; MODIFIES - NONE
+00000000                             9  ; -----------------------------------------------------------------------------
+00000000                            10              
+Line 11 ERROR: Undefined symbol
+00000000  33FC BD16 005455B8        11              MOVE.W  #PINPOSX,PPOSX
+Line 12 ERROR: Undefined symbol
+00000008  33FC BD16 005455B8        12              MOVE.W  #PINWIDTH,PWIDTH
+Line 13 ERROR: Undefined symbol
+00000010  33FC BD16 005455B8        13              MOVE.W  #PINLIVE,PLIVES
+Line 14 ERROR: Undefined symbol
+00000018  4279 004DBD16             14              CLR.W   PSCORE
+0000001E                            15             
+0000001E  4E75                      16              RTS
+00000020                            17  
+00000020                            18  
+00000020                            19  ; -----------------------------------------------------------------------------
+00000020                            20  
+00000020                            21  PLRUPD      
+00000020  48E7 6000                 22              MOVEM.L D1-D2,-(A7)
+00000024                            23              
+00000024                            24              
+Line 25 ERROR: Undefined symbol
+00000024  1239 004DBD16             25              MOVE.B  KBDVAL,D1  
+0000002A  E219                      26              ROR.B   #1,D1                   ;IZQUIERDA
+0000002C  6400 0018                 27              BCC     .RIGHTKEY                  ;CUANDO C = 0
+00000030                            28              ;CUANDO PPOSX ES 0 NO TINENE QUE MOVERSE MAS A LA IZQ
+Line 29 ERROR: Undefined symbol
+00000030  3439 004DBD16             29              MOVE.W  PPOSX,D2
+00000036  B47C 0000                 30              CMP.W    #0,D2
+0000003A  6F00 000A                 31              BLE     .RIGHTKEY
+Line 32 ERROR: Undefined symbol
+0000003E  0479 BD16 005455B8        32              SUB.W   #PMOVE,(PPOSX)
+00000046                            33  .RIGHTKEY
+00000046  E209                      34              LSR.B   #1,D1                   ;NO NOS IMPORTA EL DE ARRIBA
+00000048  E219                      35              ROR.B   #1,D1                   ;
+0000004A  6400 0022                 36              BCC     .END
+0000004E                            37              ;CUANDO PPOSX ES IGUAL A SCRWIDTH+PWIDTH NO TIENE QUE MOVERSE A LA DERECHA
+Line 38 ERROR: Undefined symbol
+0000004E  3439 004DBD16             38              MOVE.W  PPOSX,D2
+Line 39 ERROR: Undefined symbol
+00000054  D479 004DBD16             39              ADD.W   PWIDTH,D2 
+Line 40 ERROR: Undefined symbol
+0000005A  0642 BD16                 40              ADD.W   #PMOVE,D2 
+Line 41 ERROR: Undefined symbol
+0000005E  B47C BD16                 41              CMP.W    #SCRCTRL,D2
+00000062  6C00 000A                 42              BGE     .END
+Line 43 ERROR: Undefined symbol
+00000066  0679 BD16 005455B8        43              ADD.W   #PMOVE,PPOSX
+0000006E                            44  .END
+0000006E  4CDF 0006                 45              MOVEM.L (A7)+,D1-D2
+00000072  4E75                      46              RTS
+00000074                            47  
+00000074                            48  
+00000074                            49  PPLOT
+00000074  48E7 FC00                 50              MOVEM.L  D0-D5,-(A7)
+00000078                            51              ;CONTOUR COLOR
+Line 52 ERROR: Undefined symbol
+00000078  223C 004DBD16             52              MOVE.L  #PCOLOR,D1  
+0000007E  103C 0050                 53              MOVE.B  #80,D0
+00000082  4E4F                      54              TRAP    #15
+00000084                            55      
+00000084                            56      
+00000084                            57               ;FILL COLOR
+Line 58 ERROR: Undefined symbol
+00000084  C2BC 004DBD16             58              AND.L   #PCOLOR,D1  
+0000008A  103C 0051                 59              MOVE.B  #81,D0
+0000008E  4E4F                      60              TRAP    #15
+00000090                            61   
+00000090                            62  
+00000090                            63               ;SQUARE
+Line 64 ERROR: Undefined symbol
+00000090  3A39 004DBD16             64              MOVE.W  PWIDTH,D5                     
+Line 65 ERROR: Undefined symbol
+00000096  3639 004DBD16             65              MOVE.W  PPOSX,D3
+Line 66 ERROR: Invalid syntax
+0000009C                            66              MOVE.W  #PPOSY+PHEIGHT,D4
+0000009C  D645                      67              ADD.W   D5,D3
+0000009E                            68      
+Line 69 ERROR: Undefined symbol
+0000009E  3239 004DBD16             69              MOVE.W  PPOSX,D1
+Line 70 ERROR: Undefined symbol
+000000A4  343C BD16                 70              MOVE.W  #PPOSY,D2
+000000A8                            71      
+000000A8  303C 0057                 72              MOVE.W  #87,D0
+000000AC  4E4F                      73              TRAP    #15
+000000AE                            74      
+000000AE  4CDF 003F                 75              MOVEM.L  (A7)+,D0-D5
+000000B2                            76  
+000000B2  4E75                      77              RTS
+000000B4                            78      
+000000B4                            79  
+000000B4                            80  
+000000B4                            81  
+000000B4                            82  
+000000B4                            83  
+000000B4                            84  
+000000B4                            85  
+000000B4                            86  
+000000B4                            87  
+Line 88 WARNING: END directive missing, starting address not set
+
+19 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+PLRINIT             0
+PLRUPD              20
+PLRUPD:END          6E
+PLRUPD:RIGHTKEY     46
+PPLOT               74
