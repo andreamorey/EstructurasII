@@ -60,7 +60,7 @@ SCRINIT
             ;   TASK 32)
             MOVE.B  #32,D0
             MOVE.B  #6,D1
-            ;MOVE.B  #%10000001,D2
+       
             MOVE.B  #$80|SCRIRQ,D2
             MOVE.L  #SCRTIM,D3
             TRAP    #15
@@ -295,6 +295,7 @@ DMMFREE
             CLR.W   (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
+
 
 
 

@@ -25,6 +25,8 @@ BSPEEDX     DS.W    1                       ;VELOCIDAD DE LA PELOTA
 BSPEEDY     DS.W    1
 BCOLOR      DS.W    1
 
+; BLOCKS --------------------------------------------------------------------
+BLMATRIX    DS.B    12  ;12*8
 
 
 

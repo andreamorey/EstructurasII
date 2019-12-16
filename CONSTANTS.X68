@@ -78,14 +78,10 @@ BINCOLOR    EQU     $00FFFFFF
 ;BLOCKS-------------------------------------------------------------------------
 BLWIDTH     EQU     64
 BLHEIGHT     EQU     16
-COLORS      DC.L    BLUE,ORANGE,PURPLE,YELLOW,GREEN,BLUE,ORANGE,PURPLE,YELLOW,GREEN
-BLROW       EQU     10
+COLORS      DC.L    BLUE,ORANGE,PURPLE,YELLOW,GREEN,BLUE,ORANGE,PURPLE,YELLOW,GREEN,BLUE,ORANGE
+BLROW       EQU     12
 BLCOL       EQU     8
-VCOLORS      DC.L    0,1,2,3,4,5,6,7
-            DC.L    8,9,10,11,12,13,14,15
-            DC.L    16,17,18,19,20,21,22,23
-            DC.L    24,25,26,27,28,29,30,31
-            DC.L    32,33,34,35,36,37,38,39
+
 
 ;-------------------------------------------------------------------------------
 
@@ -96,6 +92,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 
