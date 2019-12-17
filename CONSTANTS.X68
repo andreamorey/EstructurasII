@@ -44,12 +44,13 @@ STAGOVR     EQU     3                       ; GAME OVER STATE
 
 ; --- GAME OVER STATE RELATED CONSTANTS ---------------------------------------
 
-GOVERX      EQU     16                      ; GAME OVER X COORDINATE
+GOVERX      EQU     18                      ; GAME OVER X COORDINATE
 GOVERY      EQU     7                       ; GAME OVER Y COORDINATE
 GOVERC      EQU     $0000FFFF               ; GAME OVER COLOR
 
 ; SCREENCTRL---------------------------------------------------------------------
-SCRCTRL     EQU     512   ;
+SCRCTRL     EQU     513   
+SCRLWIDTH   EQU     5
 LIVEWIDTH   EQU     64
 LIVEHEIGHT  EQU     16
 LIVECOLOR   EQU     $000000FF               ;ROJO
@@ -96,6 +97,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 

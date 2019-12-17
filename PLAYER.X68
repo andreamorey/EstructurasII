@@ -10,9 +10,6 @@ PLRINIT
             
             MOVE.W  #PINPOSX,PPOSX
             MOVE.W  #PINWIDTH,PWIDTH
-            
-            
-           
             RTS
 
 
@@ -20,8 +17,6 @@ PLRINIT
 
 PLRUPD      
             MOVEM.L D1-D2,-(A7)
-            
-            
             MOVE.B  KBDVAL,D1  
             ROR.B   #1,D1                   ;IZQUIERDA
             BCC     .RIGHTKEY                  ;CUANDO C = 0
@@ -76,6 +71,7 @@ PPLOT
 
             RTS
     
+
 
 
 

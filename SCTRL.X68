@@ -15,8 +15,8 @@ SCTRLINIT
             
             MOVE.B  #87,D0
             MOVE.W  #SCRCTRL,D1
-            MOVE.W  #SCRCTRL+10,D3
-            MOVE.W  #0,D2
+            MOVE.W  #SCRCTRL+SCRLWIDTH,D3
+            CLR.L   D2
             MOVE.W  #SCRHEIGH,D4
             TRAP    #15
             
@@ -52,6 +52,7 @@ SCTRLINIT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 *~Font name~Courier New~

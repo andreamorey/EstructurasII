@@ -9,23 +9,25 @@ BINIT
             MOVE.W  #BINSPEED,D0
             NEG.W   D0
             MOVE.W  D0,BSPEEDY
-            ;MOVE.W  D0,BSPEEDX
+            MOVE.W  D0,BSPEEDX
             RTS
             
 BUPD        
             MOVEM.L D0-D3,-(A7)
             
-            
-.UP         MOVE.W  BPOSY,D1
+            ;COMPROBAMOS COLISIÓN CON PARED DE ARRIBA
+            MOVE.W  BPOSY,D1
             CMP.W   #0,D1
             BGT     .LEFT
             NEG.W   BSPEEDY
             
+            ;COMPROBAMOS COLISIÓN CON LA PARED DE ABAJO
 .LEFT       MOVE.W  BPOSX,D1                ;CHOQUE IZQUIERDA
             CMP.W    #0,D1                 
             BGT     .RIGHT     
             NEG.W   BSPEEDX
-
+            
+            ;COMPROBAMOS COLISIÓN CON LA PARED DE LA DERECHA
 .RIGHT     
             MOVE.W  BPOSX,D1
             MOVE.W  #SCRCTRL,D2
@@ -137,6 +139,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 
