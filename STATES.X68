@@ -84,8 +84,8 @@ STAPLAYI
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
             JSR     PLRINIT
+            
             JSR     BINIT
-            JSR     BLINIT
             RTS
             
 ; -----------------------------------------------------------------------------
@@ -148,6 +148,9 @@ STAINTRU
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
             MOVE.W  #STASPACE,(STANEXT)
+            MOVE.W  #PINLIVE,PLIVES
+            CLR.W   PSCORE
+            JSR     BLINIT
 .END        RTS
 
 ; -----------------------------------------------------------------------------
@@ -233,6 +236,7 @@ STAGOVRP
 
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

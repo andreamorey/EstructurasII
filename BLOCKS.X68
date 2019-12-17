@@ -5,7 +5,7 @@
 BLINIT
             MOVEM.L D0/A0,-(A7)
             LEA.L   BLMATRIX,A0
-            MOVE.W  BLROW,D0
+            MOVE.W  #BLROW-1,D0
 .LOOP       
             MOVE.B  #%11111111,(A0)+
             DBRA    D0,.LOOP
@@ -13,27 +13,42 @@ BLINIT
             RTS
             
 BLUPD       
-            MOVEM.L D0-D2/A0,-(A7)
+            MOVEM.L D0-D3/A0,-(A7)
             MOVE.W BPOSX,D0
             ADD.W #BWIDTH/2,D0              ;POSICIÓN CENTRAL X DE LA BOLA
-            MOVE.W #BLROW*BLHEIGHT,D1       ;PARTE INFERIOR DEL BLOQUE ÚLTIMA FILA
-            MOVE.W BPOSY,D2
-            CMP.W D1,D2                     ;MIRAMOS SI SON IGUALES LA Y DE LA BOLA CON EL BLOQUE
-            BGT .END
-            NEG.W BSPEEDY
-            MOVE.W D1,BPOSY
-            DIVU.W #BLWIDTH,D0                     ;DIVIDIR ENTRE 32 ES DESPLAZAR 5 A LA DERECHA
+            ;MOVE.W #BLROW*BLHEIGHT,D1       ;PARTE INFERIOR DEL BLOQUE ÚLTIMA FILA
+            CLR.L   D2
+            MOVE.W  BPOSY,D2
+            DIVU.W  #BLHEIGHT,D2            ;BPOSY/BLHEIGHT. FILA EN LA QUE ESTA LA BOLA
+            
+            MOVE.W  #BLROW-1,D3
+            CMP.W   D2,D3                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
+            BLT     .END                    
+            LEA.L   BLMATRIX,A0
+            ADDA.L  #BLROW-1,A0
+            MULU.W  #BLHEIGHT,D2
+            ;MOVE.W  D2,BPOSY                ;OBTENEMOS EN QUE COLUMNA ESTA
+            DIVU.W  #BLWIDTH,D0  ;D0 = DE 0 A 7 DEPENDIENDO DE LA COLUMNA
+            
+            MOVE.W  #BLCOL-1,D1     ;EMPIEZA DESDE LA DERECHA              
+            SUB.W   D0,D1
+            BTST.B    D1,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+            BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+            
+*            CMP.W   D1,D2                     ;MIRAMOS SI SON IGUALES LA Y DE LA BOLA CON EL BLOQUE
+*            BGT     .END    
+            NEG.W   BSPEEDY
                                             ;COLUMNA DEL BLOQUE QUE HA COLISIONADO
             
-            LEA.L   BLMATRIX,A0
-            ADDA.L  #BLROW-1,A0             ;LE PASAMOS LA DIRECCIÓN DE LA ÚLTIMA FILA 
-            MOVE.W  #BLCOL-1,D1                   
-            SUB.W   D0,D1
+*            LEA.L   BLMATRIX,A0
+*            ADDA.L  #BLROW-1,A0             ;LE PASAMOS LA DIRECCIÓN DE LA ÚLTIMA FILA 
+*            MOVE.W  #BLCOL-1,D1                   
+*            SUB.W   D0,D1
             BCLR    D1,(A0)
 ;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
             
 
-.END        MOVEM.L (A7)+,D0-D2/A0
+.END        MOVEM.L (A7)+,D0-D3/A0
             RTS     
             
             
@@ -85,6 +100,7 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
 
 
 

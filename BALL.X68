@@ -9,7 +9,7 @@ BINIT
             MOVE.W  #BINSPEED,D0
             NEG.W   D0
             MOVE.W  D0,BSPEEDY
-            MOVE.W  D0,BSPEEDX
+            ;MOVE.W  D0,BSPEEDX
             RTS
             
 BUPD        
@@ -86,6 +86,13 @@ BUPD
             ADD.W   #BHEIGHT,D1
             CMP.W   #SCRHEIGH,D1
             BLT     .END
+            MOVE.W  #STASPACE,(STANEXT)
+            MOVE.W  PLIVES,D0
+            SUB.W   #1,D0
+            MOVE.W  D0,PLIVES
+           
+            BNE     .END
+            
             MOVE.W   #STAGOVR,(STANEXT)
 .END            
 
@@ -130,6 +137,8 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
+
 
 
 

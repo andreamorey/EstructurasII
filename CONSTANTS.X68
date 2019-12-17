@@ -50,6 +50,10 @@ GOVERC      EQU     $0000FFFF               ; GAME OVER COLOR
 
 ; SCREENCTRL---------------------------------------------------------------------
 SCRCTRL     EQU     512   ;
+LIVEWIDTH   EQU     64
+LIVEHEIGHT  EQU     16
+LIVECOLOR   EQU     $000000FF               ;ROJO
+
 ;----------------------------------------------------------------------------
 
 
@@ -92,6 +96,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 

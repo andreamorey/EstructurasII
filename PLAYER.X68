@@ -10,8 +10,8 @@ PLRINIT
             
             MOVE.W  #PINPOSX,PPOSX
             MOVE.W  #PINWIDTH,PWIDTH
-            MOVE.W  #PINLIVE,PLIVES
-            CLR.W   PSCORE
+            
+            
            
             RTS
 
@@ -76,6 +76,8 @@ PPLOT
 
             RTS
     
+
+
 
 
 
