@@ -124,7 +124,7 @@ STAPLAYP
             JSR     BLPLOT
             JSR     PPLOT
             JSR     BPLOT
-            JSR     SCTRLINIT
+            JSR     SCTRLPLOT
             RTS
 
 ; -----------------------------------------------------------------------------
@@ -151,6 +151,7 @@ STAINTRU
             MOVE.W  #PINLIVE,PLIVES
             CLR.W   PSCORE
             JSR     BLINIT
+            
 .END        RTS
 
 ; -----------------------------------------------------------------------------
@@ -236,6 +237,7 @@ STAGOVRP
 
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

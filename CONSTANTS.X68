@@ -2,28 +2,6 @@
 ; CONSTANTS
 ; =============================================================================
 
-; --- PLAYER RELATED CONSTANTS ------------------------------------------------
-
-
-
-
-
-;PLRINIEN    EQU     500                     ; PLAYER INITIAL ENERGY (<SCRWIDTH)
-;PLRSPEED    EQU     7                       ; PLAYER SPEED (PIXELS PER INT)
-
-;PLRDMGCL    EQU     $00FFFFFF               ; PLAYER DAMAGED COLOR
-;PLRTXTCL    EQU     $00FFFFFF               ; FONT COLOR
-;PLRTXTX     EQU     65                       ; SCORE X COORDINATE
-;PLRTXTY     EQU     10                       ; SCORE Y COORDINATE
-;PLRLIFEH    EQU     20                      ; HEIGHT OF LIFE BAR
-;PLRLIFEY    EQU     SCRHEIGH-PLRLIFEH*2     ; LIFE BAR Y POS
-;PLRLIFEC    EQU     $000000FF               ; LIFE BAR COLOR
-;PLRUMDMG    EQU     %00000001               ; UPDATE DAMAGE MASK
-;PLRPMDMG    EQU     %00000010               ; PLOT DAMAGE MASK
-;PLRUBDMG    EQU     0                       ; UPDATE DAMAGE BIT
-;PLRPBDMG    EQU     1                       ; PLOT DAMAGE BIT
-
-
 ; --- INTRO STATE RELATED CONSTANTS -------------------------------------------
 
 INTTITX     EQU     14                      ; TITLE X COORDINATE
@@ -54,6 +32,8 @@ SCRLWIDTH   EQU     5
 LIVEWIDTH   EQU     64
 LIVEHEIGHT  EQU     16
 LIVECOLOR   EQU     $000000FF               ;ROJO
+LIVEPOSX    EQU     SCRCTRL+20
+LIVEPOSY    EQU     30
 
 ;----------------------------------------------------------------------------
 
@@ -67,6 +47,9 @@ PINLIVE     EQU     3                       ;PLAYER INTIAL LIVES
 PMOVE       EQU     8                       ;SPEED OF THE PLAYER (ALWAYS THE SAME)
 PPOSY       EQU     SCRHEIGH-PHEIGHT-4      ;POSICION DE LA PLATAFORMA Y
 PINPOSX     EQU     SCRCTRL/2-PINWIDTH/2
+PSCORETX     EQU    50                       ; SCORE X COORDINATE
+PSCORETY     EQU    4                       ; SCORE Y COORDINATE
+PSCORECOL   EQU     $00FFFFFF
 ; ---------------------------------------------------------------------------
 
 ; BALL ----------------------------------------------------------------------
@@ -97,6 +80,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 

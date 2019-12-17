@@ -42,12 +42,33 @@ BUPD
             MOVE.W  #PPOSY,D2               ;D2-D1
             CMP.W   D1,D2                   ;SI LA Y SE CORRESPONDE
             BGT     .END                    ;SI LA BPOSY+WIDHT ES MAYOR QUE PPOSY,
-                                            ;ESPERAR A QUE CHOQUE CON ABAJO
-            ;MOVE.W  #BINPOSY,BPOSY
+            
+*            ;LADO IZQUIERDO COLISION DERECHA PLATAFORMA
+*            MOVE.W  BPOSX,D0
+*            ADD.W   #BWIDTH,D0
+*            MOVE.W  PPOSX,D1
+*            CMP.W   D0,D1                   ;PPOSX-BPOSX
+*            BGT     .COLIZQPLAT
+*            NEG.W   BSPEEDX
+*            SUB.W   #BWIDTH,D1
+*            MOVE.W  D1,BPOSX
+*            ;LADO DERECHA COLISION IZQ PLATAFORMA
+*            MOVE.W  BPOSX,D0
+*            JMP     .END
+*.COLIZQPLAT
+*            MOVE.W  PPOSX,D1
+*            MOVE.W  PWIDTH,D2
+*            ADD.W   D2,D1
+*            CMP.W   D0,D1                   ;PPOSX-BPOSX
+*            BLT     .PLRXLEFT
+*            NEG.W   BSPEEDX
+*            MOVE.W  D1,BPOSX
+*            JMP     .END
+         
 .PLRXLEFT   
             
             MOVE.W  BPOSX,D1
-            ADD.W   #BWIDTH/2,D1
+            ADD.W   #BWIDTH,D1
             MOVE.W  PPOSX,D2
             CMP.W   D1,D2                   ;MIRAMOS EL IZQUIERDO
             BGE     .DOWN
@@ -60,8 +81,9 @@ BUPD
             BLE     .PLRXRIGHT
            
             NEG.W   BSPEEDY
+            
             MOVE.W  BSPEEDX,D1
-            BMI     .PLRXRIGHT
+            BMI     .END
             NEG.W   BSPEEDX
             JMP     .END
             
@@ -77,12 +99,7 @@ BUPD
             NEG.W   BSPEEDX
             JMP     .END
 
-*.PLRYRIGHT     
-*            MOVE.W  BPOSY,D1
-*            ADD.W   #BWIDTH,D1
-*            MOVE.W  #PPOSY,D2
-*            CMP.W   D1,D2                   ;SI LA Y SE CORRESPONDE
-*            BGT     .PLRXLEFT
+
 .DOWN       
             MOVE.W  BPOSY,D1
             ADD.W   #BHEIGHT,D1
@@ -139,6 +156,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 

@@ -32,6 +32,7 @@ BLUPD
             BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
             NEG.W   BSPEEDY
             BCLR    D3,(A0)
+            ADD.W   #100,PSCORE
             ADDI.W  #1,D1
             LSL.L   #4,D1
             MOVE.W  D1,BPOSY                ;CORRECION DE LA BPOSY
@@ -91,6 +92,7 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
 
 
 
