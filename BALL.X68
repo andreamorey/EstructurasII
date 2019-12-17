@@ -9,6 +9,7 @@ BINIT
             MOVE.W  #BINSPEED,D0
             NEG.W   D0
             MOVE.W  D0,BSPEEDY
+            MOVE.W  D0,BSPEEDX
             RTS
             
 BUPD        
@@ -129,6 +130,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 

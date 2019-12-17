@@ -13,6 +13,28 @@ BLINIT
             RTS
             
 BLUPD       
+            MOVEM.L D0-D2/A0,-(A7)
+            MOVE.W BPOSX,D0
+            ADD.W #BWIDTH/2,D0              ;POSICIÓN CENTRAL X DE LA BOLA
+            MOVE.W #BLROW*BLHEIGHT,D1       ;PARTE INFERIOR DEL BLOQUE ÚLTIMA FILA
+            MOVE.W BPOSY,D2
+            CMP.W D1,D2                     ;MIRAMOS SI SON IGUALES LA Y DE LA BOLA CON EL BLOQUE
+            BGT .END
+            NEG.W BSPEEDY
+            MOVE.W D1,BPOSY
+            DIVU.W #BLWIDTH,D0                     ;DIVIDIR ENTRE 32 ES DESPLAZAR 5 A LA DERECHA
+                                            ;COLUMNA DEL BLOQUE QUE HA COLISIONADO
+            
+            LEA.L   BLMATRIX,A0
+            ADDA.L  #BLROW-1,A0             ;LE PASAMOS LA DIRECCIÓN DE LA ÚLTIMA FILA 
+            MOVE.W  #BLCOL-1,D1                   
+            SUB.W   D0,D1
+            BCLR    D1,(A0)
+;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
+            
+
+.END        MOVEM.L (A7)+,D0-D2/A0
+            RTS     
             
             
 BLPLOT
@@ -63,6 +85,7 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
 
 
 
