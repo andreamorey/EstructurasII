@@ -5,10 +5,17 @@
 BLINIT
             MOVEM.L D0/A0,-(A7)
             LEA.L   BLMATRIX,A0
-            MOVE.W  #BLROW-1,D0
+            MOVE.W  #BLROW-8,D0             ;7
 .LOOP       
             MOVE.B  #%11111111,(A0)+
             DBRA    D0,.LOOP
+            MOVE.B  #0,(A0)+
+            MOVE.B  #0,(A0)+
+            MOVE.B  #0,(A0)+
+            MOVE.B  #0,(A0)+
+            MOVE.B  #0,(A0)+
+            MOVE.B  #0,(A0)+
+            MOVE.B  #%11111111,(A0)+
             MOVEM.L (A7)+,D0/A0
             RTS
             
@@ -30,19 +37,26 @@ BLUPD
             SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
             BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
             BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
-            NEG.W   BSPEEDY
-            BCLR    D3,(A0)
-            ADD.W   #100,PSCORE
             ADDI.W  #1,D1
             LSL.L   #4,D1
+            MOVE.W  BSPEEDY,D0
+            BMI     .DOWNBL
+            SUB.W   #BLHEIGHT+BHEIGHT,D1
+.DOWNBL
             MOVE.W  D1,BPOSY                ;CORRECION DE LA BPOSY
+            NEG.W   BSPEEDY
+            BCLR    D3,(A0)
+            UTLSND  .SOUND
+            ADD.W   #100,PSCORE
+            
+        
             
 ;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
             
 
 .END        MOVEM.L (A7)+,D0-D3/A0
             RTS     
-            
+.SOUND      DC.L    'blocks.wav',0
             
 BLPLOT
             MOVEM.L D0-D7/A0-A1,-(A7)
@@ -92,6 +106,9 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
+
+
 
 
 

@@ -232,11 +232,15 @@ STAGOVRP
             MOVE.B  #14,D0
             TRAP    #15
             
+
             MOVEM.L (A7)+,A1/D0-D1
             RTS
-
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
+
+
+
 
 
 
