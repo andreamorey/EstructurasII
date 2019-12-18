@@ -2,22 +2,35 @@
 ;           BLOCKS
 ;-----------------------------------------------------------
   
-BLINIT
+BLINIT1
             MOVEM.L D0/A0,-(A7)
             LEA.L   BLMATRIX,A0
-            MOVE.W  #BLROW-8,D0             ;7
+            MOVE.W  #BLROW-1,D0             ;7
 .LOOP       
             MOVE.B  #%11111111,(A0)+
             DBRA    D0,.LOOP
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #%11111111,(A0)+
+            MOVE.W  #BLROW*BLCOL,BLCOUNTER
+            
             MOVEM.L (A7)+,D0/A0
             RTS
+            
+            
+BLINIT2
+            MOVEM.L D0/A0,-(A7)
+            LEA.L   BLMATRIX,A0
+            MOVE.W  #BLROW-2,D0             ;7
+       
+            MOVE.B  #%000000000,(A0)+
+.LOOP            
+            MOVE.B  #%010101010,(A0)+
+           
+            DBRA    D0,.LOOP
+
+            ;MOVE.W  #BLROW*BLCOL,BLCOUNTER
+            ;MOVE.W  #5,BLCOUNTER
+            MOVEM.L (A7)+,D0/A0
+            RTS
+            
             
 BLUPD       
             MOVEM.L D0-D3/A0,-(A7)
@@ -46,6 +59,7 @@ BLUPD
             MOVE.W  D1,BPOSY                ;CORRECION DE LA BPOSY
             NEG.W   BSPEEDY
             BCLR    D3,(A0)
+            SUB.W   #1,BLCOUNTER
             UTLSND  .SOUND
             ADD.W   #100,PSCORE
             
@@ -54,7 +68,14 @@ BLUPD
 ;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
             
 
-.END        MOVEM.L (A7)+,D0-D3/A0
+.END        
+            MOVE.W  BLCOUNTER,D0
+            BNE     .END2
+            
+            ADD.W   #1,STANEXT
+            
+.END2            
+            MOVEM.L (A7)+,D0-D3/A0
             RTS     
 .SOUND      DC.L    'blocks.wav',0
             
@@ -106,6 +127,7 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
 
 
 

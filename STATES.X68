@@ -39,10 +39,10 @@ STAUPD
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY     ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
+.INITBL     DC.L    STAINTRI,STAPLAYI1,STAPLAYI2,STAPLAYI3,STAEMPTY ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
                                              ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
                                              ;EL 2 ES NO HACER NADA 
-.UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAGOVRU
+.UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAPLAYU,STAPLAYU,STAGOVRU
                                             ;EL 0 ES SI SE PULSA ESPACIO CAMBIAR EL STANEXT A PLAY
                                             ;EL 2 HACE QUE SE UPDATE 
 
@@ -62,8 +62,8 @@ STAPLOT
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAPLAYP,STAGOVRP
-                                             ; EL 0 ES DIBUJAR LA PANTALLA DE INICIO
+.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAPLAYP,STAPLAYP,STAPLAYP,STAGOVRP
+                           ;SPACE      NIVEL1   NIVEL2    NIVEL3   
 
 ; -----------------------------------------------------------------------------
 STAEMPTY
@@ -76,18 +76,44 @@ STAEMPTY
             RTS
 
 ; -----------------------------------------------------------------------------
-STAPLAYI    
+STAPLAYI1    ;DEL NIVEL1
+
 ; PLAY STATE INITIALIZATION.
 ; INPUT    - NONE
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
-            JSR     PLRINIT
+            JSR     PLRINIT1
             
-            JSR     BINIT
+            JSR     BINIT1
             RTS
-            
+; -----------------------------------------------------------------------------
+STAPLAYI2    ;DEL NIVEL2
+
+; PLAY STATE INITIALIZATION.
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; NOTE     - JUST A WRAPPER FOR PLRINIT
+; -----------------------------------------------------------------------------
+            JSR     BLINIT2
+            JSR     PLRINIT2
+            JSR     BINIT2
+            RTS
+; -----------------------------------------------------------------------------
+STAPLAYI3    ;DEL NIVEL3
+
+; PLAY STATE INITIALIZATION.
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; NOTE     - JUST A WRAPPER FOR PLRINIT
+; -----------------------------------------------------------------------------
+            JSR     PLRINIT3
+            JSR     BINIT3
+            RTS          
+
 ; -----------------------------------------------------------------------------
 STASPACEU
 ; WAITS FOR SPACE TO BE PRESSED, AND BEGIN THE GAME
@@ -98,7 +124,7 @@ STASPACEU
            
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
-            MOVE.W  #STAPLAY,(STANEXT)
+            MOVE.W  #STAPLAY1,(STANEXT)
 .END        
             RTS
                              
@@ -150,7 +176,7 @@ STAINTRU
             MOVE.W  #STASPACE,(STANEXT)
             MOVE.W  #PINLIVE,PLIVES
             CLR.W   PSCORE
-            JSR     BLINIT
+            JSR     BLINIT1
             
 .END        RTS
 
@@ -237,6 +263,7 @@ STAGOVRP
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

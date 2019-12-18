@@ -26,8 +26,11 @@ BSPEEDY     DS.W    1
 BCOLOR      DS.W    1
 
 ; BLOCKS --------------------------------------------------------------------
+BLCOUNTER   DS.W    1
 BLMATRIX    DS.B    12  ;12*8
             DS.W    0
+            
+
 
 
 

@@ -2,15 +2,34 @@
 ; BALL
 ; =============================================================================
 
-BINIT
+BINIT1
             MOVE.W  #BINPOSX,BPOSX
             MOVE.W  #BINPOSY-2,BPOSY  
-            MOVE.W  #BINSPEED,BSPEEDX
-            MOVE.W  #BINSPEED,D0
+            MOVE.W  #BINSPEED1,BSPEEDX
+            MOVE.W  #BINSPEED1,D0
             NEG.W   D0
             MOVE.W  D0,BSPEEDY
-            MOVE.W  D0,BSPEEDX
             RTS
+BINIT2
+            MOVE.W  #BINPOSX,BPOSX
+            MOVE.W  #BINPOSY-2,BPOSY  
+            MOVE.W  #BINSPEED2,BSPEEDX
+            MOVE.W  #BINSPEED2,D0
+            NEG.W   D0
+            MOVE.W  D0,BSPEEDY
+            RTS            
+            
+BINIT3
+            MOVE.W  #BINPOSX,BPOSX
+            MOVE.W  #BINPOSY-2,BPOSY  
+            MOVE.W  #BINSPEED3,BSPEEDX
+            MOVE.W  #BINSPEED3,D0
+            NEG.W   D0
+            MOVE.W  D0,BSPEEDY
+            RTS            
+            
+            
+            
             
 BUPD        
             MOVEM.L D0-D3,-(A7)
@@ -111,7 +130,7 @@ BUPD
             MOVE.W  D0,PLIVES
            
             BNE     .END
-            
+            ;UTLSND  .SOUND
             MOVE.W   #STAGOVR,(STANEXT)
 .END            
 
@@ -124,7 +143,8 @@ BUPD
             MOVEM.L (A7)+,D0-D3
             
             RTS
-            
+
+;.SOUND      DC.L    'blocks.wav',0
 BPLOT       
             MOVEM.L  D0-D5,-(A7)
             ;CONTOUR COLOR
@@ -156,6 +176,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 

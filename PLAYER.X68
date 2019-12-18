@@ -1,18 +1,42 @@
 ; -----------------------------------------------------------------------------
 ;           PLAYER
 ; -----------------------------------------------------------------------------
-PLRINIT
+PLRINIT1
 ; INITIALIZES THE PLAYER
 ; INPUT    - NONE
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
             
-            MOVE.W  #PINPOSX,PPOSX
-            MOVE.W  #PINWIDTH,PWIDTH
+            MOVE.W  #PINPOSX1,PPOSX
+            MOVE.W  #PINWIDTH1,PWIDTH
           
             RTS
 
+; -----------------------------------------------------------------------------
+PLRINIT2
+; INITIALIZES THE PLAYER
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; -----------------------------------------------------------------------------
+            
+            MOVE.W  #PINPOSX2,PPOSX
+            MOVE.W  #PINWIDTH2,PWIDTH
+          
+            RTS
+; -----------------------------------------------------------------------------
+PLRINIT3
+; INITIALIZES THE PLAYER
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; -----------------------------------------------------------------------------
+            
+            MOVE.W  #PINPOSX3,PPOSX
+            MOVE.W  #PINWIDTH3,PWIDTH
+          
+            RTS
 
 ; -----------------------------------------------------------------------------
 
@@ -72,6 +96,7 @@ PPLOT
 
             RTS
     
+
 
 
 
