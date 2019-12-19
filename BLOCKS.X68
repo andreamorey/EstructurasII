@@ -66,7 +66,7 @@ BLUPD
             NEG.W   BSPEEDY
             BCLR    D3,(A0)
             SUB.W   #1,BLCOUNTER
-            UTLSND  .SOUND
+            UTLSNDS  .SOUND,#1
             ADD.W   #100,PSCORE
             
         

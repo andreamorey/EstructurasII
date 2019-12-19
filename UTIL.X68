@@ -49,19 +49,35 @@ UTLLOCT     MACRO
             TRAP    #15
             ENDM
    
-
 ; -----------------------------------------------------------------------------
-UTLSND     MACRO
+UTLSNDS     MACRO
 ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
-; INPUT    - \1 ADDRESS TO STRING WITH NAME OF THE FILE
+; INPUT    - \1 ADDRESS TO STRING WITH NAME OF THE FILE, \2 NUM SOUNDS, 
 ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
 ; MODIFIES - D0,A1
 ; -----------------------------------------------------------------------------
             LEA     \1, A1             ;PLAY EXPLOSION SOUND
-            MOVE.L  #73,D0
+            MOVE.W  \2,D1
+            MOVE.B  #71,D0
             TRAP    #15
+            MOVE.B  #72,D0
+            TRAP    #15
+            
             ENDM
-
+            
+; -----------------------------------------------------------------------------
+UTLSNDST     MACRO
+; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+; INPUT    - NONE 
+; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+; MODIFIES - D0,A1
+; -----------------------------------------------------------------------------
+            MOVE.L  #3,D2
+            MOVE.B  #76,D0
+            TRAP    #15
+            
+            ENDM
+            
 ; =============================================================================
 ; UTILITY SUBROUTINES
 ; =============================================================================
@@ -106,9 +122,12 @@ UTLCHCOLW
             BGT     .MINLIVE1                ;SI HA CAIDO  
             RTS  
 .MINLIVE1       
-            SUB.W   #1,D5                  
+             
+            UTLSNDS .SOUNDL,#1 
+            SUB.W   #1,D5                
             BNE     .MINLIVE2               
-            UTLSND  .SOUND
+            UTLSNDST
+            UTLSNDS .SOUNDG,#1
             MOVE.W  #STAGOVR,(STANEXT)
             SUBI.W  #1,D6
             RTS
@@ -117,7 +136,8 @@ UTLCHCOLW
             SUBI.W  #1,D6            
             RTS
 .COLLISIONS DC.W    0,0,SCRCTRL,SCRHEIGH
-.SOUND      DC.L    'game over.wav',0
+.SOUNDG      DC.L    'game over.wav',0
+.SOUNDL     DC.L    'lose life.wav',0
 ; -----------------------------------------------------------------------------
 UTLCHCOLP
 ; CHECKS COLLISION WITH PLATAFORM

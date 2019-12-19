@@ -128,7 +128,7 @@ STAPLAYP
             RTS
 
 ; -----------------------------------------------------------------------------
-STAINTRI    EQU     DMMINIT                 ;VACIA LA MEMORIA DEL JUEGO
+STAINTRI                  ;VACIA LA MEMORIA DEL JUEGO
 ; PARA QUE EL SCORE LA VIDA SE VUELVAN A REINICIAR
 
 ; INTRO STATE INIT
@@ -137,7 +137,10 @@ STAINTRI    EQU     DMMINIT                 ;VACIA LA MEMORIA DEL JUEGO
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR DMMINIT TO RELEASE ALL MEMORY
 ; -----------------------------------------------------------------------------
-
+            UTLSNDS .SOUND,#1
+            JSR     DMMINIT
+            RTS
+.SOUND      DC.L    'start largo.wav',0
 ; -----------------------------------------------------------------------------
 STAINTRU
 ; INTRO STATE UPDATE
@@ -145,8 +148,10 @@ STAINTRU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
+            UTLSNDST
             MOVE.W  #STASPACE,(STANEXT)
             JSR     BLINIT
             MOVE.W  #PINLIVE,PLIVES
@@ -161,7 +166,6 @@ STAINTRP
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
             MOVEM.L A1/D0-D2,-(A7)
-     
             ;TITULO
             UTLLOCT INTTITX,INTTITY      
             UTLSIZC #INTTITC,TXBSIZE
@@ -191,6 +195,7 @@ STAGOVRU
 ; -----------------------------------------------------------------------------
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
+            UTLSNDST
             MOVE.W  #STAINTR,(STANEXT)
 .END        RTS
 

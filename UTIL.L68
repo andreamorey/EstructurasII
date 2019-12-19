@@ -1,0 +1,250 @@
+00001966 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 19/12/2019 12:29:46
+
+00000000                             1  ; =============================================================================
+00000000                             2  ; UTILITY MACROS
+00000000                             3  ; =============================================================================
+00000000                             4  
+00000000                             5  UTLSPEN     MACRO
+00000000                             6  ; WRAPPER FOR SET PEN TRAP 15 TASK.
+00000000                             7  ; INPUT    - \1 COLOR IN FORMAT $00BBGGRR
+00000000                             8  ; OUTPUT   - NONE
+00000000                             9  ; MODIFIES - D0,D1
+00000000                            10  ; -----------------------------------------------------------------------------
+00000000                            11              MOVE.B  #80,D0
+00000000                            12              MOVE.L  \1,D1
+00000000                            13              TRAP    #15
+00000000                            14              ENDM
+00000000                            15  
+00000000                            16  ; -----------------------------------------------------------------------------
+00000000                            17  UTLSIZC     MACRO
+00000000                            18  ; WRAPPER FOR SET SIZE AND COLOR TRAP 15 TASK.
+00000000                            19  ; INPUT    - \1 COLOR IN FORMAT $00BBGGRR \2 SIZE (8, 9, 10, 12, 14, 16, 18))
+00000000                            20  ; OUTPUT   - NONE
+00000000                            21  ; MODIFIES - D0,D1
+00000000                            22  ; -----------------------------------------------------------------------------
+00000000                            23              MOVE.L  \1,D1
+00000000                            24              MOVE.L  #\2<<16|1,D2
+00000000                            25              MOVE.B  #21,D0
+00000000                            26              TRAP    #15
+00000000                            27              ENDM
+00000000                            28  ; -----------------------------------------------------------------------------
+00000000                            29  UTLSFIL     MACRO
+00000000                            30  ; WRAPPER FOR SET FIL TRAP 15 TASK.
+00000000                            31  ; INPUT    - \1 COLOR IN FORMAT $00BBGGRR
+00000000                            32  ; OUTPUT   - NONE
+00000000                            33  ; MODIFIES - D0,D1
+00000000                            34  ; -----------------------------------------------------------------------------
+00000000                            35              MOVE.B  #81,D0
+00000000                            36              MOVE.L  \1,D1
+00000000                            37              TRAP    #15
+00000000                            38              ENDM
+00000000                            39              
+00000000                            40  ; -----------------------------------------------------------------------------
+00000000                            41  UTLLOCT     MACRO
+00000000                            42  ; WRAPPER TO TEXT POSITIONNING FROM TRAP 15
+00000000                            43  ; INPUT    - \1 X, \2 Y
+00000000                            44  ; OUTPUT   - NONE
+00000000                            45  ; MODIFIES - D0,D1
+00000000                            46  ; -----------------------------------------------------------------------------
+00000000                            47              MOVE.W  #\1<<8|\2, D1
+00000000                            48              MOVE.B  #11,D0
+00000000                            49              TRAP    #15
+00000000                            50              ENDM
+00000000                            51     
+00000000                            52  ; -----------------------------------------------------------------------------
+00000000                            53  UTLSNDS     MACRO
+00000000                            54  ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+00000000                            55  ; INPUT    - \1 ADDRESS TO STRING WITH NAME OF THE FILE, \2 NUM SOUNDS, 
+00000000                            56  ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+00000000                            57  ; MODIFIES - D0,A1
+00000000                            58  ; -----------------------------------------------------------------------------
+00000000                            59              LEA     \1, A1             ;PLAY EXPLOSION SOUND
+00000000                            60              MOVE.W  \2,D1
+00000000                            61              MOVE.B  #71,D0
+00000000                            62              TRAP    #15
+00000000                            63              MOVE.B  #72,D0
+00000000                            64              TRAP    #15
+00000000                            65              
+00000000                            66              ENDM
+00000000                            67              
+00000000                            68  ; -----------------------------------------------------------------------------
+00000000                            69  UTLSNDST     MACRO
+00000000                            70  ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+00000000                            71  ; INPUT    - NONE 
+00000000                            72  ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+00000000                            73  ; MODIFIES - D0,A1
+00000000                            74  ; -----------------------------------------------------------------------------
+00000000                            75              MOVE.L  #3,D2
+00000000                            76              MOVE.B  #76,D0
+00000000                            77              TRAP    #15
+00000000                            78              
+00000000                            79              ENDM
+00000000                            80              
+00000000                            81  ; =============================================================================
+00000000                            82  ; UTILITY SUBROUTINES
+00000000                            83  ; =============================================================================
+00000000                            84  ; -----------------------------------------------------------------------------
+00000000                            85  UTLCHCOLW
+00000000                            86  ; CHECKS COLLISION WITH WALL
+00000000                            87  ; INPUT    - D0.W BPOSX
+00000000                            88  ;            D1.W BPOSY
+00000000                            89  ;            D2.W BSPEEDX
+00000000                            90  ;            D3.W BSPEEDY
+00000000                            91  ;            D4.W BALL DIAMETRE
+00000000                            92  ;            D5.W LIVES 
+00000000                            93  ; OUTPUT   - D2.W = BSPEEDX, 
+00000000                            94  ;          - D3.W = BSPEEDY, 
+00000000                            95  ;          - D5.W = LIVES
+00000000                            96  ;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
+00000000                            97  ; MODIFIES - NONE
+00000000                            98  ; -----------------------------------------------------------------------------
+00000000  3C3C 0004                 99              MOVE.W  #4,D6
+00000004  41F9 0000008C            100              LEA.L   .COLLISIONS,A0
+0000000A  B258                     101              CMP.W   (A0)+,D1      ;UP
+0000000C  6E00 0008                102              BGT     .LEFT
+00000010  4443                     103              NEG.W   D3
+00000012  5346                     104              SUBI.W  #1,D6
+00000014  4E75                     105              RTS
+00000016                           106  .LEFT        
+00000016  B058                     107              CMP.W   (A0)+,D0
+00000018  6E00 0008                108              BGT     .RIGHT
+0000001C  4442                     109              NEG.W   D2
+0000001E  5346                     110              SUBI.W  #1,D6
+00000020  4E75                     111              RTS
+00000022                           112  .RIGHT      
+00000022  D044                     113              ADD.W   D4,D0
+00000024  B058                     114              CMP.W   (A0)+,D0
+00000026  6D00 0008                115              BLT     .DOWN
+0000002A  4442                     116              NEG.W   D2
+0000002C  5346                     117              SUBI.W  #1,D6
+0000002E  4E75                     118              RTS
+00000030                           119  .DOWN       
+00000030  D244                     120              ADD.W   D4,D1 
+00000032  B258                     121              CMP.W   (A0)+,D1                ;BPOSY - HEIGHT
+00000034  6E00 0004                122              BGT     .MINLIVE1                ;SI HA CAIDO  
+00000038  4E75                     123              RTS  
+0000003A                           124  .MINLIVE1       
+0000003A                           125               
+0000003A                           126m             UTLSNDS .SOUNDL,#1 
+0000003A                           127m ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+0000003A                           128m ; INPUT    - .SOUNDL ADDRESS TO STRING WITH NAME OF THE FILE, #1 NUM SOUNDS, 
+0000003A                           129m ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+0000003A                           130m ; MODIFIES - D0,A1
+0000003A                           131m ; -----------------------------------------------------------------------------
+00000050  5345                     132              SUB.W   #1,D5                
+00000052  6600 002C                133              BNE     .MINLIVE2               
+00000056                           134m             UTLSNDST
+00000056                           135m ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+00000056                           136m ; INPUT    - NONE 
+00000056                           137m ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+00000056                           138m ; MODIFIES - D0,A1
+00000056                           139m ; -----------------------------------------------------------------------------
+0000005E                           140m             UTLSNDS .SOUNDG,#1
+0000005E                           141m ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+0000005E                           142m ; INPUT    - .SOUNDG ADDRESS TO STRING WITH NAME OF THE FILE, #1 NUM SOUNDS, 
+0000005E                           143m ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+0000005E                           144m ; MODIFIES - D0,A1
+0000005E                           145m ; -----------------------------------------------------------------------------
+Line 146 ERROR: Undefined symbol
+00000074  33FC BD16 005455B8       146              MOVE.W  #STAGOVR,(STANEXT)
+0000007C  5346                     147              SUBI.W  #1,D6
+0000007E  4E75                     148              RTS
+00000080                           149  .MINLIVE2     
+Line 150 ERROR: Undefined symbol
+00000080  33FC BD16 005455B8       150              MOVE.W  #STASPACE,(STANEXT)
+00000088  5346                     151              SUBI.W  #1,D6            
+0000008A  4E75                     152              RTS
+Line 153 ERROR: Undefined symbol
+0000008C= 0000 0000 0000 0000      153  .COLLISIONS DC.W    0,0,SCRCTRL,SCRHEIGH
+00000094= 67616D65 206F7665 ...    154  .SOUNDG      DC.L    'game over.wav',0
+000000A8= 6C6F7365 206C6966 ...    155  .SOUNDL     DC.L    'lose life.wav',0
+000000BC                           156  ; -----------------------------------------------------------------------------
+000000BC                           157  UTLCHCOLP
+000000BC                           158  ; CHECKS COLLISION WITH PLATAFORM
+000000BC                           159  ; INPUT    - D0.W BPOSX
+000000BC                           160  ;            D1.W BPOSY
+000000BC                           161  ;            D2.W PPOSX
+000000BC                           162  ;            D3.W PPOSY
+000000BC                           163  ;            D4.W BALL DIAMETRE
+000000BC                           164  ;            D5.W LIVES 
+000000BC                           165  ; OUTPUT   - D2.W = BSPEEDX, 
+000000BC                           166  ;          - D3.W = BSPEEDY, 
+000000BC                           167  ;          - D5.W = LIVES
+000000BC                           168  ;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
+000000BC                           169  ; MODIFIES - NONE
+000000BC                           170  ; -----------------------------------------------------------------------------
+000000BC  D244                     171              ADD.W   D4,D1
+000000BE  B641                     172              CMP.W   D1,D3 ;COMPUREBA LA Y
+000000C0                           173  
+000000C0                           174              
+000000C0                           175              ;AQUI IRIA LA COLISION DE LOS LADOS
+000000C0                           176              
+000000C0                           177              
+000000C0  E24C                     178              LSR.W   #1,D4
+000000C2                           179             ; ADD.W   D4
+000000C2                           180               
+000000C2                           181  ; -----------------------------------------------------------------------------
+000000C2                           182  UTLCHCOL
+000000C2                           183  ; CHECKS COLLISION
+000000C2                           184  ; INPUT    - D0.W X0 COORDINATE ball
+000000C2                           185  ;            D1.W Y0 COORDINATE ball
+000000C2                           186  ;            D2.W X1 COORDINATE plataforma
+000000C2                           187  ;            D3.W Y1 COORDINATE plataforma
+000000C2                           188  ;            D4.W WIDTH 0      ball
+000000C2                           189  ;            D5.W WIDTH 1      plataforma 
+000000C2                           190  ;            D6.W HEIGHT 0     ball
+000000C2                           191  ;            D7.W HEIGHT 1     plataforma
+000000C2                           192  ; OUTPUT   - D0.B=FF - COLLISION, =0 - NO COLLISION
+000000C2                           193  ; MODIFIES - NONE
+000000C2                           194  ; -----------------------------------------------------------------------------
+000000C2  48A7 0F00                195              MOVEM.W D4-D7,-(A7)
+000000C6  D840                     196              ADD.W   D0,D4
+000000C8  B842                     197              CMP.W   D2,D4
+000000CA  6F00 0022                198              BLE     .NOCOL
+000000CE  DA42                     199              ADD.W   D2,D5
+000000D0  BA40                     200              CMP.W   D0,D5
+000000D2  6F00 001A                201              BLE     .NOCOL
+000000D6  DC41                     202              ADD.W   D1,D6
+000000D8  BC43                     203              CMP.W   D3,D6
+000000DA  6F00 0012                204              BLE     .NOCOL
+000000DE  DE43                     205              ADD.W   D3,D7
+000000E0  BE41                     206              CMP.W   D1,D7
+000000E2  6F00 000A                207              BLE     .NOCOL
+000000E6  103C 00FF                208              MOVE.B  #$FF,D0
+000000EA  6000 0004                209              BRA     .END
+000000EE  4200                     210  .NOCOL      CLR.B   D0
+000000F0  4C9F 00F0                211  .END        MOVEM.W (A7)+,D4-D7
+000000F4  4E75                     212              RTS
+000000F6                           213  
+000000F6                           214  
+000000F6                           215  
+Line 216 WARNING: END directive missing, starting address not set
+
+3 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+UTLCHCOL            C2
+UTLCHCOL:END        F0
+UTLCHCOL:NOCOL      EE
+UTLCHCOLP           BC
+UTLCHCOLW           0
+UTLCHCOLW:COLLISIONS  8C
+UTLCHCOLW:DOWN      30
+UTLCHCOLW:LEFT      16
+UTLCHCOLW:MINLIVE1  3A
+UTLCHCOLW:MINLIVE2  80
+UTLCHCOLW:RIGHT     22
+UTLCHCOLW:SOUNDG    94
+UTLCHCOLW:SOUNDL    A8
+UTLLOCT             3CF
+UTLSFIL             2A5
+UTLSIZC             12A
+UTLSNDS             4F7
+UTLSNDST            6F3
+UTLSPEN             0
