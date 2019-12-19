@@ -10,16 +10,18 @@ INTTITC     EQU     $00DCAA7C               ; TITLE COLOR
 INTPRSX     EQU     32                      ; PRESS FIRE X COORDINATE
 INTPRSY     EQU     82                      ; PRESS FIRE Y COORDINATE
 INTPRSC     EQU     $00FFFFFF               ; PRESS FIRE COLOR
-
+TXBSIZE     EQU     18                      ;BIG SIZE LETTERS
+TXMSIZE     EQU     16                      ;MEDIUM SIZE LETTERS
+TXSSIZE     EQU     10                      ;SMALL SIZE LETTERS
 
 ; STATES GAME ---------------------------------------------------------------
 STANONE     EQU     -1                      ; PLACEHOLDER TO FORCE CHANGE
 STAINTR     EQU     0                       ; INTRO/PRESS FIRE STATE
 STASPACE    EQU     1                       ; ESPERA EL ESPACIO PARA DISPARAR LA BOLA 
-STAPLAY1    EQU     2                       ; NORMAL GAME STATE
-STAPLAY2    EQU     3
-STAPLAY3    EQU     4
-STAGOVR     EQU     5                       ; GAME OVER STATE
+STAPLAY    EQU     2                       ; NORMAL GAME STATE
+;STAPLAY2    EQU     3
+;STAPLAY3    EQU     4
+STAGOVR     EQU     3                       ; GAME OVER STATE
 ;----------------------------------------------------------------------------
 
 ; --- GAME OVER STATE RELATED CONSTANTS ---------------------------------------
@@ -59,13 +61,11 @@ PSCORECOL   EQU     $00FFFFFF
 ; ---------------------------------------------------------------------------
 
 ; BALL ----------------------------------------------------------------------
-BHEIGHT     EQU     8                       ;ALTURA DE LA BOLA
-BWIDTH      EQU     8                       ;ANCHURA DE LA BOLA
-BINPOSX     EQU     200                      ;POSICION DE LA PELOTA X INICIAL
-BINPOSY     EQU     PPOSY-BHEIGHT              ;POSICION DE LA PELOTA Y INICIAL
-BINSPEED1   EQU     4                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
-BINSPEED2   EQU     6
-BINSPEED3   EQU     8
+BDIAMET     EQU     8                       ;ANCHURA DE LA BOLA
+BINPOSX     EQU     SCRCTRL/2-BDIAMET/2     ;POSICION DE LA PELOTA X INICIAL
+BINPOSY     EQU     PPOSY-BDIAMET-2              ;POSICION DE LA PELOTA Y INICIAL
+BINSPEED    EQU     -4                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
+
 BINCOLOR    EQU     $00FFFFFF
 
 ; ---------------------------------------------------------------------------
@@ -88,6 +88,10 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 ; -----------------------------------------------------------------------------
 ;           PLAYER
 ; -----------------------------------------------------------------------------
-PLRINIT1
+PLRINIT
 ; INITIALIZES THE PLAYER
 ; INPUT    - NONE
 ; OUTPUT   - NONE
@@ -10,31 +10,21 @@ PLRINIT1
             
             MOVE.W  #PINPOSX1,PPOSX
             MOVE.W  #PINWIDTH1,PWIDTH
+            
           
             RTS
-
+            
 ; -----------------------------------------------------------------------------
-PLRINIT2
-; INITIALIZES THE PLAYER
+PLRREV
+; PLAYER REVIVES, INITIALIZE POSITION
 ; INPUT    - NONE
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            ;DEBERIAMOS CALCULAR LA POSICION NUEVA A PARTIR DE LA WIDTH QUE NOS PASEN
             
-            MOVE.W  #PINPOSX2,PPOSX
-            MOVE.W  #PINWIDTH2,PWIDTH
-          
-            RTS
-; -----------------------------------------------------------------------------
-PLRINIT3
-; INITIALIZES THE PLAYER
-; INPUT    - NONE
-; OUTPUT   - NONE
-; MODIFIES - NONE
-; -----------------------------------------------------------------------------
-            
-            MOVE.W  #PINPOSX3,PPOSX
-            MOVE.W  #PINWIDTH3,PWIDTH
+            MOVE.W  #PINPOSX1,PPOSX
+            MOVE.W  #PINWIDTH1,PWIDTH
           
             RTS
 
@@ -67,35 +57,55 @@ PLRUPD
 
 
 PPLOT
-            MOVEM.L  D0-D5,-(A7)
-            ;CONTOUR COLOR
-            MOVE.L  #PCOLOR,D1  
-            MOVE.B  #80,D0
-            TRAP    #15
-    
-    
-             ;FILL COLOR
-            AND.L   #PCOLOR,D1  
-            MOVE.B  #81,D0
-            TRAP    #15
- 
-
-             ;SQUARE
-            MOVE.W  PWIDTH,D5                     
-            MOVE.W  PPOSX,D3
-            MOVE.W  #PPOSY+PHEIGHT,D4
-            ADD.W   D5,D3
-    
+            MOVEM.L  D0-D5/A1,-(A7)
+            ;PLOT THE PLATAFORM
+            UTLSPEN #PCOLOR 
+            UTLSFIL #PCOLOR
             MOVE.W  PPOSX,D1
-            MOVE.W  #PPOSY,D2
-    
+            MOVE.W  #PPOSY,D2                    
+            MOVE.W  PPOSX,D3
+            MOVE.W  PWIDTH,D4 
+            ADD.W   D4,D3
+            MOVE.W  #PPOSY+PHEIGHT,D4
             MOVE.W  #87,D0
             TRAP    #15
-    
-            MOVEM.L  (A7)+,D0-D5
-
+            
+            ;PLOT LIFE
+            MOVE.W  PLIVES,D5
+            BEQ     .END
+            UTLSPEN #$00FFFFFF  
+            UTLSFIL #LIVECOLOR
+            SUB.W   #1,D5             
+            MOVE.B  #87,D0
+            MOVE.W  #LIVEPOSX,D1
+            MOVE.W  D1,D3
+            ADD.W   #LIVEWIDTH,D3
+            MOVE.W  #LIVEPOSY,D2
+            MOVE.W  D2,D4
+            ADD.W   #LIVEHEIGHT,D4
+.LOOP           
+            TRAP    #15
+            MOVE.W  D3,D1
+            ADD.W   #LIVEWIDTH,D3
+            DBRA    D5,.LOOP
+            
+            ;PLOT SCORE
+            UTLLOCT PSCORETX,PSCORETY            
+            UTLSIZC #PSCORECOL,TXMSIZE           ;PENCOLOR Y TAMAÑO
+            UTLSFIL #$00000000
+            LEA     .TXTSCORE,A1              ;PONE EL TEXTO
+            MOVE.W  PSCORE,D1
+            MOVE.B  #17,D0
+            TRAP    #15
+            
+.END            
+            MOVEM.L (A7)+,D0-D5/A1
             RTS
-    
+            
+.TXTSCORE   DC.B    'SCORE: ',0
+            DS.W    0
+
+
 
 
 

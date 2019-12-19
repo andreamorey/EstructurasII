@@ -11,12 +11,12 @@
             INCLUDE "SYSCONST.X68"          ; SYSTEM CONSTANTS
             INCLUDE "SYSTEM.X68"            ; SYSTEM CODE
             INCLUDE "CONSTANTS.X68"         ;CONSTANTES DEL JUEGO
+            INCLUDE "UTIL.X68"
             INCLUDE "PLAYER.X68"            ;EL JUGADOR
             INCLUDE "STATES.X68"            ;
             INCLUDE "BALL.X68"              ;LA PELOTA
             INCLUDE "SCTRL.X68"             ;CONTROL SCREEN
-            INCLUDE "UTIL.X68"
-            INCLUDE  "BLOCKS.X68"           ;BLOQUES
+            INCLUDE "BLOCKS.X68"           ;BLOQUES
 
 ; --- INITIALIZE --------------------------------------------------------------
             
@@ -52,6 +52,9 @@ START       JSR     SYSINIT
             INCLUDE "SYSVAR.X68"
             INCLUDE "VAR.X68"
             END    START
+
+
+
 
 
 

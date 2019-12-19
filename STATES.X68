@@ -39,10 +39,10 @@ STAUPD
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.INITBL     DC.L    STAINTRI,STAPLAYI1,STAPLAYI2,STAPLAYI3,STAEMPTY ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
+.INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
                                              ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
                                              ;EL 2 ES NO HACER NADA 
-.UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAPLAYU,STAPLAYU,STAGOVRU
+.UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAGOVRU
                                             ;EL 0 ES SI SE PULSA ESPACIO CAMBIAR EL STANEXT A PLAY
                                             ;EL 2 HACE QUE SE UPDATE 
 
@@ -62,7 +62,7 @@ STAPLOT
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAPLAYP,STAPLAYP,STAPLAYP,STAGOVRP
+.PLTTBL     DC.L    STAINTRP,STAPLAYP,STAPLAYP,STAGOVRP
                            ;SPACE      NIVEL1   NIVEL2    NIVEL3   
 
 ; -----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ STAEMPTY
             RTS
 
 ; -----------------------------------------------------------------------------
-STAPLAYI1    ;DEL NIVEL1
+STAPLAYI    ;DEL NIVEL1, COMIENZO
 
 ; PLAY STATE INITIALIZATION.
 ; INPUT    - NONE
@@ -84,36 +84,9 @@ STAPLAYI1    ;DEL NIVEL1
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
-            JSR     PLRINIT1
-            
-            JSR     BINIT1
+            JSR     PLRINIT
+            JSR     BINIT
             RTS
-; -----------------------------------------------------------------------------
-STAPLAYI2    ;DEL NIVEL2
-
-; PLAY STATE INITIALIZATION.
-; INPUT    - NONE
-; OUTPUT   - NONE
-; MODIFIES - NONE
-; NOTE     - JUST A WRAPPER FOR PLRINIT
-; -----------------------------------------------------------------------------
-            JSR     BLINIT2
-            JSR     PLRINIT2
-            JSR     BINIT2
-            RTS
-; -----------------------------------------------------------------------------
-STAPLAYI3    ;DEL NIVEL3
-
-; PLAY STATE INITIALIZATION.
-; INPUT    - NONE
-; OUTPUT   - NONE
-; MODIFIES - NONE
-; NOTE     - JUST A WRAPPER FOR PLRINIT
-; -----------------------------------------------------------------------------
-            JSR     PLRINIT3
-            JSR     BINIT3
-            RTS          
-
 ; -----------------------------------------------------------------------------
 STASPACEU
 ; WAITS FOR SPACE TO BE PRESSED, AND BEGIN THE GAME
@@ -124,7 +97,7 @@ STASPACEU
            
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
-            MOVE.W  #STAPLAY1,(STANEXT)
+            MOVE.W  #STAPLAY,(STANEXT)
 .END        
             RTS
                              
@@ -136,6 +109,7 @@ STAPLAYU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            
             JSR     PLRUPD
             JSR     BLUPD
             JSR     BUPD                    
@@ -147,9 +121,9 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            JSR     BPLOT
             JSR     BLPLOT
             JSR     PPLOT
-            JSR     BPLOT
             JSR     SCTRLPLOT
             RTS
 
@@ -174,10 +148,9 @@ STAINTRU
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
             MOVE.W  #STASPACE,(STANEXT)
+            JSR     BLINIT
             MOVE.W  #PINLIVE,PLIVES
-            CLR.W   PSCORE
-            JSR     BLINIT1
-            
+            CLR.W   PSCORE            
 .END        RTS
 
 ; -----------------------------------------------------------------------------
@@ -187,39 +160,28 @@ STAINTRP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            MOVEM.L A1/D0-D1,-(A7)
-            MOVE.W  #INTTITX<<8|INTTITY, D1 ;COORDENADAS DEL TEXTO TITULO
-            MOVE.B  #11,D0
-            TRAP    #15
-            
-            MOVE.L  #INTTITC,D1
-            MOVE.L  #18<<16|1,D2
-            MOVE.B  #21,D0
-            TRAP    #15
-
-            LEA     .TITSTR,A1              ;PONE EL TEXTO
+            MOVEM.L A1/D0-D2,-(A7)
+     
+            ;TITULO
+            UTLLOCT INTTITX,INTTITY      
+            UTLSIZC #INTTITC,TXBSIZE
+            LEA     .TITSTR,A1            
             MOVE.B  #14,D0
             TRAP    #15
-
-            MOVE.W  #INTPRSX<<8|INTPRSY, D1 ;COORDENADAS DEL TEXTO START
-            MOVE.B  #11,D0
-            TRAP    #15
             
-            MOVE.L  #INTPRSC,D1
-            MOVE.L  #10<<16|1,D2
-            MOVE.B  #21,D0
-            TRAP    #15
-            
+            ;START
+            UTLLOCT INTPRSX,INTPRSY
+            UTLSIZC #INTPRSC,TXSSIZE
             LEA     .PRSSTR,A1
             MOVE.B  #14,D0
             TRAP    #15
-            MOVEM.L (A7)+,A1/D0-D1
+            
+            MOVEM.L (A7)+,A1/D0-D2
             RTS
 
 .TITSTR     DC.B    'Breaking Blocks',0
 .PRSSTR     DC.B    'PUSH FIRE TO START',0
             DS.W    0
-
 ; -----------------------------------------------------------------------------
 STAGOVRU
 ; GAME OVER STATE UPDATE
@@ -240,41 +202,19 @@ STAGOVRP
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
 
-            MOVEM.L A1/D0-D1,-(A7)
-            MOVE.W  #GOVERX<<8|GOVERY, D1 ;COORDENADAS DEL TEXTO TITULO
-            MOVE.B  #11,D0
-            TRAP    #15
+            MOVEM.L A1/D0-D2,-(A7)
             
-            MOVE.L  #GOVERC,D1
-            MOVE.L  #18<<16|1,D2
-            MOVE.B  #21,D0
-            TRAP    #15
-            
-            MOVE.L  #$00000000,D1
-            MOVE.B  #81,D0
-            TRAP    #15
-
+            ;GAME OVER TEXT
+            UTLLOCT GOVERX,GOVERY            
+            UTLSIZC #GOVERC,TXBSIZE
             LEA     .GOVSTR,A1              ;PONE EL TEXTO
             MOVE.B  #14,D0
             TRAP    #15
-            
 
-            MOVEM.L (A7)+,A1/D0-D1
+            MOVEM.L (A7)+,A1/D0-D2
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

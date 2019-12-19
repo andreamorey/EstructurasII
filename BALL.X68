@@ -1,63 +1,71 @@
 ; =============================================================================
 ; BALL
 ; =============================================================================
-
-BINIT1
+;----------------------------------
+BINIT
+;INITIALIZE THE BALL
+;----------------------------------
             MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY-2,BPOSY  
-            MOVE.W  #BINSPEED1,BSPEEDX
-            MOVE.W  #BINSPEED1,D0
-            NEG.W   D0
-            MOVE.W  D0,BSPEEDY
+            MOVE.W  #BINPOSY,BPOSY  
+            MOVE.W  #BINSPEED,BSPEEDX
+            MOVE.W  #BINSPEED,BSPEEDY
             RTS
-BINIT2
+;----------------------------------         
+BNXTLEV
+;INITIALIZE THE BALL TO THE NEXT LEVEL
+;----------------------------------
+;BALL NEXT LEVEL       (NEXT LEVEL)
+            MOVEM.L D0,-(A7)
             MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY-2,BPOSY  
-            MOVE.W  #BINSPEED2,BSPEEDX
-            MOVE.W  #BINSPEED2,D0
-            NEG.W   D0
-            MOVE.W  D0,BSPEEDY
-            RTS            
-            
-BINIT3
-            MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY-2,BPOSY  
-            MOVE.W  #BINSPEED3,BSPEEDX
-            MOVE.W  #BINSPEED3,D0
-            NEG.W   D0
-            MOVE.W  D0,BSPEEDY
-            RTS            
-            
-            
-            
-            
-BUPD        
-            MOVEM.L D0-D3,-(A7)
-            
-            ;COMPROBAMOS COLISIÓN CON PARED DE ARRIBA
-            MOVE.W  BPOSY,D1
-            CMP.W   #0,D1
-            BGT     .LEFT
-            NEG.W   BSPEEDY
-            
-            ;COMPROBAMOS COLISIÓN CON LA PARED DE ABAJO
-.LEFT       MOVE.W  BPOSX,D1                ;CHOQUE IZQUIERDA
-            CMP.W    #0,D1                 
-            BGT     .RIGHT     
-            NEG.W   BSPEEDX
-            
-            ;COMPROBAMOS COLISIÓN CON LA PARED DE LA DERECHA
-.RIGHT     
-            MOVE.W  BPOSX,D1
-            MOVE.W  #SCRCTRL,D2
-            ADD.W   #BWIDTH,D1
-            CMP.W    D2,D1
-            BLT     .PLRY
-            NEG.W   BSPEEDX
+            MOVE.W  #BINPOSY,BPOSY
+            MOVE.W  BSPEEDY,D0
+            BMI     .NEGY
+            ADD.W   #2,BSPEEDY
+            JSR     .X
+.NEGY        
+            SUB.W   #2,BSPEEDY
+.X          
+            MOVE.W  BSPEEDX,D0
+            BMI     .NEGX 
+            ADD.W   #2,BSPEEDX
+            JSR     .END
+.NEGX       
+            SUB.W   #2,BSPEEDX 
+.END        
+            MOVEM.L (A7)+,D0
+            RTS
+      
+;-----------------------------------------------------------------------------
+BUPD
+;UPDATES THE BALL
+;-----------------------------------
+; UPDATES THE BALL MOTION
+; INPUT    - NONE 
+; OUTPUT   - NONE 
+; MODIFIES - NONE
+; -----------------------------------------------------------------------------
 
-.PLRY
+            MOVEM.L D0-D6/A0,-(A7)
+            ;COMPRUEBA COLISIONES CON LAS 4 PAREDES
+            ;Y SI PASA LA DE ABAJO LE ELIMINA UNA VIDA, O ENVIA LA PANTALLA GAME OVER
+            MOVE.W  BPOSX,D0
             MOVE.W  BPOSY,D1
-            ADD.W   #BWIDTH,D1
+            MOVE.W  BSPEEDX,D2
+            MOVE.W  BSPEEDY,D3
+            MOVE.W  #BDIAMET,D4
+            MOVE.W  PLIVES,D5
+            JSR     UTLCHCOLW    ;CUANDO TOCA LA PARED SE DISMINUYE D6              
+            CMP.W   #3,D6
+            BNE     .PLATAFORMA
+            MOVE.W  D2,BSPEEDX
+            MOVE.W  D3,BSPEEDY
+            MOVE.W  D5,PLIVES
+            JMP     .END
+
+            
+.PLATAFORMA
+            MOVE.W  BPOSY,D1
+            ADD.W   #BDIAMET,D1
             MOVE.W  #PPOSY,D2               ;D2-D1
             CMP.W   D1,D2                   ;SI LA Y SE CORRESPONDE
             BGT     .END                    ;SI LA BPOSY+WIDHT ES MAYOR QUE PPOSY,
@@ -87,10 +95,10 @@ BUPD
 .PLRXLEFT   
             
             MOVE.W  BPOSX,D1
-            ADD.W   #BWIDTH,D1
+            ADD.W   #BDIAMET,D1
             MOVE.W  PPOSX,D2
             CMP.W   D1,D2                   ;MIRAMOS EL IZQUIERDO
-            BGE     .DOWN
+            BGE     .END
             
 .PLRXMIDDLE 
             MOVE.W  PWIDTH,D3
@@ -110,28 +118,14 @@ BUPD
             MOVE.W  BPOSX,D1           
             ADD.W   D3,D2                   ;COMPARAMOS EL LADO IZQ DE LA PLATAFORMA
             CMP.W   D1,D2                   ;EL DERECHO
-            BLE     .DOWN                   
+            BLE     .END                   
             NEG.W   BSPEEDY
             
             MOVE.W  BSPEEDX,D1
-            BPL     .DOWN              ;SI ES POSITIVO SOLO NEGAMOS Y
+            BPL     .END              ;SI ES POSITIVO SOLO NEGAMOS Y
             NEG.W   BSPEEDX
             JMP     .END
 
-
-.DOWN       
-            MOVE.W  BPOSY,D1
-            ADD.W   #BHEIGHT,D1
-            CMP.W   #SCRHEIGH,D1
-            BLT     .END
-            MOVE.W  #STASPACE,(STANEXT)
-            MOVE.W  PLIVES,D0
-            SUB.W   #1,D0
-            MOVE.W  D0,PLIVES
-           
-            BNE     .END
-            ;UTLSND  .SOUND
-            MOVE.W   #STAGOVR,(STANEXT)
 .END            
 
             MOVE.W  BSPEEDX,D0
@@ -140,7 +134,7 @@ BUPD
             MOVE.W  BSPEEDY,D1
             ADD.W   D1,BPOSY
 
-            MOVEM.L (A7)+,D0-D3
+            MOVEM.L (A7)+,D0-D6/A0
             
             RTS
 
@@ -159,7 +153,7 @@ BPLOT
  
             ;CIRCLE
 
-            MOVE.W  #BWIDTH,D5 
+            MOVE.W  #BDIAMET,D5 
     
             MOVE.W  BPOSX,D3
             MOVE.W  BPOSY,D4
@@ -176,6 +170,11 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
+
+
+
+
 
 
 
