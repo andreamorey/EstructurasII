@@ -5,8 +5,10 @@
 BINIT
 ;INITIALIZE THE BALL
 ;----------------------------------
-            MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY,BPOSY  
+            MOVE.W  #BINPOSX,BPOSX1
+            MOVE.W  #BINPOSY,BPOSY1
+            MOVE.W  #BINPOSX+BDIAMET,BPOSX2
+            MOVE.W  #BINPOSX+BDIAMET,BPOSY2
             MOVE.W  #BINSPEED,BSPEEDX
             MOVE.W  #BINSPEED,BSPEEDY
             RTS
@@ -16,8 +18,10 @@ BNXTLEV
 ;----------------------------------
 ;BALL NEXT LEVEL       (NEXT LEVEL)
             MOVEM.L D0,-(A7)
-            MOVE.W  #BINPOSX,BPOSX
-            MOVE.W  #BINPOSY,BPOSY
+            MOVE.W  #BINPOSX,BPOSX1
+            MOVE.W  #BINPOSY,BPOSY1
+            MOVE.W  #BINPOSX+BDIAMET,BPOSX2
+            MOVE.W  #BINPOSX+BDIAMET,BPOSY2
             MOVE.W  BSPEEDY,D0
             BMI     .NEGY
             ADD.W   #2,BSPEEDY
@@ -48,18 +52,12 @@ BUPD
             MOVEM.L D0-D6/A0,-(A7)
             ;COMPRUEBA COLISIONES CON LAS 4 PAREDES
             ;Y SI PASA LA DE ABAJO LE ELIMINA UNA VIDA, O ENVIA LA PANTALLA GAME OVER
-            MOVE.W  BPOSX,D0
-            MOVE.W  BPOSY,D1
-            MOVE.W  BSPEEDX,D2
-            MOVE.W  BSPEEDY,D3
-            MOVE.W  #BDIAMET,D4
-            MOVE.W  PLIVES,D5
-            JSR     UTLCHCOLW    ;CUANDO TOCA LA PARED SE DISMINUYE D6              
-            CMP.W   #3,D6
-            BNE     .PLATAFORMA
-            MOVE.W  D2,BSPEEDX
-            MOVE.W  D3,BSPEEDY
-            MOVE.W  D5,PLIVES
+            MOVE.W  BPOSX1,D0
+            MOVE.W  BPOSY1,D1
+            MOVE.W  BPOSX2,D2
+            MOVE.W  BPOSY2,D3
+            JSR     UTLCHCOLW                  
+            JSR     UTLCHCOLP
             JMP     .END
 
             
@@ -138,7 +136,6 @@ BUPD
             
             RTS
 
-;.SOUND      DC.L    'blocks.wav',0
 BPLOT       
             MOVEM.L  D0-D5,-(A7)
             ;CONTOUR COLOR
@@ -170,6 +167,7 @@ BPLOT
             MOVEM.L  (A7)+,D0-D5
 
             RTS
+
 
 
 

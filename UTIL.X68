@@ -84,56 +84,50 @@ UTLSNDST     MACRO
 ; -----------------------------------------------------------------------------
 UTLCHCOLW
 ; CHECKS COLLISION WITH WALL
-; INPUT    - D0.W BPOSX
-;            D1.W BPOSY
-;            D2.W BSPEEDX
-;            D3.W BSPEEDY
-;            D4.W BALL DIAMETRE
-;            D5.W LIVES 
-; OUTPUT   - D2.W = BSPEEDX, 
-;          - D3.W = BSPEEDY, 
-;          - D5.W = LIVES
+; INPUT    - D0.W BPOSX1
+;            D1.W BPOSY1
+;            D2.W BPOSX2
+;            D3.W BPOSY2
+; OUTPUT    
 ;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            MOVE.W  #4,D6
             LEA.L   .COLLISIONS,A0
             CMP.W   (A0)+,D1      ;UP
             BGT     .LEFT
-            NEG.W   D3
-            SUBI.W  #1,D6
-            RTS
+            NEG.W   BSPEEDY
+            CLR.W   BPOSY1
+            MOVE.W  #BDIAMET,BPOSY2
+            RTS 
 .LEFT        
             CMP.W   (A0)+,D0
             BGT     .RIGHT
-            NEG.W   D2
-            SUBI.W  #1,D6
+            NEG.W   BSPEEDX
+            CLR.W   BPOSX1
+            MOVE.W  #BDIAMET,BPOSX2
             RTS
 .RIGHT      
-            ADD.W   D4,D0
-            CMP.W   (A0)+,D0
+            
+            CMP.W   (A0)+,D2
             BLT     .DOWN
-            NEG.W   D2
-            SUBI.W  #1,D6
+            NEG.W   BSPEEDX
+            MOVE.W  #SCRCTRL,BPOSX2
+            MOVE.W  #SCRCTRL-BDIAMET,BPOSX1
             RTS
 .DOWN       
-            ADD.W   D4,D1 
-            CMP.W   (A0)+,D1                ;BPOSY - HEIGHT
-            BGT     .MINLIVE1                ;SI HA CAIDO  
+            CMP.W   (A0)+,D3                
+            BGT     .MINLIVE                  
             RTS  
-.MINLIVE1       
-             
+.MINLIVE       
             UTLSNDS .SOUNDL,#1 
-            SUB.W   #1,D5                
-            BNE     .MINLIVE2               
+            SUB.W   #1,PLIVES                
+            BNE     .RESET               ;SALTA SI NO SE HAN AGOTADO LAS VIDAS              
             UTLSNDST
             UTLSNDS .SOUNDG,#1
             MOVE.W  #STAGOVR,(STANEXT)
-            SUBI.W  #1,D6
             RTS
-.MINLIVE2     
-            MOVE.W  #STASPACE,(STANEXT)
-            SUBI.W  #1,D6            
+.RESET     
+            MOVE.W  #STASPACE,(STANEXT)            
             RTS
 .COLLISIONS DC.W    0,0,SCRCTRL,SCRHEIGH
 .SOUNDG      DC.L    'game over.wav',0
@@ -153,16 +147,7 @@ UTLCHCOLP
 ;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            ADD.W   D4,D1
-            CMP.W   D1,D3 ;COMPUREBA LA Y
-
-            
-            ;AQUI IRIA LA COLISION DE LOS LADOS
-            
-            
-            LSR.W   #1,D4
-           ; ADD.W   D4
-             
+                         
 ; -----------------------------------------------------------------------------
 UTLCHCOL
 ; CHECKS COLLISION
@@ -195,6 +180,7 @@ UTLCHCOL
 .NOCOL      CLR.B   D0
 .END        MOVEM.W (A7)+,D4-D7
             RTS
+
 
 
 
