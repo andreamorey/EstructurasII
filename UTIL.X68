@@ -88,24 +88,25 @@ UTLCHCOLW
 ;            D1.W BPOSY1
 ;            D2.W BPOSX2
 ;            D3.W BPOSY2
-; OUTPUT    
-;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
-; MODIFIES - NONE
+; OUTPUT   - 
+; MODIFIES - 
 ; -----------------------------------------------------------------------------
+            MOVEM.L D0-D3/A0,-(A7)
             LEA.L   .COLLISIONS,A0
             CMP.W   (A0)+,D1      ;UP
             BGT     .LEFT
+
             NEG.W   BSPEEDY
             CLR.W   BPOSY1
             MOVE.W  #BDIAMET,BPOSY2
-            RTS 
+            JMP     .END 
 .LEFT        
             CMP.W   (A0)+,D0
             BGT     .RIGHT
             NEG.W   BSPEEDX
             CLR.W   BPOSX1
             MOVE.W  #BDIAMET,BPOSX2
-            RTS
+            JMP     .END
 .RIGHT      
             
             CMP.W   (A0)+,D2
@@ -113,21 +114,25 @@ UTLCHCOLW
             NEG.W   BSPEEDX
             MOVE.W  #SCRCTRL,BPOSX2
             MOVE.W  #SCRCTRL-BDIAMET,BPOSX1
-            RTS
+            JMP     .END
 .DOWN       
-            CMP.W   (A0)+,D3                
+            CMP.W   (A0)+,D3         
             BGT     .MINLIVE                  
-            RTS  
+            JMP     .END  
 .MINLIVE       
-            UTLSNDS .SOUNDL,#1 
+            UTLSNDS .SOUNDL,#1
+            MOVE.W  #SCRHEIGH,BPOSY2
+            MOVE.W  #SCRHEIGH-BDIAMET,BPOSY1 
             SUB.W   #1,PLIVES                
             BNE     .RESET               ;SALTA SI NO SE HAN AGOTADO LAS VIDAS              
             UTLSNDST
             UTLSNDS .SOUNDG,#1
             MOVE.W  #STAGOVR,(STANEXT)
-            RTS
+            JMP     .END
 .RESET     
             MOVE.W  #STASPACE,(STANEXT)            
+.END        
+            MOVEM.L (A7)+,D0-D3/A0
             RTS
 .COLLISIONS DC.W    0,0,SCRCTRL,SCRHEIGH
 .SOUNDG      DC.L    'game over.wav',0
@@ -135,19 +140,109 @@ UTLCHCOLW
 ; -----------------------------------------------------------------------------
 UTLCHCOLP
 ; CHECKS COLLISION WITH PLATAFORM
-; INPUT    - D0.W BPOSX
-;            D1.W BPOSY
-;            D2.W PPOSX
-;            D3.W PPOSY
-;            D4.W BALL DIAMETRE
-;            D5.W LIVES 
-; OUTPUT   - D2.W = BSPEEDX, 
-;          - D3.W = BSPEEDY, 
-;          - D5.W = LIVES
-;          - D6.W = IF D6 == 4 {COMPROBAR COLISION PLATAFORMA} ELSE{NO COMPROBAR} 
+; INPUT    - D0.W BPOSX1
+;            D1.W BPOSY1
+;            D2.W PPOSX2
+;            D3.W PPOSY2
+; OUTPUT   
+;           
+; MODIFIES - D4,D5
+; -----------------------------------------------------------------------------
+            MOVEM.L D4-D5,-(A7)
+            MOVE.W  #PPOSY,D4
+            CMP.W   D4,D3
+            BLT     .END                    ;SI ESTÁ MÁS A ARRIBA DE LA PLATAFORMA NO HAY COLISIÓN
+            MOVE.W  PPOSX,D4
+            CMP.W   D4,D2
+            BLT     .END                    ;SI ESTÁ MÁS A LA IZQUIERDA DE LA PLATAFORMA NO HAY COLISIÓN
+            ADD.W   PWIDTH,D4
+            CMP.W    D4,D0
+            BGT     .END                    ;SI ESTÁ MÁS A LA DERECHA NO HAY COLISIÓN
+            ;AQUÍ HAY COLISIÓN, TENEMOS QUE DETECTAR CUAL
+            MOVE.W  #PPOSY,D4
+            CMP.W   D4,D1
+            BGT     .LADOS
+            NEG.W   BSPEEDY                 ;COLISIÓN CON LA PARTE DE ARRIBA
+            MOVE.W  D4,BPOSY2
+            SUB.W   #BDIAMET,D4
+            MOVE.W  D4,BPOSY1       
+.PLRXMIDDLE 
+            MOVE.W  PWIDTH,D4
+            LSR.W   #1,D4
+            MOVE.W  PPOSX,D5 
+            ADD.W   D4,D5                   ;D5 = CENTRO PLATAFORMA
+            CMP.W   D2,D5                   ;CENTRO - POS PEL
+            BMI     .PLRXRIGHT
+            MOVE.W  BSPEEDX,D4
+            BMI     .END
+                                         
+            NEG.W   D4
+            MOVE.W  D4,BSPEEDX
+            JMP     .END
+            
+.PLRXRIGHT             
+            MOVE.W  BSPEEDX,D4
+            BPL     .END              ;SI ES POSITIVO SOLO NEGAMOS Y
+            NEG.W   D4
+            MOVE.W  D4,BSPEEDX
+            JMP     .END
+
+.LADOS      NEG.W   BSPEEDX                 ;COLISIÓN CON LOS LADOS
+.END        MOVEM.L (A7)+,D4-D5 
+            RTS
+
+
+; -----------------------------------------------------------------------------
+UTLCOLBL   
+; CHECKS COLLISION WITH BLOCKS
+; INPUT    - POSITION BALL \1 X \2 Y TO CHECK COLLISION WITH BLOCK
+; OUTPUT   
+;           
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-                         
+*            MOVEM.L D0-D3,-(A7)            
+            LSR.L  #4,D1                    ;POSY/BLHEIGHT. D1 -> FILA
+            MOVE.W  #BLROW-1,D2
+            CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
+            BLT     .END                    
+            LEA.L   BLMATRIX,A0
+            ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
+                                        
+            LSR.L  #6,D0                    ;D0 -> COLUMNA 
+            MOVE.W  #BLCOL-1,D3                           
+            SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
+            BPL     .TEST  
+            CLR.L   D3                        ;POR SI SALE NEGATIVO LA REAJUSTAMOS
+.TEST
+            BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+            BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+*            NEG.W   BSPEEDY                 ;****
+*            BCLR    D3,(A0)                 ;****
+            MOVE.W  BPOSX1,D2
+            LSL.L   #6,D0                   ;COORDENADA IZQUIERDA DEL BLOQUE
+            CMP     D2,D0
+            BLT     .RIGHT
+            NEG.W   BSPEEDX
+            JMP     .COLBL
+.RIGHT      MOVE.W  BPOSX2,D2
+            LSL.L   #1,D0
+            CMP     D2,D0                   ;POSBLOQUE - POS X (DERECHA) DE LA BOLA 
+            BGT     .NEGY                   ;5-7= -2 
+            NEG.W   BSPEEDX
+            JMP     .COLBL
+.NEGY       NEG.W   BSPEEDY
+            
+.COLBL
+            MOVE.W  #1,D4
+            BCLR    D3,(A0)
+            SUB.W   #1,BLCOUNTER
+            UTLSNDS  .SOUND,#1
+            ADD.W   #100,PSCORE
+                                
+.END            
+*            MOVEM.L (A7)+,D0-D3/A0
+            RTS
+.SOUND      DC.L    'blocks.wav',0
 ; -----------------------------------------------------------------------------
 UTLCHCOL
 ; CHECKS COLLISION
@@ -180,6 +275,9 @@ UTLCHCOL
 .NOCOL      CLR.B   D0
 .END        MOVEM.W (A7)+,D4-D7
             RTS
+
+
+
 
 
 

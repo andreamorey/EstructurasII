@@ -1,6 +1,6 @@
-00001758 Starting Address
+00000000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 17/12/2019 20:46:08
+Created On: 19/12/2019 23:40:05
 
 00000000                             1  ;-----------------------------------------------------------
 00000000                             2  ;           BLOCKS
@@ -11,137 +11,197 @@ Created On: 17/12/2019 20:46:08
 Line 7 ERROR: Undefined symbol
 00000004  41F9 004DBD16              7              LEA.L   BLMATRIX,A0
 Line 8 ERROR: Comma expected
-0000000A                             8              MOVE.W  #BLROW-1,D0
+0000000A                             8              MOVE.W  #BLROW-1,D0             ;7
 Line 9 ERROR: Symbol value differs between first and second pass
 0000000A                             9  .LOOP       
 0000000A  10FC 00FF                 10              MOVE.B  #%11111111,(A0)+
 0000000E  51C8 FFFE                 11              DBRA    D0,.LOOP
-00000012  4CDF 0101                 12              MOVEM.L (A7)+,D0/A0
-00000016  4E75                      13              RTS
-00000018                            14              
-Line 15 ERROR: Symbol value differs between first and second pass
-00000018                            15  BLUPD       
-00000018  48E7 F080                 16              MOVEM.L D0-D3/A0,-(A7)
-Line 17 ERROR: Undefined symbol
-0000001C  3039 004DBD16             17              MOVE.W BPOSX,D0
-Line 18 ERROR: Comma expected
-00000022                            18              ADD.W #BWIDTH/2,D0              ;POSICIÓN CENTRAL X DE LA BOLA
-00000022                            19              ;MOVE.W #BLROW*BLHEIGHT,D1       ;PARTE INFERIOR DEL BLOQUE ÚLTIMA FILA
-00000022  4282                      20              CLR.L   D2
-00000024                            21              ;MOVE.W  BPOSY,D2
-Line 22 ERROR: Undefined symbol
-00000024  84FC BD16                 22              DIVU.W  #BLHEIGHT,D2            ;BPOSY/BLHEIGHT. FILA EN LA QUE ESTA LA BOLA
-00000028                            23              
-Line 24 ERROR: Comma expected
-00000028                            24              MOVE.W  #BLROW-1,D3
-00000028  B642                      25              CMP.W   D2,D3                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
-0000002A  6D00 003C                 26              BLT     .END                    
-Line 27 ERROR: Undefined symbol
-0000002E  41F9 004DBD16             27              LEA.L   BLMATRIX,A0
-Line 28 ERROR: Comma expected
-00000034                            28              ADDA.L  #BLROW-1,A0
-Line 29 ERROR: Undefined symbol
-00000034  C4FC BD16                 29              MULU.W  #BLHEIGHT,D2
-00000038                            30              ;MOVE.W  D2,BPOSY                ;OBTENEMOS EN QUE COLUMNA ESTA
-Line 31 ERROR: Undefined symbol
-00000038  80FC BD16                 31              DIVU.W  #BLWIDTH,D0  ;D0 = DE 0 A 7 DEPENDIENDO DE LA COLUMNA
-0000003C                            32              
-Line 33 ERROR: Comma expected
-0000003C                            33              MOVE.W  #BLCOL-1,D1     ;EMPIEZA DESDE LA DERECHA              
-0000003C  9240                      34              SUB.W   D0,D1
-0000003E  0310                      35              BTST.B    D1,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
-00000040  6700 0026                 36              BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+Line 12 ERROR: Invalid syntax
+00000012                            12              MOVE.W  #BLROW*BLCOL,BLCOUNTER
+00000012                            13              
+00000012  4CDF 0101                 14              MOVEM.L (A7)+,D0/A0
+00000016  4E75                      15              RTS
+00000018                            16              
+00000018                            17  *            
+00000018                            18  *BLINIT2
+00000018                            19  *            MOVEM.L D0/A0,-(A7)
+00000018                            20  *            LEA.L   BLMATRIX,A0
+00000018                            21  *            MOVE.W  #BLROW-2,D0             ;7
+00000018                            22  *       
+00000018                            23  *            MOVE.B  #%000000000,(A0)+
+00000018                            24  *.LOOP            
+00000018                            25  *            MOVE.B  #%010101010,(A0)+
+00000018                            26  *           
+00000018                            27  *            DBRA    D0,.LOOP
+00000018                            28  *
+00000018                            29  *            ;MOVE.W  #BLROW*BLCOL,BLCOUNTER
+00000018                            30  *            ;MOVE.W  #5,BLCOUNTER
+00000018                            31  *            MOVEM.L (A7)+,D0/A0
+00000018                            32  *            RTS
+00000018                            33              
+00000018                            34              
+Line 35 ERROR: Symbol value differs between first and second pass
+00000018                            35  BLUPD       
+00000018  48E7 F080                 36              MOVEM.L D0-D3/A0,-(A7)
 Line 37 ERROR: Undefined symbol
-00000044  3439 004DBD16             37              MOVE.W  BPOSY,D2
-0000004A                            38  *            CMP.W   D1,D2                     ;MIRAMOS SI SON IGUALES LA Y DE LA BOLA CON EL BLOQUE
-0000004A                            39  *            BGT     .END    
-Line 40 ERROR: Undefined symbol
-0000004A  4479 004DBD16             40              NEG.W   BSPEEDY
-00000050                            41                                              ;COLUMNA DEL BLOQUE QUE HA COLISIONADO
-00000050                            42              
-00000050                            43  *            LEA.L   BLMATRIX,A0
-00000050                            44  *            ADDA.L  #BLROW-1,A0             ;LE PASAMOS LA DIRECCIÓN DE LA ÚLTIMA FILA 
-00000050                            45  *            MOVE.W  #BLCOL-1,D1                   
-00000050                            46  *            SUB.W   D0,D1
-00000050  0390                      47              BCLR    D1,(A0)
-00000052                            48  ;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
-00000052                            49              
-00000052                            50  
-Line 51 ERROR: Symbol value differs between first and second pass
-00000052  4CDF 010F                 51  .END        MOVEM.L (A7)+,D0-D3/A0
-00000056  4E75                      52              RTS     
-00000058                            53              
-00000058                            54              
-Line 55 ERROR: Symbol value differs between first and second pass
-00000058                            55  BLPLOT
-00000058  48E7 FFC0                 56              MOVEM.L D0-D7/A0-A1,-(A7)
-0000005C  103C 0050                 57              MOVE.B  #80,D0                  ;SET PEN COLOR
-00000060  7200                      58              MOVE.L  #0,D1
-00000062  4E4F                      59              TRAP    #15
-00000064                            60              
-00000064  4242                      61              CLR.W   D2                      ;UPPER Y
-Line 62 ERROR: Undefined symbol
-00000066  383C BD16                 62              MOVE.W  #BLHEIGHT,D4            ;DOWN Y
+0000001C  3039 004DBD16             37              MOVE.W BPOSX1,D0
+Line 38 ERROR: Undefined symbol
+00000022  3239 004DBD16             38              MOVE.W  BPOSY1,D1
+Line 39 ERROR: Comma expected
+00000028                            39              ADD.W #BDIAMET/2,D0              ;D0 -> POSICIÓN CENTRAL X DE LA BOLA
+00000028  E889                      40              LSR.L  #4,D1                    ;BPOSY/BLHEIGHT. D1 -> FILA EN LA QUE ESTA LA BOLA
+Line 41 ERROR: Comma expected
+0000002A                            41              MOVE.W  #BLROW-1,D2
+0000002A  B441                      42              CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
+0000002C  6D00 007A                 43              BLT     .END                    
+Line 44 ERROR: Undefined symbol
+00000030  41F9 004DBD16             44              LEA.L   BLMATRIX,A0
+00000036  D1C1                      45              ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
+00000038                            46              
+00000038                            47                                              ;OBTENEMOS EN QUE COLUMNA ESTA
+00000038  EC88                      48              LSR.L  #6,D0                    ;D0 -> COLUMNA EN LA QUE ESTÁ LA BOLA
+Line 49 ERROR: Comma expected
+0000003A                            49              MOVE.W  #BLCOL-1,D3             ;LAS COMPROBACIONES EMPIEZAN DESDE LA DERECHA              
+0000003A  9640                      50              SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
+0000003C                            51              ;7-8
+0000003C  6A00 001C                 52              BPL     .ERROR  
+00000040  4283                      53              CLR.L D3        
+Line 54 ERROR: Symbol value differs between first and second pass
+00000042                            54  .ERROR
+00000042  0710                      55              BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+00000044  6700 0062                 56              BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+00000048                            57  *            NEG.W   BSPEEDY                 ;****
+00000048                            58  *            BCLR    D3,(A0)                 ;****
+00000048  5241                      59              ADDI.W  #1,D1
+0000004A  E989                      60              LSL.L   #4,D1
+Line 61 ERROR: Undefined symbol
+0000004C  3039 004DBD16             61              MOVE.W  BSPEEDY,D0
+00000052  6B00 002E                 62              BMI     .DOWNBL
 Line 63 ERROR: Undefined symbol
-0000006A  41F9 004DBD16             63              LEA     COLORS,A0
-00000070                            64              
-Line 65 ERROR: Comma expected
-00000070                            65              MOVE.W  #BLROW-1,D5    ;DBRA
-00000070  227C 00000000             66              MOVE.L  #0,A1                      ;PARA SABER CUAL PONER D6= FILA
-00000076                            67              
-00000076                            68  
-00000076                            69              
-Line 70 ERROR: Symbol value differs between first and second pass
-00000076                            70  .LOOP2                                      ;BUCLE DE FILAS
-00000076                            71   
-00000076  103C 0051                 72              MOVE.B  #81,D0                  ;SET COLOR
-0000007A  2218                      73              MOVE.L  (A0)+,D1
-0000007C  4E4F                      74              TRAP    #15
-0000007E                            75                                        ;BUCLE FILAS
-0000007E                            76              
-Line 77 ERROR: Undefined symbol
-0000007E  363C BD16                 77              MOVE.W  #BLWIDTH,D3             ;RIGHT X
-00000082  4241                      78              CLR.W   D1                      ;LEFT X
-00000084                            79              
-00000084  3F05                      80              MOVE.W  D5,-(A7)                ;GUARDO EL VALOR DEL DECREMENTO DE LOOP2
-Line 81 ERROR: Comma expected
-00000086                            81              MOVE.W  #BLCOL-1,D5
-Line 82 ERROR: Undefined symbol
-00000086  1C29 BD16                 82              MOVE.B  BLMATRIX(A1),D6
-Line 83 ERROR: Symbol value differs between first and second pass
-0000008A                            83  .LOOP1                                      ; BUCLE COLUMNAS
-0000008A                            84             
-0000008A  E31E                      85              ROL.B   #1,D6
-0000008C  6400 0026                 86              BCC     .SALTO                  ; SALTA SI CARRY = 0
-00000090                            87              
-00000090  103C 0057                 88              MOVE.B  #87,D0                  ; DIBUJAMOS EL CUADRADO
-00000094  4E4F                      89              TRAP    #15
+00000056  0441 BD16                 63              SUB.W   #BLHEIGHT,D1
+Line 64 ERROR: Undefined symbol
+0000005A  33C1 005455B8             64              MOVE.W  D1,BPOSY2
+Line 65 ERROR: Undefined symbol
+00000060  0441 BD16                 65              SUB.W   #BDIAMET,D1
+Line 66 ERROR: Undefined symbol
+00000064  33C1 005455B8             66              MOVE.W  D1,BPOSY1
+Line 67 ERROR: Symbol value differs between first and second pass
+0000006A                            67  .DOWNBL
+Line 68 ERROR: Undefined symbol
+0000006A  33C1 005455C8             68              MOVE.W  D1,BPOSY1                ;CORRECION DE LA BPOSY
+Line 69 ERROR: Undefined symbol
+00000070  0641 BD16                 69              ADD.W   #BDIAMET,D1
+Line 70 ERROR: Undefined symbol
+00000074  33C1 005455B8             70              MOVE.W  D1,BPOSY2
+Line 71 ERROR: Undefined symbol
+0000007A  4479 004DBD16             71              NEG.W   BSPEEDY
+00000080  0790                      72              BCLR    D3,(A0)
+Line 73 ERROR: Undefined symbol
+00000082  5379 005455B8             73              SUB.W   #1,BLCOUNTER
+Line 74 ERROR: Invalid opcode
+00000088                            74              UTLSNDS  .SOUND,#1
+Line 75 ERROR: Undefined symbol
+00000088  0679 0064 005455B8        75              ADD.W   #100,PSCORE
+00000090                            76              
+00000090                            77          
+00000090                            78  
+00000090                            79              
+00000090                            80  
+00000090                            81  *.END        
+00000090                            82  *            MOVE.W  BLCOUNTER,D0
+00000090                            83  *            BNE     .END2
+00000090                            84  *            
+00000090                            85  *            ADD.W   #1,STANEXT
+00000090                            86  *            
+Line 87 ERROR: Symbol value differs between first and second pass
+00000090                            87  .END            
+00000090  4CDF 010F                 88              MOVEM.L (A7)+,D0-D3/A0
+00000094  4E75                      89              RTS     
 Line 90 ERROR: Symbol value differs between first and second pass
-00000096                            90  .SALTO
-00000096  3203                      91              MOVE.W  D3,D1
-Line 92 ERROR: Undefined symbol
-00000098  0643 BD16                 92              ADD.W   #BLWIDTH, D3
-0000009C  5247                      93              ADDI.W  #1,D7
-0000009E  51CD 0008                 94              DBRA    D5,.LOOP1 
-000000A2  3A1F                      95              MOVE.W  (A7)+,D5              
-000000A4                            96  
-000000A4  5249                      97              ADDA.W  #1,A1
-000000A6  3404                      98              MOVE.W  D4,D2
-Line 99 ERROR: Undefined symbol
-000000A8  0644 BD16                 99              ADD.W   #BLHEIGHT,D4
-000000AC  51CD FFE2                100              DBRA    D5,.LOOP2
-000000B0  4CDF 03FF                101              MOVEM.L (A7)+,D0-D7/A0-A1
-000000B4  4E75                     102              RTS
-000000B6                           103  
-000000B6                           104  
-000000B6                           105  
-000000B6                           106  
-000000B6                           107  
-000000B6                           108  
-000000B6                           109  
-Line 110 WARNING: END directive missing, starting address not set
+00000096= 626C6F63 6B732E77 ...     90  .SOUND      DC.L    'blocks.wav',0
+000000A2                            91  
+000000A2                            92              
+Line 93 ERROR: Symbol value differs between first and second pass
+000000A2                            93  BLPLOT
+000000A2  48E7 FFC0                 94              MOVEM.L D0-D7/A0-A1,-(A7)
+000000A6  103C 0050                 95              MOVE.B  #80,D0                  ;SET PEN COLOR
+000000AA  7200                      96              MOVE.L  #0,D1
+000000AC  4E4F                      97              TRAP    #15
+000000AE                            98              
+000000AE  4242                      99              CLR.W   D2                      ;UPPER Y
+Line 100 ERROR: Undefined symbol
+000000B0  383C BD16                100              MOVE.W  #BLHEIGHT,D4            ;DOWN Y
+Line 101 ERROR: Undefined symbol
+000000B4  41F9 004DBD16            101              LEA     COLORS,A0
+000000BA                           102              
+Line 103 ERROR: Comma expected
+000000BA                           103              MOVE.W  #BLROW-1,D5    ;DBRA
+000000BA  227C 00000000            104              MOVE.L  #0,A1                      ;PARA SABER CUAL PONER D6= FILA
+000000C0                           105              
+Line 106 ERROR: Symbol value differs between first and second pass
+000000C0                           106  .LOOP2                                      ;BUCLE DE FILAS
+000000C0                           107   
+000000C0  103C 0051                108              MOVE.B  #81,D0                  ;SET COLOR
+000000C4  2218                     109              MOVE.L  (A0)+,D1
+000000C6  4E4F                     110              TRAP    #15
+000000C8                           111                                        ;BUCLE FILAS
+000000C8                           112              
+Line 113 ERROR: Undefined symbol
+000000C8  363C BD16                113              MOVE.W  #BLWIDTH,D3             ;RIGHT X
+000000CC  4241                     114              CLR.W   D1                      ;LEFT X
+000000CE                           115              
+000000CE  3F05                     116              MOVE.W  D5,-(A7)                ;GUARDO EL VALOR DEL DECREMENTO DE LOOP2
+Line 117 ERROR: Comma expected
+000000D0                           117              MOVE.W  #BLCOL-1,D5
+Line 118 ERROR: Undefined symbol
+000000D0  1C29 BD16                118              MOVE.B  BLMATRIX(A1),D6
+Line 119 ERROR: Symbol value differs between first and second pass
+000000D4                           119  .LOOP1                                      ; BUCLE COLUMNAS
+000000D4                           120             
+000000D4  E31E                     121              ROL.B   #1,D6
+000000D6  6400 002C                122              BCC     .SALTO                  ; SALTA SI CARRY = 0
+000000DA                           123              
+000000DA  103C 0057                124              MOVE.B  #87,D0                  ; DIBUJAMOS EL CUADRADO
+000000DE  4E4F                     125              TRAP    #15
+Line 126 ERROR: Symbol value differs between first and second pass
+000000E0                           126  .SALTO
+000000E0  3203                     127              MOVE.W  D3,D1
+Line 128 ERROR: Undefined symbol
+000000E2  0643 BD16                128              ADD.W   #BLWIDTH, D3
+000000E6  5247                     129              ADDI.W  #1,D7
+000000E8  51CD 000E                130              DBRA    D5,.LOOP1 
+000000EC  3A1F                     131              MOVE.W  (A7)+,D5              
+000000EE                           132  
+000000EE  5249                     133              ADDA.W  #1,A1
+000000F0  3404                     134              MOVE.W  D4,D2
+Line 135 ERROR: Undefined symbol
+000000F2  0644 BD16                135              ADD.W   #BLHEIGHT,D4
+000000F6  51CD FFE8                136              DBRA    D5,.LOOP2
+000000FA  4CDF 03FF                137              MOVEM.L (A7)+,D0-D7/A0-A1
+000000FE  4E75                     138              RTS
+00000100                           139  
+00000100                           140  
+00000100                           141  
+00000100                           142  
+00000100                           143  
+00000100                           144  
+00000100                           145  
+00000100                           146  
+00000100                           147  
+00000100                           148  
+00000100                           149  
+00000100                           150  
+00000100                           151  
+00000100                           152  
+00000100                           153  
+00000100                           154  
+00000100                           155  
+00000100                           156  
+00000100                           157  
+00000100                           158  
+Line 159 WARNING: END directive missing, starting address not set
 
-28 errors detected
+39 errors detected
 1 warning generated
 
 
@@ -150,9 +210,12 @@ Symbol-name         Value
 -------------------------
 BLINIT              0
 BLINIT:LOOP         E
-BLPLOT              6E
-BLPLOT:LOOP1        A8
-BLPLOT:LOOP2        90
-BLPLOT:SALTO        B4
-BLUPD               1C
-BLUPD:END           68
+BLPLOT              BE
+BLPLOT:LOOP1        F8
+BLPLOT:LOOP2        E0
+BLPLOT:SALTO        104
+BLUPD               24
+BLUPD:DOWNBL        82
+BLUPD:END           A8
+BLUPD:ERROR         5A
+BLUPD:SOUND         AE

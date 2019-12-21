@@ -33,45 +33,49 @@ BLINIT
             
             
 BLUPD       
-            MOVEM.L D0-D3/A0,-(A7)
-            MOVE.W BPOSX,D0
-            MOVE.W  BPOSY,D1
-            ADD.W #BDIAMET/2,D0              ;D0 -> POSICIÓN CENTRAL X DE LA BOLA
-            LSR.L  #4,D1                    ;BPOSY/BLHEIGHT. D1 -> FILA EN LA QUE ESTA LA BOLA
-            MOVE.W  #BLROW-1,D2
-            CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
-            BLT     .END                    
-            LEA.L   BLMATRIX,A0
-            ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
-            
-                                            ;OBTENEMOS EN QUE COLUMNA ESTA
-            LSR.L  #6,D0                    ;D0 -> COLUMNA EN LA QUE ESTÁ LA BOLA
-            MOVE.W  #BLCOL-1,D3             ;LAS COMPROBACIONES EMPIEZAN DESDE LA DERECHA              
-            SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
-            ;7-8
-            BPL     .ERROR  
-            CLR.L D3        
-.ERROR
-            BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
-            BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
-*            NEG.W   BSPEEDY                 ;****
-*            BCLR    D3,(A0)                 ;****
-            ADDI.W  #1,D1
-            LSL.L   #4,D1
-            MOVE.W  BSPEEDY,D0
-            BMI     .DOWNBL
-            SUB.W   #BLHEIGHT+BDIAMET,D1
-.DOWNBL
-            MOVE.W  D1,BPOSY                ;CORRECION DE LA BPOSY
-            NEG.W   BSPEEDY
-            BCLR    D3,(A0)
-            SUB.W   #1,BLCOUNTER
-            UTLSNDS  .SOUND,#1
-            ADD.W   #100,PSCORE
-            
-        
-            
-;;;ANDREA: EL RECTANGULO 7 ES EL 0, EL 6 EL 1, EL 5 EL 2...
+*            MOVEM.L D0-D3/A0,-(A7)
+*            MOVE.W BPOSX1,D0
+*            MOVE.W  BPOSY1,D1
+*            ADD.W #BDIAMET/2,D0              ;D0 -> POSICIÓN CENTRAL X DE LA BOLA
+*            LSR.L  #4,D1                    ;BPOSY/BLHEIGHT. D1 -> FILA EN LA QUE ESTA LA BOLA
+*            MOVE.W  #BLROW-1,D2
+*            CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
+*            BLT     .END                    
+*            LEA.L   BLMATRIX,A0
+*            ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
+*            
+*                                            ;OBTENEMOS EN QUE COLUMNA ESTA
+*            LSR.L  #6,D0                    ;D0 -> COLUMNA EN LA QUE ESTÁ LA BOLA
+*            MOVE.W  #BLCOL-1,D3             ;LAS COMPROBACIONES EMPIEZAN DESDE LA DERECHA              
+*            SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
+*            ;7-8
+*            BPL     .ERROR  
+*            CLR.L D3        
+*.ERROR
+*            BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+*            BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+**            NEG.W   BSPEEDY                 ;****
+**            BCLR    D3,(A0)                 ;****
+*            ADDI.W  #1,D1
+*            LSL.L   #4,D1
+*            MOVE.W  BSPEEDY,D0
+*            BMI     .DOWNBL
+*            SUB.W   #BLHEIGHT,D1
+*            MOVE.W  D1,BPOSY2
+*            SUB.W   #BDIAMET,D1
+*            MOVE.W  D1,BPOSY1
+*.DOWNBL
+*            MOVE.W  D1,BPOSY1                ;CORRECION DE LA BPOSY
+*            ADD.W   #BDIAMET,D1
+*            MOVE.W  D1,BPOSY2
+*            NEG.W   BSPEEDY
+*            BCLR    D3,(A0)
+*            SUB.W   #1,BLCOUNTER
+*            UTLSNDS  .SOUND,#1
+*            ADD.W   #100,PSCORE
+*            
+*        
+*
             
 
 *.END        
@@ -80,10 +84,11 @@ BLUPD
 *            
 *            ADD.W   #1,STANEXT
 *            
-.END            
-            MOVEM.L (A7)+,D0-D3/A0
-            RTS     
-.SOUND      DC.L    'blocks.wav',0
+*.END            
+*            MOVEM.L (A7)+,D0-D3/A0
+             RTS     
+*.SOUND      DC.L    'blocks.wav',0
+
             
 BLPLOT
             MOVEM.L D0-D7/A0-A1,-(A7)
@@ -97,8 +102,6 @@ BLPLOT
             
             MOVE.W  #BLROW-1,D5    ;DBRA
             MOVE.L  #0,A1                      ;PARA SABER CUAL PONER D6= FILA
-            
-
             
 .LOOP2                                      ;BUCLE DE FILAS
  
@@ -133,24 +136,6 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 *~Font name~Courier New~
 *~Font size~18~
