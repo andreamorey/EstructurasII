@@ -16,6 +16,8 @@ PWIDTH      DS.W    1                       ; PLAYER WIDTH (PIXELS)
 PLIVES      DS.W    1                       ;LIVES LEFT
 PSCORE      DS.W    1                       ;SCORE DEL PLAYER
 PSPEED      DS.W    1
+LEVEL       DS.B    2
+
 ;----------------------------------------------------------------------------
 
 ; BALL ----------------------------------------------------------------------
@@ -30,9 +32,10 @@ BPOSY1      DS.W    1
 BPOSY2      DS.W    1
 ; BLOCKS --------------------------------------------------------------------
 BLCOUNTER   DS.W    1
-BLMATRIX    DS.B    12  ;12*8
+BLMATRIX    DS.B    BLROW  ;12*8
             DS.W    0
             
+
 
 
 

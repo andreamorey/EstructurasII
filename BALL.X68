@@ -9,9 +9,7 @@ BINIT
             MOVE.W  #BINPOSY,BPOSY2
             MOVE.W  #BINPOSX+BDIAMET,BPOSX2
             MOVE.W  #BINPOSY-BDIAMET,BPOSY1
-            MOVE.W  #BINSPEED,D0
-            NEG.W   D0
-            MOVE.W  D0,BSPEEDX
+            MOVE.W  #BINSPEED,BSPEEDX
             MOVE.W  #BINSPEED,BSPEEDY
             RTS
 ;----------------------------------         
@@ -51,7 +49,7 @@ BUPD
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
 
-            MOVEM.L D0-D6/A0,-(A7)
+            MOVEM.L D0-D7/A0,-(A7)
             ;COMPRUEBA COLISIONES CON LAS 4 PAREDES
             ;Y SI PASA LA DE ABAJO LE ELIMINA UNA VIDA, O ENVIA LA PANTALLA GAME OVER
             MOVE.W  BPOSX1,D0
@@ -61,21 +59,30 @@ BUPD
             JSR     UTLCHCOLW               ;COMPRUEBA COLISIÓN CON PAREDES               
             JSR     UTLCHCOLP               ;COMPRUEBA COLISIÓN CON PLATAFORMA
             CLR.L  D4
+            MOVE.W  BPOSX2,D5
+            MOVE.W  BPOSY2,D6
             JSR     UTLCOLBL
-            CMP     #1,D4
-            BEQ     .END
+            
+            CMP     #0,D4
+            BNE     .END
             MOVE.W  BPOSX2,D0
             MOVE.W  BPOSY1,D1
+            MOVE.W  BPOSX1,D5
+            MOVE.W  BPOSY2,D6
             JSR     UTLCOLBL
-            CMP     #1,D4
-            BEQ     .END
-            MOVE.W BPOSX1,D0
-            MOVE.W BPOSY2,D1
+            CMP     #0,D4
+            BNE     .END
+            MOVE.W  BPOSX1,D0
+            MOVE.W  BPOSY2,D1
+            MOVE.W  BPOSX2,D5
+            MOVE.W  BPOSY1,D6
             JSR     UTLCOLBL
-            CMP     #1,D4
-            BEQ     .END
-            MOVE.W BPOSX2,D0
-            MOVE.W BPOSY2,D1
+            CMP     #0,D4
+            BNE     .END
+            MOVE.W  BPOSX2,D0
+            MOVE.W  BPOSY2,D1
+            MOVE.W  BPOSX1,D5
+            MOVE.W  BPOSY1,D6
             JSR     UTLCOLBL   
 
 .END            
@@ -87,7 +94,7 @@ BUPD
             MOVE.W  BSPEEDY,D1
             ADD.W   D1,BPOSY1
             ADD.W   D1,BPOSY2
-            MOVEM.L (A7)+,D0-D6/A0
+            MOVEM.L (A7)+,D0-D7/A0
             
             RTS
 
@@ -115,6 +122,8 @@ BPLOT
             MOVEM.L  (A7)+,D0-D4
 
             RTS
+
+
 
 
 

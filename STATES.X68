@@ -111,8 +111,8 @@ STAPLAYU
 ; -----------------------------------------------------------------------------
             
             JSR     PLRUPD
-            JSR     BLUPD
-            JSR     BUPD                    
+            JSR     BUPD    
+            JSR     BLUPD                
             RTS
 ; -----------------------------------------------------------------------------
 STAPLAYP
@@ -121,10 +121,10 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            JSR     BPLOT
             JSR     BLPLOT
             JSR     PPLOT
-            JSR     SCTRLPLOT
+            JSR     BPLOT
+            JSR     UTLSCTRLP
             RTS
 
 ; -----------------------------------------------------------------------------
@@ -220,6 +220,10 @@ STAGOVRP
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
+
+
+
 
 
 

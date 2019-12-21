@@ -64,7 +64,7 @@ PSCORECOL   EQU     $00FFFFFF
 BDIAMET     EQU     10                       ;ANCHURA DE LA BOLA
 BINPOSX     EQU     SCRCTRL/2-BDIAMET/2     ;POSICION DE LA PELOTA X INICIAL
 BINPOSY     EQU     PPOSY-2                 ;POSICION DE LA PELOTA Y INICIAL
-BINSPEED    EQU     -5                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
+BINSPEED    EQU     -3                       ;INITIAL SPEED (HASTA LLEGAR A 500 PUNTOS)
 
 BINCOLOR    EQU     $00FFFFFF
 
@@ -88,6 +88,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 

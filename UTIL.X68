@@ -130,7 +130,9 @@ UTLCHCOLW
             MOVE.W  #STAGOVR,(STANEXT)
             JMP     .END
 .RESET     
-            MOVE.W  #STASPACE,(STANEXT)            
+            
+            MOVE.W  #STASPACE,(STANEXT) 
+           
 .END        
             MOVEM.L (A7)+,D0-D3/A0
             RTS
@@ -200,48 +202,84 @@ UTLCOLBL
 ;           
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-*            MOVEM.L D0-D3,-(A7)            
-            LSR.L  #4,D1                    ;POSY/BLHEIGHT. D1 -> FILA
+*            MOVEM.L D0-D7/A0,-(A7)            
+            LSR.W   #4,D1           ;POSY/BLHEIGHT. D1 -> FILA
             MOVE.W  #BLROW-1,D2
-            CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
-            BLT     .END                    
+            CMP.W   D1,D2           ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
+            BLT     .ENDNOCOLISION                    
             LEA.L   BLMATRIX,A0
-            ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
+            ADDA.L  D1,A0           ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
                                         
-            LSR.L  #6,D0                    ;D0 -> COLUMNA 
+            LSR.W   #6,D0           ;D0 -> COLUMNA 
             MOVE.W  #BLCOL-1,D3                           
-            SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
+            SUB.W   D0,D3           ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
+            MOVE.W  D3,D7
             BPL     .TEST  
-            CLR.L   D3                        ;POR SI SALE NEGATIVO LA REAJUSTAMOS
+            CLR.L   D3              ;POR SI SALE NEGATIVO LA REAJUSTAMOS
 .TEST
-            BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
-            BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
-*            NEG.W   BSPEEDY                 ;****
-*            BCLR    D3,(A0)                 ;****
-            MOVE.W  BPOSX1,D2
-            LSL.L   #6,D0                   ;COORDENADA IZQUIERDA DEL BLOQUE
-            CMP     D2,D0
-            BLT     .RIGHT
+            BTST.B  D3,(A0)         ;MIRAMOS EL BIT DONDE ESTA 
+            BEQ     .ENDNOCOLISION  ; SALTA SI EN ESA POSICION YA HABIA UN 0
+
+.IZQ        
+            LSR.W   #6,D5           ;D5 -> COLUMNA
+            MOVE.W  #BLCOL-1,D2
+            SUB.W   D5,D2           ;D2 -> COLUMNA (DESDE DERECHA) DONDE ESTA EL PUNTO CONTRARIO (SI 1 ENTONCES 2)
+            CMP     D3,D2                  
+            BLE     .CHOQUEDOBLE
             NEG.W   BSPEEDX
-            JMP     .COLBL
-.RIGHT      MOVE.W  BPOSX2,D2
-            LSL.L   #1,D0
-            CMP     D2,D0                   ;POSBLOQUE - POS X (DERECHA) DE LA BOLA 
-            BGT     .NEGY                   ;5-7= -2 
-            NEG.W   BSPEEDX
-            JMP     .COLBL
-.NEGY       NEG.W   BSPEEDY
             
-.COLBL
+            JMP     .ENDCOLISION    ;  (|)______|  COLISION DELADO IZQUIERDO COLISIONANDO POR LA IZQ DEL NLOQUE 
+            
+
+
+
+.CHOQUEDOBLE                        ;SI ESTA EN MEDIO DEL BLOQUE  |___()___| COLISION EN MEDIO
+                                    ;COMPARAMOS SI LE HA DADO A DOS A LA VEZ |______(|)______|
+            CMP     D3,D2
+            BEQ     .ENMEDIO
+            
+            ADDI.W  #BDIAMET/2,D0
+            LSR.W   #6,D0
+            MOVE.W  #BLCOL-1,D5     ;D1 -> COLUMNA DONDE SE ENCUENTRA EL PUNTO MEDIO DE LA BOLA                         
+            
+            SUB.W   D0,D5
+            BPL     .TEST2  
+            CLR.L   D5              ;POR SI SALE NEGATIVO LA REAJUSTAMOS
+.TEST2
+            
+            BTST.B  D5,(A0)         ;MIRAMOS EL BIT DONDE ESTA 
+            BEQ     .ENMEDIO
+            CMP     D5,D7
+            BEQ     .CHOQUEDOBLEIZQ
+            NEG.W   BSPEEDY
+            JMP     .ENDCOLISION
+.CHOQUEDOBLEIZQ
+            NEG.W   BSPEEDX
+            JMP     .ENDCOLISION
+
+            
+.ENMEDIO            
+            ;COMPARAMOS SI LA PARTE CONTRARIA ESTA DENTO DEL BLOQUE O FUERA
+            CMP     D3,D2
+            BLT     .DERECHA
+            NEG.W   BSPEEDY
+            JMP     .ENDCOLISION
+.DERECHA
+            NEG.W   BSPEEDX
+            JMP     .ENDCOLISION
+            
+
+.ENDCOLISION
+            
             MOVE.W  #1,D4
             BCLR    D3,(A0)
-            SUB.W   #1,BLCOUNTER
-            UTLSNDS  .SOUND,#1
+            SUB.W   #1,BLCOUNTER       
             ADD.W   #100,PSCORE
-                                
-.END            
-*            MOVEM.L (A7)+,D0-D3/A0
+            UTLSNDS  .SOUND,#1
+            SUB.W   #1,BLCOUNTER
+.ENDNOCOLISION
             RTS
+*            MOVEM.L (A7)+,D0-D7/A0
 .SOUND      DC.L    'blocks.wav',0
 ; -----------------------------------------------------------------------------
 UTLCHCOL
@@ -275,6 +313,41 @@ UTLCHCOL
 .NOCOL      CLR.B   D0
 .END        MOVEM.W (A7)+,D4-D7
             RTS
+
+
+
+UTLSCTRLP
+            MOVEM.L D0-D5/A1,-(A7)    
+            ;DIBUJA LA BARRA DE SEPARACIÓN
+            MOVE.L  #$00FFFFFF,D1  ;COLOR
+            MOVE.B  #80,D0
+            TRAP    #15
+            
+            AND.L   #$00FFFFFF,D1  ;COLOR
+            MOVE.B  #81,D0
+            TRAP    #15
+            
+            MOVE.B  #87,D0
+            MOVE.W  #SCRCTRL,D1
+            MOVE.W  #SCRCTRL+SCRLWIDTH,D3
+            CLR.L   D2
+            MOVE.W  #SCRHEIGH,D4
+            TRAP    #15
+            
+            ;SCORE
+            UTLLOCT PSCORETX,PSCORETY            
+            UTLSIZC #PSCORECOL,TXMSIZE           ;PENCOLOR Y TAMAÑO
+            UTLSFIL #$00000000
+            LEA     .TXTSCORE,A1              ;PONE EL TEXTO
+            MOVE.W  PSCORE,D1
+            MOVE.B  #17,D0
+            TRAP    #15
+            
+            MOVEM.L (A7)+,D0-D5/A1
+            RTS   
+.TXTSCORE   DC.B    'SCORE: ',0
+            DS.W    0
+
 
 
 

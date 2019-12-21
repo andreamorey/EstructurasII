@@ -1,6 +1,6 @@
-00001A50 Starting Address
+00001ACA Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 20/12/2019 14:55:19
+Created On: 21/12/2019 18:59:52
 
 00000000                             1  ; =============================================================================
 00000000                             2  ; UTILITY MACROS
@@ -261,121 +261,244 @@ Line 211 ERROR: Symbol value differs between first and second pass
 00000184                           216  ; MODIFIES - NONE
 00000184                           217  ; -----------------------------------------------------------------------------
 00000184                           218  *            MOVEM.L D0-D3,-(A7)            
-00000184  E889                     219              LSR.L  #4,D1                    ;POSY/BLHEIGHT. D1 -> FILA
+00000184  E849                     219              LSR.W  #4,D1                    ;POSY/BLHEIGHT. D1 -> FILA
 Line 220 ERROR: Comma expected
 00000186                           220              MOVE.W  #BLROW-1,D2
 00000186  B441                     221              CMP.W   D1,D2                   ;SI ESTÁ POR DEBAJO DE LA ÚLTIMA FILA SALTA DIRECTO A END
-00000188  6D00 00AC                222              BLT     .END                    
+00000188  6D00 00E8                222              BLT     .ENDNOCOLISION                    
 Line 223 ERROR: Undefined symbol
 0000018C  41F9 004DBD16            223              LEA.L   BLMATRIX,A0
 00000192  D1C1                     224              ADDA.L  D1,A0                   ;CARGAMOS EN A0 LA DIRECCIÓN DEL BYTE DE LA FILA
 00000194                           225                                          
-00000194  EC88                     226              LSR.L  #6,D0                    ;D0 -> COLUMNA 
+00000194  EC48                     226              LSR.W  #6,D0                    ;D0 -> COLUMNA 
 Line 227 ERROR: Comma expected
 00000196                           227              MOVE.W  #BLCOL-1,D3                           
 00000196  9640                     228              SUB.W   D0,D3                   ;D3 -> COLUMNA (DESDE DRCHA) DONDE ESTÁ LA BOLA
-00000198  6A00 0032                229              BPL     .TEST  
-0000019C  4283                     230              CLR.L   D3                        ;POR SI SALE NEGATIVO LA REAJUSTAMOS
-Line 231 ERROR: Symbol value differs between first and second pass
-0000019E                           231  .TEST
-0000019E  0710                     232              BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
-000001A0  6700 0094                233              BEQ     .END                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
-000001A4                           234  *            NEG.W   BSPEEDY                 ;****
-000001A4                           235  *            BCLR    D3,(A0)                 ;****
-Line 236 ERROR: Undefined symbol
-000001A4  3439 004DBD16            236              MOVE.W  BPOSX1,D2
-000001AA  ED88                     237              LSL.L   #6,D0                   ;COORDENADA IZQUIERDA DEL BLOQUE
-000001AC  B042                     238              CMP     D2,D0
-000001AE  6E00 003C                239              BGT     .RIGHT
-Line 240 ERROR: Undefined symbol
-000001B2  4479 004DBD16            240              NEG.W   BSPEEDX
-000001B8  4EF9 0000020C            241              JMP     .COLBL
-Line 242 ERROR: Symbol value differs between first and second pass
-000001BE                           242  .RIGHT      MOVE.W  BPOSX2,D2
-000001BE  E388                     243              LSL.L   #1,D0
-000001C0  B042                     244              CMP     D2,D0                   ;POSBLOQUE - POS X (DERECHA) DE LA BOLA 
-000001C2  6E00 0042                245              BGT     .NEGY                   ;5-7= -2 
-Line 246 ERROR: Undefined symbol
-000001C6  4479 004DBD16            246              NEG.W   BSPEEDX
-000001CC  4EF9 0000020C            247              JMP     .COLBL
+00000198  3E03                     229              MOVE.W  D3,D7
+0000019A  6A00 0032                230              BPL     .TEST  
+0000019E  4283                     231              CLR.L   D3                        ;POR SI SALE NEGATIVO LA REAJUSTAMOS
+Line 232 ERROR: Symbol value differs between first and second pass
+000001A0                           232  .TEST
+000001A0  0710                     233              BTST.B  D3,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+000001A2  6700 00CE                234              BEQ     .ENDNOCOLISION                    ;SALTA SI EN ESA POSICION YA HABIA UN 0
+000001A6                           235  
+Line 236 ERROR: Symbol value differs between first and second pass
+000001A6                           236  .IZQ        
+000001A6  EC4D                     237              LSR.W   #6,D5                   ;D5 -> COLUMNA
+Line 238 ERROR: Comma expected
+000001A8                           238              MOVE.W  #BLCOL-1,D2
+000001A8  9445                     239              SUB.W   D5,D2                   ;D2 -> COLUMNA (DESDE DERECHA) DONDE ESTA EL MUNTO CONTRARIO (SI 1 ENTONCES 2)
+000001AA  B443                     240              CMP     D3,D2                   
+000001AC  6F00 0040                241              BLE     .CHOQUEDOBLE
+Line 242 ERROR: Undefined symbol
+000001B0  4479 004DBD16            242              NEG.W   BSPEEDX
+000001B6  4EF9 00000248            243              JMP     .ENDCOLISION            ;  (|)______|  COLISION DELADO IZQUIERDO COLISIONANDO POR LA IZQ DEL NLOQUE 
+000001BC                           244              
+000001BC                           245  
+000001BC                           246  
+000001BC                           247  
 Line 248 ERROR: Symbol value differs between first and second pass
-000001D2                           248  .NEGY       NEG.W   BSPEEDY
-000001D2                           249              
-Line 250 ERROR: Symbol value differs between first and second pass
-000001D2                           250  .COLBL
-000001D2  383C 0001                251              MOVE.W  #1,D4
-000001D6  0790                     252              BCLR    D3,(A0)
-Line 253 ERROR: Undefined symbol
-000001D8  5379 005455B8            253              SUB.W   #1,BLCOUNTER
-000001DE                           254m             UTLSNDS  .SOUND,#1
-000001DE                           255m ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
-000001DE                           256m ; INPUT    - .SOUND ADDRESS TO STRING WITH NAME OF THE FILE, #1 NUM SOUNDS, 
-000001DE                           257m ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
-000001DE                           258m ; MODIFIES - D0,A1
-000001DE                           259m ; -----------------------------------------------------------------------------
-Line 260 ERROR: Undefined symbol
-000001F4  0679 0064 005455B8       260              ADD.W   #100,PSCORE
-000001FC                           261                                  
-Line 262 ERROR: Symbol value differs between first and second pass
-000001FC                           262  .END            
-000001FC                           263  *            MOVEM.L (A7)+,D0-D3/A0
-000001FC  4E75                     264              RTS
-Line 265 ERROR: Symbol value differs between first and second pass
-000001FE= 626C6F63 6B732E77 ...    265  .SOUND      DC.L    'blocks.wav',0
-0000020A                           266  ; -----------------------------------------------------------------------------
-Line 267 ERROR: Symbol value differs between first and second pass
-0000020A                           267  UTLCHCOL
-0000020A                           268  ; CHECKS COLLISION
-0000020A                           269  ; INPUT    - D0.W X0 COORDINATE ball
-0000020A                           270  ;            D1.W Y0 COORDINATE ball
-0000020A                           271  ;            D2.W X1 COORDINATE plataforma
-0000020A                           272  ;            D3.W Y1 COORDINATE plataforma
-0000020A                           273  ;            D4.W WIDTH 0      ball
-0000020A                           274  ;            D5.W WIDTH 1      plataforma 
-0000020A                           275  ;            D6.W HEIGHT 0     ball
-0000020A                           276  ;            D7.W HEIGHT 1     plataforma
-0000020A                           277  ; OUTPUT   - D0.B=FF - COLLISION, =0 - NO COLLISION
-0000020A                           278  ; MODIFIES - NONE
-0000020A                           279  ; -----------------------------------------------------------------------------
-0000020A  48A7 0F00                280              MOVEM.W D4-D7,-(A7)
-0000020E  D840                     281              ADD.W   D0,D4
-00000210  B842                     282              CMP.W   D2,D4
-00000212  6F00 0060                283              BLE     .NOCOL
-00000216  DA42                     284              ADD.W   D2,D5
-00000218  BA40                     285              CMP.W   D0,D5
-0000021A  6F00 0058                286              BLE     .NOCOL
-0000021E  DC41                     287              ADD.W   D1,D6
-00000220  BC43                     288              CMP.W   D3,D6
-00000222  6F00 0050                289              BLE     .NOCOL
-00000226  DE43                     290              ADD.W   D3,D7
-00000228  BE41                     291              CMP.W   D1,D7
-0000022A  6F00 0048                292              BLE     .NOCOL
-0000022E  103C 00FF                293              MOVE.B  #$FF,D0
-00000232  6000 0042                294              BRA     .END
-Line 295 ERROR: Symbol value differs between first and second pass
-00000236                           295  .NOCOL      CLR.B   D0
-Line 296 ERROR: Symbol value differs between first and second pass
-00000236  4C9F 00F0                296  .END        MOVEM.W (A7)+,D4-D7
-0000023A  4E75                     297              RTS
-0000023C                           298  
-0000023C                           299  
-0000023C                           300  
-0000023C                           301  
-0000023C                           302  
-0000023C                           303  
-0000023C                           304  
-Line 305 WARNING: END directive missing, starting address not set
+000001BC                           248  .CHOQUEDOBLE    ;SI ESTA EN MEDIO DEL BLOQUE  |___()___| COLISION EN MEDIO
+000001BC                           249              ;COMPARAMOS SI LE HA DADO A DOS A LA VEZ |______(|)______|
+000001BC  B443                     250              CMP     D3,D2
+000001BE  6700 006A                251              BEQ     .ENMEDIO
+000001C2                           252              
+Line 253 ERROR: Comma expected
+000001C2                           253              ADDI.W  #BDIAMET/2,D0
+000001C2  EC48                     254              LSR.W   #6,D0
+Line 255 ERROR: Comma expected
+000001C4                           255              MOVE.W  #BLCOL-1,D1  ;D1 -> COLUMNA DONDE SE ENCUENTRA EL PUNTO MEDIO DE LA BOLA                         
+000001C4                           256              
+000001C4  9240                     257              SUB.W   D0,D1
+000001C6  6A00 003E                258              BPL     .TEST2  
+000001CA  4281                     259              CLR.L   D1                        ;POR SI SALE NEGATIVO LA REAJUSTAMOS
+Line 260 ERROR: Symbol value differs between first and second pass
+000001CC                           260  .TEST2
+000001CC                           261              
+000001CC  0310                     262              BTST.B  D1,(A0)                 ;MIRAMOS EL BIT DONDE ESTA 
+000001CE  6700 005A                263              BEQ     .ENMEDIO
+000001D2  BE41                     264              CMP     D1,D7
+000001D4  6700 0048                265              BEQ     .CHOQUEDOBLEIZQ
+Line 266 ERROR: Undefined symbol
+000001D8  4479 004DBD16            266              NEG.W   BSPEEDY
+000001DE  4EF9 00000248            267              JMP     .ENDCOLISION
+Line 268 ERROR: Symbol value differs between first and second pass
+000001E4                           268  .CHOQUEDOBLEIZQ
+Line 269 ERROR: Undefined symbol
+000001E4  4479 004DBD16            269              NEG.W   BSPEEDX
+000001EA  4EF9 00000248            270              JMP     .ENDCOLISION
+000001F0                           271              
+000001F0                           272              
+000001F0                           273              
+Line 274 ERROR: Symbol value differs between first and second pass
+000001F0                           274  .ENMEDIO            
+000001F0                           275              ;COMPARAMOS SI LA PARTE CONTRARIA ESTA DENTO DEL BLOQUE O FUERA
+000001F0  B443                     276              CMP     D3,D2
+000001F2  6D00 0048                277              BLT     .DERECHA
+Line 278 ERROR: Undefined symbol
+000001F6  4479 004DBD16            278              NEG.W   BSPEEDY
+000001FC  4EF9 00000248            279              JMP     .ENDCOLISION
+Line 280 ERROR: Symbol value differs between first and second pass
+00000202                           280  .DERECHA
+Line 281 ERROR: Undefined symbol
+00000202  4479 004DBD16            281              NEG.W   BSPEEDX
+00000208  4EF9 00000248            282              JMP     .ENDCOLISION
+0000020E                           283              
+0000020E                           284              
+0000020E                           285              
+0000020E                           286  *            NEG.W   BSPEEDY                 ;****
+0000020E                           287  *            BCLR    D3,(A0)                 ;****
+0000020E                           288  *.OPUESTOX   ;COMPOROBAMOS EL LADO OPUESTO (SI MIRABAMOS EL 1 COMPROBAMOS 2))
+0000020E                           289  *            MOVE.W  BPOSX1,D2
+0000020E                           290  *            LSL.L   #6,D0                   ;COORDENADA IZQUIERDA DEL BLOQUE
+0000020E                           291  *            CMP     D2,D0
+0000020E                           292  *            BLT     .RIGHT
+0000020E                           293  *            NEG.W   BSPEEDX
+0000020E                           294  *            JMP     .COLBL
+0000020E                           295  *.RIGHT      MOVE.W  D5,D2
+0000020E                           296  *            LSL.L   #1,D0
+0000020E                           297  *            CMP     D2,D0                   ;POSBLOQUE - POS X (DERECHA) DE LA BOLA 
+0000020E                           298  *            BLT     .NEGY                   ;5-7= -2 
+0000020E                           299  *            NEG.W   BSPEEDX
+0000020E                           300  *            JMP     .COLBL
+0000020E                           301  *.NEGY       NEG.W   BSPEEDY
+0000020E                           302  *            
+Line 303 ERROR: Symbol value differs between first and second pass
+0000020E                           303  .ENDCOLISION
+0000020E  383C 0001                304              MOVE.W  #1,D4
+00000212  0790                     305              BCLR    D3,(A0)
+Line 306 ERROR: Undefined symbol
+00000214  5379 005455B8            306              SUB.W   #1,BLCOUNTER       
+Line 307 ERROR: Undefined symbol
+0000021A  0679 0064 005455B8       307              ADD.W   #100,PSCORE
+00000222                           308m             UTLSNDS  .SOUND,#1
+00000222                           309m ; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+00000222                           310m ; INPUT    - .SOUND ADDRESS TO STRING WITH NAME OF THE FILE, #1 NUM SOUNDS, 
+00000222                           311m ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
+00000222                           312m ; MODIFIES - D0,A1
+00000222                           313m ; -----------------------------------------------------------------------------
+Line 314 ERROR: Symbol value differs between first and second pass
+00000238                           314  .ENDNOCOLISION
+00000238  4E75                     315              RTS
+0000023A                           316  *            MOVEM.L (A7)+,D0-D3/A0
+Line 317 ERROR: Symbol value differs between first and second pass
+0000023A= 626C6F63 6B732E77 ...    317  .SOUND      DC.L    'blocks.wav',0
+00000246                           318  ; -----------------------------------------------------------------------------
+Line 319 ERROR: Symbol value differs between first and second pass
+00000246                           319  UTLCHCOL
+00000246                           320  ; CHECKS COLLISION
+00000246                           321  ; INPUT    - D0.W X0 COORDINATE ball
+00000246                           322  ;            D1.W Y0 COORDINATE ball
+00000246                           323  ;            D2.W X1 COORDINATE plataforma
+00000246                           324  ;            D3.W Y1 COORDINATE plataforma
+00000246                           325  ;            D4.W WIDTH 0      ball
+00000246                           326  ;            D5.W WIDTH 1      plataforma 
+00000246                           327  ;            D6.W HEIGHT 0     ball
+00000246                           328  ;            D7.W HEIGHT 1     plataforma
+00000246                           329  ; OUTPUT   - D0.B=FF - COLLISION, =0 - NO COLLISION
+00000246                           330  ; MODIFIES - NONE
+00000246                           331  ; -----------------------------------------------------------------------------
+00000246  48A7 0F00                332              MOVEM.W D4-D7,-(A7)
+0000024A  D840                     333              ADD.W   D0,D4
+0000024C  B842                     334              CMP.W   D2,D4
+0000024E  6F00 0060                335              BLE     .NOCOL
+00000252  DA42                     336              ADD.W   D2,D5
+00000254  BA40                     337              CMP.W   D0,D5
+00000256  6F00 0058                338              BLE     .NOCOL
+0000025A  DC41                     339              ADD.W   D1,D6
+0000025C  BC43                     340              CMP.W   D3,D6
+0000025E  6F00 0050                341              BLE     .NOCOL
+00000262  DE43                     342              ADD.W   D3,D7
+00000264  BE41                     343              CMP.W   D1,D7
+00000266  6F00 0048                344              BLE     .NOCOL
+0000026A  103C 00FF                345              MOVE.B  #$FF,D0
+0000026E  6000 0042                346              BRA     .END
+Line 347 ERROR: Symbol value differs between first and second pass
+00000272                           347  .NOCOL      CLR.B   D0
+Line 348 ERROR: Symbol value differs between first and second pass
+00000272  4C9F 00F0                348  .END        MOVEM.W (A7)+,D4-D7
+00000276  4E75                     349              RTS
+00000278                           350  
+00000278                           351  
+00000278                           352  
+Line 353 ERROR: Symbol value differs between first and second pass
+00000278                           353  UTLSCTRLP
+00000278  48E7 FC40                354              MOVEM.L D0-D5/A1,-(A7)    
+0000027C                           355              ;DIBUJA LA BARRA DE SEPARACIÓN
+0000027C  223C 00FFFFFF            356              MOVE.L  #$00FFFFFF,D1  ;COLOR
+00000282  103C 0050                357              MOVE.B  #80,D0
+00000286  4E4F                     358              TRAP    #15
+00000288                           359              
+00000288  C2BC 00FFFFFF            360              AND.L   #$00FFFFFF,D1  ;COLOR
+0000028E  103C 0051                361              MOVE.B  #81,D0
+00000292  4E4F                     362              TRAP    #15
+00000294                           363              
+00000294  103C 0057                364              MOVE.B  #87,D0
+Line 365 ERROR: Undefined symbol
+00000298  323C BD16                365              MOVE.W  #SCRCTRL,D1
+Line 366 ERROR: Invalid syntax
+0000029C                           366              MOVE.W  #SCRCTRL+SCRLWIDTH,D3
+0000029C  4282                     367              CLR.L   D2
+Line 368 ERROR: Undefined symbol
+0000029E  383C BD16                368              MOVE.W  #SCRHEIGH,D4
+000002A2  4E4F                     369              TRAP    #15
+000002A4                           370              
+000002A4                           371              ;SCORE
+000002A4                           372m             UTLLOCT PSCORETX,PSCORETY            
+000002A4                           373m ; WRAPPER TO TEXT POSITIONNING FROM TRAP 15
+000002A4                           374m ; INPUT    - PSCORETX X, PSCORETY Y
+000002A4                           375m ; OUTPUT   - NONE
+000002A4                           376m ; MODIFIES - D0,D1
+000002A4                           377m ; -----------------------------------------------------------------------------
+Line 378 ERROR: Invalid syntax
+000002A4                           378m             MOVE.W  #PSCORETX<<8|PSCORETY, D1
+000002AA                           379m             UTLSIZC #PSCORECOL,TXMSIZE           ;PENCOLOR Y TAMAÑO
+000002AA                           380m ; WRAPPER FOR SET SIZE AND COLOR TRAP 15 TASK.
+000002AA                           381m ; INPUT    - #PSCORECOL COLOR IN FORMAT $00BBGGRR TXMSIZE SIZE (8, 9, 10, 12, 14, 16, 18))
+000002AA                           382m ; OUTPUT   - NONE
+000002AA                           383m ; MODIFIES - D0,D1
+000002AA                           384m ; -----------------------------------------------------------------------------
+Line 385 ERROR: Undefined symbol
+000002AA  223C 004DBD16            385m             MOVE.L  #PSCORECOL,D1
+Line 386 ERROR: Invalid syntax
+000002B0                           386m             MOVE.L  #TXMSIZE<<16|1,D2
+000002B6                           387m             UTLSFIL #$00000000
+000002B6                           388m ; WRAPPER FOR SET FIL TRAP 15 TASK.
+000002B6                           389m ; INPUT    - #$00000000 COLOR IN FORMAT $00BBGGRR
+000002B6                           390m ; OUTPUT   - NONE
+000002B6                           391m ; MODIFIES - D0,D1
+000002B6                           392m ; -----------------------------------------------------------------------------
+000002BE  43F9 00000324            393              LEA     .TXTSCORE,A1              ;PONE EL TEXTO
+Line 394 ERROR: Undefined symbol
+000002C4  3239 004DBD16            394              MOVE.W  PSCORE,D1
+000002CA  103C 0011                395              MOVE.B  #17,D0
+000002CE  4E4F                     396              TRAP    #15
+000002D0                           397              
+000002D0  4CDF 023F                398              MOVEM.L (A7)+,D0-D5/A1
+000002D4  4E75                     399              RTS   
+Line 400 ERROR: Symbol value differs between first and second pass
+000002D6= 53 43 4F 52 45 3A 20     400  .TXTSCORE   DC.B    'SCORE: ',0
+000002DE                           401              DS.W    0
+000002DE                           402  
+000002DE                           403  
+000002DE                           404  
+000002DE                           405  
+000002DE                           406  
+000002DE                           407  
+000002DE                           408  
+000002DE                           409  
+Line 410 WARNING: END directive missing, starting address not set
 
-58 errors detected
+76 errors detected
 1 warning generated
 
 
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-UTLCHCOL            248
-UTLCHCOL:END        276
-UTLCHCOL:NOCOL      274
+UTLCHCOL            284
+UTLCHCOL:END        2B2
+UTLCHCOL:NOCOL      2B0
 UTLCHCOLP           112
 UTLCHCOLP:END       1A4
 UTLCHCOLP:LADOS     19E
@@ -392,13 +515,19 @@ UTLCHCOLW:RIGHT     4A
 UTLCHCOLW:SOUNDG    EA
 UTLCHCOLW:SOUNDL    FE
 UTLCOLBL            1AA
-UTLCOLBL:COLBL      20C
-UTLCOLBL:END        236
-UTLCOLBL:NEGY       206
-UTLCOLBL:RIGHT      1EC
-UTLCOLBL:SOUND      238
-UTLCOLBL:TEST       1CC
+UTLCOLBL:CHOQUEDOBLE  1EE
+UTLCOLBL:CHOQUEDOBLEIZQ  21E
+UTLCOLBL:DERECHA    23C
+UTLCOLBL:ENDCOLISION  248
+UTLCOLBL:ENDNOCOLISION  272
+UTLCOLBL:ENMEDIO    22A
+UTLCOLBL:IZQ        1D4
+UTLCOLBL:SOUND      274
+UTLCOLBL:TEST       1CE
+UTLCOLBL:TEST2      206
 UTLLOCT             3CF
+UTLSCTRLP           2B8
+UTLSCTRLP:TXTSCORE  324
 UTLSFIL             2A5
 UTLSIZC             12A
 UTLSNDS             4F7
