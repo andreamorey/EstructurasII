@@ -67,7 +67,7 @@ UTLSNDS     MACRO
             
 ; -----------------------------------------------------------------------------
 UTLSNDST     MACRO
-; WRAPPER FOR PLAYING WAV FILE TRAP 15 TASK
+; WRAPPER FOR STOPPING WAV FILE TRAP 15 TASK
 ; INPUT    - NONE 
 ; OUTPUT   - D0.W=0 IF SOUND NOT PLAYED, NON ZERO IF PLAYED
 ; MODIFIES - D0,A1
@@ -270,11 +270,11 @@ UTLCOLBL
             
 
 .ENDCOLISION
-            
             MOVE.W  #1,D4
             BCLR    D3,(A0)
             SUB.W   #1,BLCOUNTER       
             ADD.W   #100,PSCORE
+            UTLSNDST
             UTLSNDS  .SOUND,#1
             SUB.W   #1,BLCOUNTER
 .ENDNOCOLISION
@@ -349,10 +349,61 @@ UTLSCTRLP
             DS.W    0
 
 
+; -----------------------------------------------------------------------------
+UTLWRF    MACRO
+; WRAPPER TO WRITE TEXT IN AN EXISTING FILE FROM TRAP 15
+; INPUT    - \1 FILENAME, \2 CONTENIDO QUE TIENE QUE ESCRIBIR,  
+; OUTPUT   - NONE
+; MODIFIES - D0-D2,A1
+; -----------------------------------------------------------------------------
+            MOVE.B  #50,D0
+            TRAP    #15                     ;CIERRA TODOS LOS FICHEROS
+            
+            LEA     \1,A1
+            MOVE.B  #51,D0
+            TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
+            ; CON EL 55 HAY QUE POSICIONAR EL FICHERO, SINO SIEMPRE ESCRIBE A PARTIR DEL BYTE 0
+            LEA     .BUFFER,A1
+            MOVE.W  \2,(A1)                 ;GUARDA EN EL BUFFER
+            MOVE.W  #2,D2                   ;BYTES QUE TIENE QUE ESCRIBIR
+            MOVE.B  #54,D0                  ;ESCRIBE EL BUFFER EN EL FICHERO
+            TRAP    #15                     
+            
+            MOVE.B  #56,D0
+            TRAP    #15                     ;CIERRA EL FICHERO
+  
+.BUFFERW     DS.B 80
+   
+            ENDM
 
 
+; -----------------------------------------------------------------------------
+UTLRF    MACRO
+; WRAPPER TO READ TEXT FROM AN EXISTING FILE FROM TRAP 15
+; INPUT    - \1 FILENAME
+; OUTPUT   - NONE
+; MODIFIES - D0-D2,A1
+; -----------------------------------------------------------------------------
+            MOVE.B  #50,D0
+            TRAP    #15                     ;CIERRA TODOS LOS FICHEROS
 
+            LEA     \1,A1
+            MOVE.B  #51,D0
+            TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
 
+            LEA     .BUFFERR,A1
+            MOVE.L  #2,D2                   ;BYTES QUE LEE
+            MOVE.B  #53,D0
+            TRAP    #15                     ;LEE DEL FICHERO
+            
+            MOVE.W  (A1),D4
+            MOVE.W  D4,D1
+            MOVE.B  #3,D0                   ;MUESTRA EL NUMERO EN D1
+            
+            MOVE.B  #56,D0
+            TRAP    #15                     ;CIERRA EL FICHERO
+
+            ENDM
 
 
 

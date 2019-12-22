@@ -1,0 +1,90 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 22/12/2019 20:40:36
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : StringToFile
+00000000                             3  * Written by : Charles Kelly
+00000000                             4  * Date       : Dec. 18th 2015
+00000000                             5  * Description: Get a string from the keyboard and save to file.
+00000000                             6  *-----------------------------------------------------------
+00001000                             7          ORG     $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  ; Display description
+00001000  43F9 00001086             10          lea     description,A1          ; location of text to display
+00001006  103C 000E                 11          move.b  #14,D0                  ; trap task #14, displays null terminated string at (A1)
+0000100A  4E4F                      12          trap    #15                     ; perform task
+0000100C                            13  ; Prompt for input string
+0000100C  43F9 000010D6             14          lea     prompt,A1               ; location of text to display
+00001012  103C 000E                 15          move.b  #14,D0                  ; trap task #14, displays null terminated string at (A1)
+00001016  4E4F                      16          trap    #15                     ; perform task
+00001018                            17  ; Get input string from keyboard and store in buffer
+00001018  43F9 00001122             18          lea     string,A1               ; location of buffer
+0000101E  103C 0002                 19          move.b  #2,D0                   ; trap task #2, reads string from keyboard to buffer at (A1)
+00001022  4E4F                      20          trap    #15                     ; perform task
+00001024  33C1 00001172             21          move.w  D1,strSize              ; save size of string
+0000102A                            22  ; Attempt to open file for output (erases existing file)
+0000102A  43F9 000010E3             23          lea     fileName,A1             ; name of file to create
+00001030  103C 0033                 24          move.b  #51,D0                  ; trap task #52, open new file
+00001034  4E4F                      25          trap    #15                     ; perform task
+00001036  23C1 00001174             26          move.l  D1,fileID               ; save file ID
+0000103C                            27  ; Check for file errors
+0000103C                            28          if.w D0 <NE> #0 then.s          ; if file error
+00001042  43F9 000010F2             29              lea     errorFile,A1        ; location of text to display
+00001048  103C 000E                 30              move.b  #14,D0              ; trap task #14, displays null terminated string at (A1)
+0000104C  4E4F                      31              trap    #15                 ; perform task
+0000104E  6000 0032                 32              bra     EXIT                ; halt program
+00001052                            33          endi
+00001052                            34  ; Write buffer to file
+00001052  43F9 00001122             35          lea     string,A1               ; location of text to write to file
+00001058  2239 00001174             36          move.l  fileID,D1               ; file ID of file to write to
+0000105E  343C 0006                 37          move.w  #6,D2
+00001062  3439 00001172             38          move.w  strSize,D2              ; number of bytes to write
+00001068  5242                      39          add.w   #1,D2                   ; add 1 to include NULL character
+0000106A  103C 0036                 40          move.b  #54,D0                  ; trap task #54, write to file
+0000106E  4E4F                      41          trap    #15                     ; perform task
+00001070                            42  ; Close file to complete write
+00001070  103C 0038                 43          move.b  #56,D0                  ; trap task #56, close file, D1 contains fileID
+00001074  4E4F                      44          trap    #15                     ; perform task
+00001076                            45  ; Display success message
+00001076  43F9 0000110B             46          lea     success,A1              ; location of text to display
+0000107C  103C 000E                 47          move.b  #14,D0                  ; trap task #14, displays null terminated string at (A1)
+00001080  4E4F                      48          trap    #15                     ; perform task
+00001082                            49  
+00001082  FFFF FFFF                 50  EXIT    SIMHALT         ; halt simulator
+00001086                            51  
+00001086                            52  * Variables and constants
+00001086  =0000000D                 53  CR              EQU     $D              ; ASCII code for carriage return
+00001086  =0000000A                 54  LF              EQU     $A              ; ASCII code for line feed
+00001086  =00000050                 55  SIZE            EQU     80              ; Max string size
+00001086= 44 65 6D 6F 6E 73 ...     56  description     DC.B    'Demonstrates reading a string from the keyboard and saving to a text file. ',CR,LF,CR,LF,0
+000010D6= 45 6E 74 65 72 20 ...     57  prompt          DC.B    'Enter text: ',0
+000010E3= 74 65 78 74 6F 70 ...     58  fileName        DC.B    'textoprueb.txt',0   ; name of text file
+000010F2= 41 20 66 69 6C 65 ...     59  errorFile       DC.B    'A file error occurred.',CR,LF,0
+0000110B= 46 69 6C 65 20 77 ...     60  success         DC.B    'File write complete.',CR,LF,0
+00001122                            61  string          DS.B    80              ; I/O buffer
+00001172                            62  strSize         DS.W    1               ; Size if input string
+00001174                            63  fileID          DS.L    1               ; File ID
+00001178                            64          END     START                   ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CR                  D
+DESCRIPTION         1086
+ERRORFILE           10F2
+EXIT                1082
+FILEID              1174
+FILENAME            10E3
+LF                  A
+PROMPT              10D6
+SIZE                50
+START               1000
+STRING              1122
+STRSIZE             1172
+SUCCESS             110B
+_00000000           1052

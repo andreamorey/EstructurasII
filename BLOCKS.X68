@@ -6,22 +6,23 @@ BLINIT
 
             MOVEM.L D0/A0,-(A7)
             LEA.L   BLMATRIX,A0
-           ; MOVE.W  #BLROW-7,D0             ;7
+            MOVE.W  #BLROW-7,D0             ;7
 .LOOP       
-            MOVE.B  #%10000000,(A0)+
-            ;DBRA    D0,.LOOP
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            MOVE.B  #0,(A0)+
-            ;MOVE.B  #%11111111,(A0)+
+*            MOVE.B  #%10000000,(A0)+
+           
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+*            MOVE.B  #0,(A0)+
+            MOVE.B  #%11111111,(A0)+
+            DBRA    D0,.LOOP
             CLR.W   BLCOUNTER
             CLR.W   LEVEL
             MOVEM.L (A7)+,D0/A0
@@ -124,6 +125,7 @@ BLPLOT
             DBRA    D5,.LOOP2
             MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
 
 
 
