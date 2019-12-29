@@ -4,43 +4,83 @@
   
 BLINIT
 
-            MOVEM.L D0/A0,-(A7)
             LEA.L   BLMATRIX,A0
-            MOVE.W  #BLROW-7,D0             ;7
+            MOVE.W  #BLROW-1,D0             ;7
 .LOOP       
-*            MOVE.B  #%10000000,(A0)+
-           
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
-*            MOVE.B  #0,(A0)+
             MOVE.B  #%11111111,(A0)+
             DBRA    D0,.LOOP
-            CLR.W   BLCOUNTER
-            CLR.W   LEVEL
-            MOVEM.L (A7)+,D0/A0
-            RTS
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%10000000,(A0)+
             
+            MOVE.W  #PINPOSX1,PPOSX
+            MOVE.W  #PINWIDTH1,PWIDTH
+            
+            CLR.W   BLCOUNTER
+            MOVE.W  #1,LEVEL
+            MOVE.W  #BINSPEED,BSPEEDX
+            MOVE.W  #BINSPEED,BSPEEDY
+            NEG.W   BSPEEDX
+            JMP     BLCONBL
+            RTS
 BLLEV2           
-            MOVEM.L D0/A0,-(A7)
+            
             LEA.L   BLMATRIX,A0
-            MOVE.W  #BLROW-1,D0             
-.LOOP       
-            MOVE.B  #%01011010,(A0)+
-            DBRA    D0,.LOOP
+*            MOVE.W  #BLROW-1,D0             
+*.LOOP       
+*            MOVE.B  #%01011010,(A0)+
+*            DBRA    D0,.LOOP
+
+            MOVE.B  #%11111111,(A0)+
+            MOVE.B  #%01110111,(A0)+
+            MOVE.B  #%01110111,(A0)+
+            MOVE.B  #%01110111,(A0)+
+            MOVE.B  #%01110111,(A0)+
+            MOVE.B  #%01110111,(A0)+
+            MOVE.B  #%10111011,(A0)+
+            MOVE.B  #%10111011,(A0)+
+            MOVE.B  #%10111011,(A0)+
+            MOVE.B  #%10111011,(A0)+
+            MOVE.B  #%10111011,(A0)+
+            MOVE.B  #%11111111,(A0)+ 
+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%10000000,(A0)+
+
             CLR.W   BLCOUNTER
-            MOVEM.L (A7)+,D0/A0
+            
+            MOVE.W  #PINPOSX2,PPOSX
+            MOVE.W  #PINWIDTH2,PWIDTH
+
+            MOVE.W  #BINSPEED,D0
+            SUBQ.W  #1,D0
+            
+            MOVE.W  D0,BSPEEDX
+            MOVE.W  D0,BSPEEDY
+            NEG.W   BSPEEDX
+            JMP     BLCONBL
             RTS
             
-BLLEV3           
-            MOVEM.L D0/A0,-(A7)
+BLLEV3              
             LEA.L   BLMATRIX,A0         
             MOVE.B  #%11110101,(A0)+
             MOVE.B  #%10100101,(A0)+
@@ -54,32 +94,60 @@ BLLEV3
             MOVE.B  #%10100101,(A0)+
             MOVE.B  #%10100101,(A0)+
             MOVE.B  #%11110101,(A0)+
+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%00000000,(A0)+
+*            MOVE.B  #%10000000,(A0)+
+
             CLR.W   BLCOUNTER
-            MOVEM.L (A7)+,D0/A0
+            MOVE.W  #PINPOSX3,PPOSX
+            MOVE.W  #PINWIDTH3,PWIDTH
+            
+            MOVE.W  #BINSPEED,D0
+            SUBQ.W  #2,D0
+            
+            MOVE.W  D0,BSPEEDX
+            MOVE.W  D0,BSPEEDY
+            NEG.W   BSPEEDX
+            JMP     BLCONBL
             RTS
             
 BLUPD       
-            MOVEM.L D0-D1,-(A7)
             MOVE.W  BLCOUNTER,D0
+            CMP     #0,D0                   ;SI NO HAY BLOQUES SALTA
             BEQ     .NEXTLEVEL
-            JMP     .END
+            RTS
 .NEXTLEVEL  
-            ADD.W   #1,LEVEL
-            CMP     #2,D1                   ;2 = LEVEL 3, 1-2= -1 = EMPEZAR LEVEL 2,  
-            BLT     .NIVEL2
-            JMP     BLLEV3
-            MOVE.W  #STASPACE,(STANEXT)
-            JMP     .END
-.NIVEL2
-            JMP     BLLEV2   
-            MOVE.W  #STASPACE,(STANEXT)
             
-.END        
-            MOVEM.L (A7)+,D0-D1  
+            ADD.W   #1,LEVEL
+            MOVE.W  LEVEL,D1
+            CMP     #4,D1
+            BEQ     .WON
+            CMP     #3,D1              
+            BEQ     .NIVEL3
+            MOVE.W  #STASPACE,(STANEXT)
+            JMP     BLLEV2
+            RTS
+.NIVEL3
+            CMP.W   #3,D1
+            BNE     .WON
+            MOVE.W  #STASPACE,STANEXT
+            JMP     BLLEV3 
+            RTS
+.WON        
+            MOVE.W  #STAGOVR,STANEXT  
             RTS          
 
 BLPLOT
-            MOVEM.L D0-D7/A0-A1,-(A7)
             MOVE.B  #80,D0                  ;SET PEN COLOR
             MOVE.L  #0,D1
             TRAP    #15
@@ -96,7 +164,6 @@ BLPLOT
             MOVE.B  #81,D0                  ;SET COLOR
             MOVE.L  (A0)+,D1
             TRAP    #15
-                                      ;BUCLE FILAS
             
             MOVE.W  #BLWIDTH,D3             ;RIGHT X
             CLR.W   D1                      ;LEFT X
@@ -105,17 +172,15 @@ BLPLOT
             MOVE.W  #BLCOL-1,D5
             MOVE.B  BLMATRIX(A1),D6
 .LOOP1                                      ; BUCLE COLUMNAS
-           
             ROL.B   #1,D6
             BCC     .SALTO                  ; SALTA SI CARRY = 0
             
             MOVE.B  #87,D0                  ; DIBUJAMOS EL CUADRADO
             TRAP    #15
-            ADD.W   #1,BLCOUNTER
 .SALTO
             MOVE.W  D3,D1
             ADD.W   #BLWIDTH, D3
-            ADDI.W  #1,D7
+;;;
             DBRA    D5,.LOOP1 
             MOVE.W  (A7)+,D5              
 
@@ -123,8 +188,27 @@ BLPLOT
             MOVE.W  D4,D2
             ADD.W   #BLHEIGHT,D4
             DBRA    D5,.LOOP2
-            MOVEM.L (A7)+,D0-D7/A0-A1
             RTS
+
+BLCONBL
+            
+            MOVE.W  #BLROW-1,D5    ;DBRA FILAS
+            MOVE.L  #0,A1          ;PARA SABER CUAL PONER D6= FILA
+            
+.LOOP2                                      ;BUCLE DE FILAS            
+            MOVE.W  #BLCOL-1,D7                ;DBRA COLUMNAS
+            MOVE.B  BLMATRIX(A1),D6
+.LOOP1                                      ; BUCLE COLUMNAS
+            ROL.B   #1,D6
+            BCC     .SALTO                  ; SALTA SI CARRY = 0
+            ADD.W   #1,BLCOUNTER
+.SALTO
+            DBRA    D7,.LOOP1   
+            ADDA.L  #1,A1
+            DBRA    D5,.LOOP2
+            RTS
+
+
 
 
 

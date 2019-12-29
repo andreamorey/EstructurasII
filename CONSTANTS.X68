@@ -38,7 +38,7 @@ LIVEHEIGHT  EQU     16
 LIVECOLOR   EQU     $000000FF               ;ROJO
 LIVEPOSX    EQU     SCRCTRL+20
 LIVEPOSY    EQU     30
-
+FILE        DC.B    'score.txt',0
 ;----------------------------------------------------------------------------
 
 
@@ -88,6 +88,7 @@ PURPLE      EQU     $00FFACAC
 YELLOW      EQU     $0038EEF8
 GREEN       EQU     $0095FF8C
 ;-------------------------------------------------------------------
+
 
 
 

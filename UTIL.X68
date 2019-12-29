@@ -77,7 +77,50 @@ UTLSNDST     MACRO
             TRAP    #15
             
             ENDM
+; -----------------------------------------------------------------------------            
+UTLSVNAME  MACRO
+;SAVES THE NAME OS THE PLAYER
+;MAX CARACTERS: 20
+; -----------------------------------------------------------------------------
+            LEA.L   .INSTRUCT,A1            ;hacer que escriba
+            MOVE.B  #14,D0
+            TRAP    #15
             
+            LEA.L   PNAME,A1                ;GUARDAMOS EL NOMBRE
+            MOVE.B  #2,D0
+            TRAP    #15                     ;(A1) = PNAME
+            MOVE.W  D1,PLSIZE
+            RTS
+.INSTRUCT   DC.B    'ENTER YOUR NAME: ',0
+            
+            ENDM
+
+; -----------------------------------------------------------------------------
+UTLADDPL   
+;AÑADE AL JUGADOR AL FICHERO (POR AHORA SIN PUNTOS)
+; -----------------------------------------------------------------------------
+            MOVE.B  #50,D0  ;CERRAMOS TODOS LOS FICHERO
+            TRAP    #15
+            
+            LEA.L   FILE,A1                 ;ABRE NUESTRO FICHERO
+            MOVE.B  #51,D0                  
+            TRAP    #15                     ;DEVUELVE EL ID DE FICHERO EN D1
+            
+            LEA.L   PNAME,A1                ;escribimos en el fichero 
+            ;D1 YA TINENE EL ID DEL FICHERO
+            CLR.L   D2
+            MOVE.W  PLSIZE,D2              
+            ADD.W   #1,D2                   ;5 + 1 
+            MOVE.B  #54,D0
+            TRAP    #15
+           
+           
+            
+            MOVE.B  #56,D0                  ;cerramos fichero
+            TRAP    #15
+            RTS
+            
+
 ; =============================================================================
 ; UTILITY SUBROUTINES
 ; =============================================================================
@@ -387,25 +430,81 @@ UTLRF    MACRO
             MOVE.B  #50,D0
             TRAP    #15                     ;CIERRA TODOS LOS FICHEROS
 
-            LEA     \1,A1
+            LEA     .FILE,A1
             MOVE.B  #51,D0
             TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
 
-            LEA     .BUFFERR,A1
-            MOVE.L  #2,D2                   ;BYTES QUE LEE
+            LEA     BUFFER,A1
+            MOVE.L  #255,D2                 ;BYTES QUE LEE
             MOVE.B  #53,D0
             TRAP    #15                     ;LEE DEL FICHERO
-            
-            MOVE.W  (A1),D4
-            MOVE.W  D4,D1
-            MOVE.B  #3,D0                   ;MUESTRA EL NUMERO EN D1
-            
+            MOVE.L  D2,D3
+            ;GUARDA EN EL BUFFER LO QUE HA LEIDO
             MOVE.B  #56,D0
             TRAP    #15                     ;CIERRA EL FICHERO
 
+
             ENDM
+;-----------------------------------------------------------------------------
+UTLREADFILE  MACRO
+            MOVE.W  #50,D0                  ;CIERRA TODOS LOS FICHEROS
+            TRAP    #15
+            
+            LEA     .FILE,A1
+            MOVE.B  #51,D0
+            TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
+
+            
+            LEA.L   RNKTABLE,A1
+            MOVE.L  #100,D2                 ;BYTES QUE LEE
+            MOVE.B  #53,D0
+            TRAP    #15                     ;LEE DEL FICHERO
+            ;GUARDA EN EL BUFFER LO QUE HA LEIDO
+            MOVE.B  #56,D0
+            TRAP    #15                     ;CIERRA EL FICHERO
 
 
+            ENDM
+            
+            
+;----------------------------------------------------------------------
+UTLREADRNK
+            ; D4 = EN QUE FILA ESTAMOS
+            CLR.L   D4
+            MOVE.W  #9,D5
+            
+.LOOP
+            LEA.L   RNKTABLE,A1       1000   
+            MOVE.W  D4,D0                
+            MULU.W  #10,D0                  ;PARA LEER EL NOMBRE
+            
+            ADDA.L  D0,A1                   ;A0 = RNKTABLE + 10*FILA
+            
+            MOVE.B  #11,D0
+            MOVE.W  #50<<8|50,D1
+            TRAP    #15
+            ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
+            MOVE.B  #1,D0                   
+            MOVE.W  #2,D1
+            TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
+          
+
+            ADDA.L  #2,A1                   ;PARA LEER EL NOMBRE (8B)
+            MOVE.B  #11,D0
+            MOVE.W  #50<<8|50,D1
+            TRAP    #15
+            ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
+            MOVE.B  #1,D0                   
+            MOVE.W  #8,D1                   ;8 BYTES QUE TIENE QUE IMPRIMIR
+            TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
+          
+            ADDQ.W   #1,D4
+            DBRA    .LOOP,D5
+            
+            RTS
+            
+            
+            
 
 *~Font name~Courier New~
 *~Font size~18~

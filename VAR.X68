@@ -17,7 +17,8 @@ PLIVES      DS.W    1                       ;LIVES LEFT
 PSCORE      DS.W    1                       ;SCORE DEL PLAYER
 PSPEED      DS.W    1
 LEVEL       DS.B    2
-
+PNAME       DS.B    80                      ;NOMBRE CON CARACTERES MAX = 80
+            DS.W    0
 ;----------------------------------------------------------------------------
 
 ; BALL ----------------------------------------------------------------------
@@ -25,6 +26,7 @@ LEVEL       DS.B    2
 ;BPOSY       DS.W    1                       ;POSICION DE LA PELOTA Y
 BSPEEDX     DS.W    1                       ;VELOCIDAD DE LA PELOTA
 BSPEEDY     DS.W    1
+BMXSPEED    DS.W    1                       ;LIMITACIÓN
 BCOLOR      DS.W    1
 BPOSX1      DS.W    1
 BPOSX2      DS.W    1
@@ -34,7 +36,16 @@ BPOSY2      DS.W    1
 BLCOUNTER   DS.W    1
 BLMATRIX    DS.B    BLROW  ;12*8
             DS.W    0
-            
+;ALL SCORES:
+BUFFER      DS.B    80
+            DS.W    0
+PLSIZE      DS.W    1
+
+
+
+
+
+
 
 
 

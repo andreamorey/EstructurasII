@@ -84,8 +84,12 @@ STAPLAYI    ;DEL NIVEL1, COMIENZO
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
-            JSR     PLRINIT
-            JSR     BINIT
+            MOVEM.L D0-D7/A0-A6,-(A7)
+            MOVE.W  #BINPOSX,BPOSX1
+            MOVE.W  #BINPOSY,BPOSY2
+            MOVE.W  #BINPOSX+BDIAMET,BPOSX2
+            MOVE.W  #BINPOSY-BDIAMET,BPOSY1
+            MOVEM.L (A7)+,D0-D7/A0-A6
             RTS
 ; -----------------------------------------------------------------------------
 STASPACEU
@@ -94,7 +98,7 @@ STASPACEU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-           
+            MOVE.W  #PINPOSX1,PPOSX
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
             MOVE.W  #STAPLAY,(STANEXT)
@@ -109,10 +113,11 @@ STAPLAYU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            
+            MOVEM.L D0-D7/A0-A6,-(A7)
             JSR     PLRUPD
             JSR     BUPD    
-            JSR     BLUPD                
+            JSR     BLUPD   
+            MOVEM.L (A7)+,D0-D7/A0-A6          
             RTS
 ; -----------------------------------------------------------------------------
 STAPLAYP
@@ -121,10 +126,13 @@ STAPLAYP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            MOVEM.L D0-D7/A0-A6,-(A7)
             JSR     BLPLOT
             JSR     PPLOT
             JSR     BPLOT
             JSR     UTLSCTRLP
+            
+            MOVEM.L (A7)+,D0-D7/A0-A6 
             RTS
 
 ; -----------------------------------------------------------------------------
@@ -137,7 +145,11 @@ STAINTRI                  ;VACIA LA MEMORIA DEL JUEGO
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR DMMINIT TO RELEASE ALL MEMORY
 ; -----------------------------------------------------------------------------
+            
+            ;UTLSVNAME   
+            UTLSNDST
             UTLSNDS .SOUND,#1
+            
             JSR     DMMINIT
             RTS
 .SOUND      DC.L    'start largo.wav',0
@@ -148,6 +160,7 @@ STAINTRU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            MOVEM.L D0-D7/A0-A6,-(A7)
             
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
@@ -156,7 +169,9 @@ STAINTRU
             JSR     BLINIT
             MOVE.W  #PINLIVE,PLIVES
             CLR.W   PSCORE            
-.END        RTS
+.END        
+            MOVEM.L (A7)+,D0-D7/A0-A6
+            RTS
 
 ; -----------------------------------------------------------------------------
 STAINTRP
@@ -165,7 +180,7 @@ STAINTRP
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            MOVEM.L A1/D0-D2,-(A7)
+            MOVEM.L D0-D2/A1,-(A7)
             ;TITULO
             UTLLOCT INTTITX,INTTITY      
             UTLSIZC #INTTITC,TXBSIZE
@@ -180,7 +195,7 @@ STAINTRP
             MOVE.B  #14,D0
             TRAP    #15
             
-            MOVEM.L (A7)+,A1/D0-D2
+            MOVEM.L (A7)+,D0-D2/A1
             RTS
 
 .TITSTR     DC.B    'Breaking Blocks',0
@@ -193,6 +208,18 @@ STAGOVRU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
+            ;AÑADE AL JUGADOR AL FICHERO
+            JSR     UTLADDPL                ;añade al fichero
+            
+            ;visualiza el fichero
+            UTLSPEN #$00FFFFFF
+            UTLSFIL #$00000000
+            LEA.L   PNAME,A1
+            MOVE.W  #LIVEPOSX,D1
+            MOVE.W  #200,D2
+            MOVE.B  #95,D0                   ;IMPRIME LA LINEA EN A1
+            TRAP    #15
+            
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
             UTLSNDST
@@ -212,6 +239,7 @@ STAGOVRP
             ;GAME OVER TEXT
             UTLLOCT GOVERX,GOVERY            
             UTLSIZC #GOVERC,TXBSIZE
+            UTLSFIL #$00000000
             LEA     .GOVSTR,A1              ;PONE EL TEXTO
             MOVE.B  #14,D0
             TRAP    #15
@@ -220,6 +248,7 @@ STAGOVRP
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 
