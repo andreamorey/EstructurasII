@@ -52,30 +52,6 @@ START       JSR     SYSINIT
             INCLUDE "VAR.X68"
             END    START
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *~Font name~Courier New~
 *~Font size~16~
 *~Tab type~0~

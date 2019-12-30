@@ -39,7 +39,7 @@ STAUPD
             JSR     (A0)
             MOVEM.L (A7)+,D0/A0
             RTS
-.INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTY ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
+.INITBL     DC.L    STAINTRI,STAPLAYI,STAEMPTYP,STAEMPTYG ;EL 0 ES VACIAR LA MEMORIA DEL JUEGO
                                              ;EL 1 ES LO QUE INICIA EL JUEGO = PINIT
                                              ;EL 2 ES NO HACER NADA 
 .UPDTBL     DC.L    STAINTRU,STASPACEU,STAPLAYU,STAGOVRU
@@ -66,13 +66,24 @@ STAPLOT
                            ;SPACE      NIVEL1   NIVEL2    NIVEL3   
 
 ; -----------------------------------------------------------------------------
-STAEMPTY
+STAEMPTYP
 ; EMPTY SUBROUTINE FOR CASES WITH NOTHING TO DO
 ; INPUT    - NONE
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; NOTE     - JUST A PLACEHOLDER. NOTHING TO DO.
 ; -----------------------------------------------------------------------------
+            RTS
+; -----------------------------------------------------------------------------
+STAEMPTYG
+; EMPTY SUBROUTINE FOR CASES WITH NOTHING TO DO
+; INPUT    - NONE
+; OUTPUT   - NONE
+; MODIFIES - NONE
+; NOTE     - JUST A PLACEHOLDER. NOTHING TO DO.
+; -----------------------------------------------------------------------------
+            JSR     UTLWRRNK                ;ESCRIBE EN EL TABLE
+            JSR     UTLWRFILE               ;ESCRIBIMOS EN EL FICHERO
             RTS
 
 ; -----------------------------------------------------------------------------
@@ -116,7 +127,10 @@ STAPLAYU
             MOVEM.L D0-D7/A0-A6,-(A7)
             JSR     PLRUPD
             JSR     BUPD    
-            JSR     BLUPD   
+            JSR     BLUPD
+            ;VISUALIZA RNKTABLE
+            
+ 
             MOVEM.L (A7)+,D0-D7/A0-A6          
             RTS
 ; -----------------------------------------------------------------------------
@@ -127,6 +141,7 @@ STAPLAYP
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
             MOVEM.L D0-D7/A0-A6,-(A7)
+            JSR     UTLREADRNK
             JSR     BLPLOT
             JSR     PPLOT
             JSR     BPLOT
@@ -145,14 +160,13 @@ STAINTRI                  ;VACIA LA MEMORIA DEL JUEGO
 ; MODIFIES - NONE
 ; NOTE     - JUST A WRAPPER FOR DMMINIT TO RELEASE ALL MEMORY
 ; -----------------------------------------------------------------------------
-            
-            ;UTLSVNAME   
-            UTLSNDST
-            UTLSNDS .SOUND,#1
-            
+              ;LEE TODOS LOS DATOS DEL FICHERO Y LO GUARDA EN LA TABLA
+            JSR     UTLREADFILE
+             ;GUARDA EL NOMBRE EN LA MEMORIA
+            UTLSVNAME
             JSR     DMMINIT
+            
             RTS
-.SOUND      DC.L    'start largo.wav',0
 ; -----------------------------------------------------------------------------
 STAINTRU
 ; INTRO STATE UPDATE
@@ -195,9 +209,11 @@ STAINTRP
             MOVE.B  #14,D0
             TRAP    #15
             
+            UTLSNDS .SOUND,#1
+            
             MOVEM.L (A7)+,D0-D2/A1
             RTS
-
+.SOUND      DC.L    'start largo.wav',0
 .TITSTR     DC.B    'Breaking Blocks',0
 .PRSSTR     DC.B    'PUSH FIRE TO START',0
             DS.W    0
@@ -208,9 +224,6 @@ STAGOVRU
 ; OUTPUT   - NONE
 ; MODIFIES - NONE
 ; -----------------------------------------------------------------------------
-            ;AÑADE AL JUGADOR AL FICHERO
-            JSR     UTLADDPL                ;añade al fichero
-            
             ;visualiza el fichero
             UTLSPEN #$00FFFFFF
             UTLSFIL #$00000000
@@ -248,6 +261,7 @@ STAGOVRP
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

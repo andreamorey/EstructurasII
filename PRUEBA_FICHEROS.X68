@@ -55,13 +55,14 @@ LF              EQU     $A              ; ASCII code for line feed
 SIZE            EQU     80              ; Max string size
 description     DC.B    'Demonstrates reading a string from the keyboard and saving to a text file. ',CR,LF,CR,LF,0
 prompt          DC.B    'Enter text: ',0
-fileName        DC.B    'textOPRUEBA.txt',0   ; name of text file
+fileName        DC.B    'score.txt',0   ; name of text file
 errorFile       DC.B    'A file error occurred.',CR,LF,0
 success         DC.B    'File write complete.',CR,LF,0
 string          DS.B    80              ; I/O buffer
 strSize         DS.W    1               ; Size if input string
 fileID          DS.L    1               ; File ID
         END     START                   ; last line of source
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

@@ -37,18 +37,13 @@ BLCOUNTER   DS.W    1
 BLMATRIX    DS.B    BLROW  ;12*8
             DS.W    0
 ;ALL SCORES:
+ERRORFILE   DS.L    1
+POSRNK      DS.W    1
+RNKTABLE    DS.B    10
+
 BUFFER      DS.B    80
             DS.W    0
 PLSIZE      DS.W    1
-
-
-
-
-
-
-
-
-
 
 
 

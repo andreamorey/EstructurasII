@@ -89,38 +89,11 @@ UTLSVNAME  MACRO
             LEA.L   PNAME,A1                ;GUARDAMOS EL NOMBRE
             MOVE.B  #2,D0
             TRAP    #15                     ;(A1) = PNAME
-            MOVE.W  D1,PLSIZE
+           
             RTS
 .INSTRUCT   DC.B    'ENTER YOUR NAME: ',0
-            
             ENDM
-
 ; -----------------------------------------------------------------------------
-UTLADDPL   
-;AÑADE AL JUGADOR AL FICHERO (POR AHORA SIN PUNTOS)
-; -----------------------------------------------------------------------------
-            MOVE.B  #50,D0  ;CERRAMOS TODOS LOS FICHERO
-            TRAP    #15
-            
-            LEA.L   FILE,A1                 ;ABRE NUESTRO FICHERO
-            MOVE.B  #51,D0                  
-            TRAP    #15                     ;DEVUELVE EL ID DE FICHERO EN D1
-            
-            LEA.L   PNAME,A1                ;escribimos en el fichero 
-            ;D1 YA TINENE EL ID DEL FICHERO
-            CLR.L   D2
-            MOVE.W  PLSIZE,D2              
-            ADD.W   #1,D2                   ;5 + 1 
-            MOVE.B  #54,D0
-            TRAP    #15
-           
-           
-            
-            MOVE.B  #56,D0                  ;cerramos fichero
-            TRAP    #15
-            RTS
-            
-
 ; =============================================================================
 ; UTILITY SUBROUTINES
 ; =============================================================================
@@ -324,41 +297,7 @@ UTLCOLBL
             RTS
 *            MOVEM.L (A7)+,D0-D7/A0
 .SOUND      DC.L    'blocks.wav',0
-; -----------------------------------------------------------------------------
-UTLCHCOL
-; CHECKS COLLISION
-; INPUT    - D0.W X0 COORDINATE ball
-;            D1.W Y0 COORDINATE ball
-;            D2.W X1 COORDINATE plataforma
-;            D3.W Y1 COORDINATE plataforma
-;            D4.W WIDTH 0      ball
-;            D5.W WIDTH 1      plataforma 
-;            D6.W HEIGHT 0     ball
-;            D7.W HEIGHT 1     plataforma
-; OUTPUT   - D0.B=FF - COLLISION, =0 - NO COLLISION
-; MODIFIES - NONE
-; -----------------------------------------------------------------------------
-            MOVEM.W D4-D7,-(A7)
-            ADD.W   D0,D4
-            CMP.W   D2,D4
-            BLE     .NOCOL
-            ADD.W   D2,D5
-            CMP.W   D0,D5
-            BLE     .NOCOL
-            ADD.W   D1,D6
-            CMP.W   D3,D6
-            BLE     .NOCOL
-            ADD.W   D3,D7
-            CMP.W   D1,D7
-            BLE     .NOCOL
-            MOVE.B  #$FF,D0
-            BRA     .END
-.NOCOL      CLR.B   D0
-.END        MOVEM.W (A7)+,D4-D7
-            RTS
-
-
-
+;---------------------------------------------------------------------------------
 UTLSCTRLP
             MOVEM.L D0-D5/A1,-(A7)    
             ;DIBUJA LA BARRA DE SEPARACIÓN
@@ -391,66 +330,13 @@ UTLSCTRLP
 .TXTSCORE   DC.B    'SCORE: ',0
             DS.W    0
 
-
-; -----------------------------------------------------------------------------
-UTLWRF    MACRO
-; WRAPPER TO WRITE TEXT IN AN EXISTING FILE FROM TRAP 15
-; INPUT    - \1 FILENAME, \2 CONTENIDO QUE TIENE QUE ESCRIBIR,  
-; OUTPUT   - NONE
-; MODIFIES - D0-D2,A1
-; -----------------------------------------------------------------------------
-            MOVE.B  #50,D0
-            TRAP    #15                     ;CIERRA TODOS LOS FICHEROS
-            
-            LEA     \1,A1
-            MOVE.B  #51,D0
-            TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
-            ; CON EL 55 HAY QUE POSICIONAR EL FICHERO, SINO SIEMPRE ESCRIBE A PARTIR DEL BYTE 0
-            LEA     .BUFFER,A1
-            MOVE.W  \2,(A1)                 ;GUARDA EN EL BUFFER
-            MOVE.W  #2,D2                   ;BYTES QUE TIENE QUE ESCRIBIR
-            MOVE.B  #54,D0                  ;ESCRIBE EL BUFFER EN EL FICHERO
-            TRAP    #15                     
-            
-            MOVE.B  #56,D0
-            TRAP    #15                     ;CIERRA EL FICHERO
-  
-.BUFFERW     DS.B 80
-   
-            ENDM
-
-
-; -----------------------------------------------------------------------------
-UTLRF    MACRO
-; WRAPPER TO READ TEXT FROM AN EXISTING FILE FROM TRAP 15
-; INPUT    - \1 FILENAME
-; OUTPUT   - NONE
-; MODIFIES - D0-D2,A1
-; -----------------------------------------------------------------------------
-            MOVE.B  #50,D0
-            TRAP    #15                     ;CIERRA TODOS LOS FICHEROS
-
-            LEA     .FILE,A1
-            MOVE.B  #51,D0
-            TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
-
-            LEA     BUFFER,A1
-            MOVE.L  #255,D2                 ;BYTES QUE LEE
-            MOVE.B  #53,D0
-            TRAP    #15                     ;LEE DEL FICHERO
-            MOVE.L  D2,D3
-            ;GUARDA EN EL BUFFER LO QUE HA LEIDO
-            MOVE.B  #56,D0
-            TRAP    #15                     ;CIERRA EL FICHERO
-
-
-            ENDM
 ;-----------------------------------------------------------------------------
-UTLREADFILE  MACRO
+UTLREADFILE  
+            MOVEM.L D0-D2/A1,-(A7)
             MOVE.W  #50,D0                  ;CIERRA TODOS LOS FICHEROS
             TRAP    #15
             
-            LEA     .FILE,A1
+            LEA     FILE,A1
             MOVE.B  #51,D0
             TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
 
@@ -459,20 +345,22 @@ UTLREADFILE  MACRO
             MOVE.L  #100,D2                 ;BYTES QUE LEE
             MOVE.B  #53,D0
             TRAP    #15                     ;LEE DEL FICHERO
+            MOVE.L  D2,ERRORFILE
             ;GUARDA EN EL BUFFER LO QUE HA LEIDO
             MOVE.B  #56,D0
             TRAP    #15                     ;CIERRA EL FICHERO
-
-
-            ENDM
-            
-            
+            MOVEM.L (A7)+,D0-D2/A1
+            RTS
 ;----------------------------------------------------------------------
 UTLREADRNK
-            ; D4 = EN QUE FILA ESTAMOS
+            MOVEM.L D0-D5/A1,-(A7)
+            ; D4 = EN QUE FILA ESTAMOS      
             CLR.L   D4
             MOVE.W  #9,D5
-            
+            MOVE.L  ERRORFILE,D1
+            CMP     #64,D1
+            BEQ     .END
+          
 .LOOP
             LEA.L   RNKTABLE,A1       1000   
             MOVE.W  D4,D0                
@@ -481,17 +369,19 @@ UTLREADRNK
             ADDA.L  D0,A1                   ;A0 = RNKTABLE + 10*FILA
             
             MOVE.B  #11,D0
-            MOVE.W  #50<<8|50,D1
+            MOVE.W  #20<<8|20,D1
             TRAP    #15
             ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
-            MOVE.B  #1,D0                   
-            MOVE.W  #2,D1
+            MOVE.B  #3,D0 
+            CLR.L   D1                  
+            MOVE.W  (A1),D1
+            SUB.L   #12336,D1
             TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
           
 
             ADDA.L  #2,A1                   ;PARA LEER EL NOMBRE (8B)
             MOVE.B  #11,D0
-            MOVE.W  #50<<8|50,D1
+            MOVE.W  #30<<8|30,D1
             TRAP    #15
             ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
             MOVE.B  #1,D0                   
@@ -499,13 +389,51 @@ UTLREADRNK
             TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
           
             ADDQ.W   #1,D4
-            DBRA    .LOOP,D5
-            
+            DBRA    D5,.LOOP
+            MOVE.W  D4,POSRNK
+.END
+            MOVEM.L (A7)+,D0-D5/A1
             RTS
+;--------------------------------------------------------------------------------          
+UTLWRRNK    
+            MOVEM.L D0-D1/A1,-(A7)
+            LEA.L   RNKTABLE,A1
+            MOVE.W  POSRNK,D1
+            CMP     #11,D1
+            BEQ     .OCUPADO
+*            SUBQ.W  #1,D1
+            MULU.W  #10,D1
+            ADDA.L  D1,A1
             
+.OCUPADO
+            ;A1 = TIENE LA PRIMERA POSICION DONDE ESCRIBE (LA MAS VIEJA)
+            MOVE.W  PSCORE,(A1)
+            ADDA.L  #2,A1
+            MOVE.B  PNAME,(A1)
             
+            MOVEM.L (A7)+,D0-D1/A1
+            RTS
+;--------------------------------------------------------------------------------- 
+UTLWRFILE
+            MOVEM.L D0-D2/A1,-(A7)
+            MOVE.B  #50,D0  ;CERRAMOS TODOS LOS FICHERO
+            TRAP    #15
             
-
+            LEA.L   FILE,A1                 ;ABRE NUESTRO FICHERO
+            MOVE.B  #51,D0                  
+            TRAP    #15                     ;DEVUELVE EL ID DE FICHERO EN D1
+            
+            LEA.L   RNKTABLE,A1                ;escribimos en el fichero 
+            ;D1 YA TINENE EL ID DEL FICHERO
+            MOVE.W  #100,D2              
+            ADD.W   #1,D2                   ;PARA EL CARACTER NULL
+            MOVE.B  #54,D0
+            TRAP    #15
+           
+            MOVE.B  #56,D0                  ;cerramos fichero
+            TRAP    #15
+            MOVEM.L (A7)+,D0-D2/A1
+            RTS
 *~Font name~Courier New~
 *~Font size~18~
 *~Tab type~0~
