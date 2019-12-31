@@ -246,9 +246,6 @@ UTLCOLBL
             
             JMP     .ENDCOLISION    ;  (|)______|  COLISION DELADO IZQUIERDO COLISIONANDO POR LA IZQ DEL NLOQUE 
             
-
-
-
 .CHOQUEDOBLE                        ;SI ESTA EN MEDIO DEL BLOQUE  |___()___| COLISION EN MEDIO
                                     ;COMPARAMOS SI LE HA DADO A DOS A LA VEZ |______(|)______|
             CMP     D3,D2
@@ -287,8 +284,7 @@ UTLCOLBL
 
 .ENDCOLISION
             MOVE.W  #1,D4
-            BCLR    D3,(A0)
-            SUB.W   #1,BLCOUNTER       
+            BCLR    D3,(A0)      
             ADD.W   #100,PSCORE
             UTLSNDST
             UTLSNDS  .SOUND,#1
@@ -335,7 +331,11 @@ UTLREADFILE
             MOVEM.L D0-D2/A1,-(A7)
             MOVE.W  #50,D0                  ;CIERRA TODOS LOS FICHEROS
             TRAP    #15
-            
+            LEA.L   RNKTABLE,A1
+            MOVE.W  #100,D0
+.LOOP
+            CLR.B   (A1)+
+            DBRA    D0,.LOOP
             LEA     FILE,A1
             MOVE.B  #51,D0
             TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
@@ -345,7 +345,11 @@ UTLREADFILE
             MOVE.L  #100,D2                 ;BYTES QUE LEE
             MOVE.B  #53,D0
             TRAP    #15                     ;LEE DEL FICHERO
-            MOVE.L  D2,ERRORFILE
+            CMP     #$64,D2
+            BNE     .SALTA
+            MOVE.L  #0,D2
+.SALTA
+            MOVE.L  D2,POSRNK
             ;GUARDA EN EL BUFFER LO QUE HA LEIDO
             MOVE.B  #56,D0
             TRAP    #15                     ;CIERRA EL FICHERO
@@ -356,9 +360,11 @@ UTLREADRNK
             MOVEM.L D0-D5/A1,-(A7)
             ; D4 = EN QUE FILA ESTAMOS      
             CLR.L   D4
-            MOVE.W  #9,D5
-            MOVE.L  ERRORFILE,D1
-            CMP     #64,D1
+            
+            MOVE.W  #9,D5                   ;DBRA
+            
+            MOVE.L  POSRNK,D1
+            CMP     #$64,D1
             BEQ     .END
           
 .LOOP
@@ -375,43 +381,43 @@ UTLREADRNK
             MOVE.B  #3,D0 
             CLR.L   D1                  
             MOVE.W  (A1),D1
-            SUB.L   #12336,D1
             TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
           
-
             ADDA.L  #2,A1                   ;PARA LEER EL NOMBRE (8B)
             MOVE.B  #11,D0
             MOVE.W  #30<<8|30,D1
+
             TRAP    #15
             ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
             MOVE.B  #1,D0                   
             MOVE.W  #8,D1                   ;8 BYTES QUE TIENE QUE IMPRIMIR
             TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
           
-            ADDQ.W   #1,D4
+            ADD.L  #1,D4
             DBRA    D5,.LOOP
-            MOVE.W  D4,POSRNK
 .END
             MOVEM.L (A7)+,D0-D5/A1
             RTS
+
 ;--------------------------------------------------------------------------------          
 UTLWRRNK    
-            MOVEM.L D0-D1/A1,-(A7)
+            MOVEM.L D0-D1/A0-A1,-(A7)
+            
             LEA.L   RNKTABLE,A1
-            MOVE.W  POSRNK,D1
-            CMP     #11,D1
-            BEQ     .OCUPADO
-*            SUBQ.W  #1,D1
-            MULU.W  #10,D1
+            MOVE.L  POSRNK,D1
             ADDA.L  D1,A1
             
 .OCUPADO
             ;A1 = TIENE LA PRIMERA POSICION DONDE ESCRIBE (LA MAS VIEJA)
             MOVE.W  PSCORE,(A1)
             ADDA.L  #2,A1
-            MOVE.B  PNAME,(A1)
-            
-            MOVEM.L (A7)+,D0-D1/A1
+            MOVE.W  #7,D0
+            LEA.L   PNAME,A0
+.LOOP
+            MOVE.B  (A0)+,(A1)+
+            DBRA    D0,.LOOP
+..          
+            MOVEM.L (A7)+,D0-D1/A0-A1
             RTS
 ;--------------------------------------------------------------------------------- 
 UTLWRFILE
@@ -425,8 +431,9 @@ UTLWRFILE
             
             LEA.L   RNKTABLE,A1                ;escribimos en el fichero 
             ;D1 YA TINENE EL ID DEL FICHERO
-            MOVE.W  #100,D2              
-            ADD.W   #1,D2                   ;PARA EL CARACTER NULL
+            MOVE.L  POSRNK,D2  
+            ADD.W   #10,D2         
+            ;ADD.W   #1,D2                   ;PARA EL CARACTER NULL
             MOVE.B  #54,D0
             TRAP    #15
            

@@ -1,6 +1,6 @@
-00001DC0 Starting Address
+00001DB4 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 30/12/2019 11:55:21
+Created On: 30/12/2019 15:48:43
 
 00000000                             1  ; =============================================================================
 00000000                             2  ; UTILITY MACROS
@@ -457,124 +457,144 @@ Line 377 ERROR: Symbol value differs between first and second pass
 000002BA  48E7 E040                378              MOVEM.L D0-D2/A1,-(A7)
 000002BE  303C 0032                379              MOVE.W  #50,D0                  ;CIERRA TODOS LOS FICHEROS
 000002C2  4E4F                     380              TRAP    #15
-000002C4                           381              
-Line 382 ERROR: Undefined symbol
-000002C4  43F9 004DBD16            382              LEA     FILE,A1
-000002CA  103C 0033                383              MOVE.B  #51,D0
-000002CE  4E4F                     384              TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
-000002D0                           385  
-000002D0                           386              
-Line 387 ERROR: Undefined symbol
-000002D0  43F9 004DBD16            387              LEA.L   RNKTABLE,A1
-000002D6  7464                     388              MOVE.L  #100,D2                 ;BYTES QUE LEE
-000002D8  103C 0035                389              MOVE.B  #53,D0
-000002DC  4E4F                     390              TRAP    #15                     ;LEE DEL FICHERO
+Line 381 ERROR: Undefined symbol
+000002C4  43F9 004DBD16            381              LEA.L   RNKTABLE,A1
+000002CA  303C 0064                382              MOVE.W  #100,D0
+Line 383 ERROR: Symbol value differs between first and second pass
+000002CE                           383  .LOOP
+000002CE  4219                     384              CLR.B   (A1)+
+000002D0  51C8 0048                385              DBRA    D0,.LOOP
+Line 386 ERROR: Undefined symbol
+000002D4  43F9 004DBD16            386              LEA     FILE,A1
+000002DA  103C 0033                387              MOVE.B  #51,D0
+000002DE  4E4F                     388              TRAP    #15                     ;ABRE UN FICHERO EXISTENTE, D1 = FILE ID
+000002E0                           389  
+000002E0                           390              
 Line 391 ERROR: Undefined symbol
-000002DE  23C2 005455B8            391              MOVE.L  D2,ERRORFILE
-000002E4                           392              ;GUARDA EN EL BUFFER LO QUE HA LEIDO
-000002E4  103C 0038                393              MOVE.B  #56,D0
-000002E8  4E4F                     394              TRAP    #15                     ;CIERRA EL FICHERO
-000002EA  4CDF 0207                395              MOVEM.L (A7)+,D0-D2/A1
-000002EE  4E75                     396              RTS
-000002F0                           397  ;----------------------------------------------------------------------
+000002E0  43F9 004DBD16            391              LEA.L   RNKTABLE,A1
+000002E6  7464                     392              MOVE.L  #100,D2                 ;BYTES QUE LEE
+000002E8  103C 0035                393              MOVE.B  #53,D0
+000002EC  4E4F                     394              TRAP    #15                     ;LEE DEL FICHERO
+000002EE  B47C 0064                395              CMP     #$64,D2
+000002F2  6600 0050                396              BNE     .SALTA
+000002F6  7400                     397              MOVE.L  #0,D2
 Line 398 ERROR: Symbol value differs between first and second pass
-000002F0                           398  UTLREADRNK
-000002F0  48E7 FC40                399              MOVEM.L D0-D5/A1,-(A7)
-000002F4                           400              ; D4 = EN QUE FILA ESTAMOS      
-000002F4  4284                     401              CLR.L   D4
-000002F6  3A3C 0009                402              MOVE.W  #9,D5
-Line 403 ERROR: Undefined symbol
-000002FA  2239 004DBD16            403              MOVE.L  ERRORFILE,D1
-00000300  B27C 0040                404              CMP     #64,D1
-00000304  6700 0092                405              BEQ     .END
-00000308                           406            
-Line 407 ERROR: Symbol value differs between first and second pass
-00000308                           407  .LOOP
-Line 408 ERROR: Undefined symbol
-00000308  43F9 004DBD16            408              LEA.L   RNKTABLE,A1       1000   
-0000030E  3004                     409              MOVE.W  D4,D0                
-00000310  C0FC 000A                410              MULU.W  #10,D0                  ;PARA LEER EL NOMBRE
-00000314                           411              
-00000314  D3C0                     412              ADDA.L  D0,A1                   ;A0 = RNKTABLE + 10*FILA
-00000316                           413              
-00000316  103C 000B                414              MOVE.B  #11,D0
-0000031A  323C 1414                415              MOVE.W  #20<<8|20,D1
-0000031E  4E4F                     416              TRAP    #15
-00000320                           417              ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
-00000320  103C 0001                418              MOVE.B  #1,D0                   
-00000324  323C 0002                419              MOVE.W  #2,D1
-00000328  4E4F                     420              TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
-0000032A                           421            
-0000032A                           422  
-0000032A  5489                     423              ADDA.L  #2,A1                   ;PARA LEER EL NOMBRE (8B)
-0000032C  103C 000B                424              MOVE.B  #11,D0
-00000330  323C 1E1E                425              MOVE.W  #30<<8|30,D1
-00000334  4E4F                     426              TRAP    #15
-00000336                           427              ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
-00000336  103C 0001                428              MOVE.B  #1,D0                   
-0000033A  323C 0008                429              MOVE.W  #8,D1                   ;8 BYTES QUE TIENE QUE IMPRIMIR
-0000033E  4E4F                     430              TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
-00000340                           431            
-00000340  5244                     432              ADDQ.W   #1,D4
-00000342  51CD 0010                433              DBRA    D5,.LOOP
-Line 434 ERROR: Undefined symbol
-00000346  33C4 005455B8            434              MOVE.W  D4,POSRNK
-Line 435 ERROR: Symbol value differs between first and second pass
-0000034C                           435  .END
-0000034C  4CDF 023F                436              MOVEM.L (A7)+,D0-D5/A1
-00000350  4E75                     437              RTS
-00000352                           438  ;--------------------------------------------------------------------------------          
-Line 439 ERROR: Symbol value differs between first and second pass
-00000352                           439  UTLWRRNK    
-00000352  48E7 C040                440              MOVEM.L D0-D1/A1,-(A7)
-Line 441 ERROR: Undefined symbol
-00000356  43F9 004DBD16            441              LEA.L   RNKTABLE,A1
-Line 442 ERROR: Undefined symbol
-0000035C  3239 004DBD16            442              MOVE.W  POSRNK,D1
-00000362  B27C 000B                443              CMP     #11,D1
-00000366  6700 0054                444              BEQ     .OCUPADO
-0000036A                           445  *            SUBQ.W  #1,D1
-0000036A  C2FC 000A                446              MULU.W  #10,D1
-0000036E  D3C1                     447              ADDA.L  D1,A1
-00000370                           448              
+000002F8                           398  .SALTA
+Line 399 ERROR: Undefined symbol
+000002F8  23C2 005455B8            399              MOVE.L  D2,POSRNK
+000002FE                           400              ;GUARDA EN EL BUFFER LO QUE HA LEIDO
+000002FE  103C 0038                401              MOVE.B  #56,D0
+00000302  4E4F                     402              TRAP    #15                     ;CIERRA EL FICHERO
+00000304  4CDF 0207                403              MOVEM.L (A7)+,D0-D2/A1
+00000308  4E75                     404              RTS
+0000030A                           405  ;----------------------------------------------------------------------
+Line 406 ERROR: Symbol value differs between first and second pass
+0000030A                           406  UTLREADRNK
+0000030A  48E7 FC40                407              MOVEM.L D0-D5/A1,-(A7)
+0000030E                           408              ; D4 = EN QUE FILA ESTAMOS      
+0000030E  4284                     409              CLR.L   D4
+00000310  3A3C 0009                410              MOVE.W  #9,D5
+00000314                           411  *            MOVE.L  ERRORFILE,D1
+00000314                           412  *            CMP     #64,D1
+00000314                           413  *            BEQ     .END
+00000314                           414            
+Line 415 ERROR: Symbol value differs between first and second pass
+00000314                           415  .LOOP
+Line 416 ERROR: Undefined symbol
+00000314  43F9 004DBD16            416              LEA.L   RNKTABLE,A1       1000   
+0000031A  3004                     417              MOVE.W  D4,D0                
+0000031C  C0FC 000A                418              MULU.W  #10,D0                  ;PARA LEER EL NOMBRE
+00000320                           419              
+00000320  D3C0                     420              ADDA.L  D0,A1                   ;A0 = RNKTABLE + 10*FILA
+00000322                           421              
+00000322  103C 000B                422              MOVE.B  #11,D0
+00000326  323C 1414                423              MOVE.W  #20<<8|20,D1
+0000032A  4E4F                     424              TRAP    #15
+0000032C                           425              ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
+0000032C  103C 0003                426              MOVE.B  #3,D0 
+00000330  4281                     427              CLR.L   D1                  
+00000332  3211                     428              MOVE.W  (A1),D1
+00000334  4E4F                     429              TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
+00000336                           430            
+00000336  5489                     431              ADDA.L  #2,A1                   ;PARA LEER EL NOMBRE (8B)
+00000338                           432  *            MOVE.B  #11,D0
+00000338                           433  *            MOVE.W  #30<<8|30,D1
+00000338                           434  *
+00000338                           435  *            TRAP    #15
+00000338                           436              ;PRIMERO LEEMOS SCORE  (|SCORE|      NAME      |)
+00000338  103C 0001                437              MOVE.B  #1,D0                   
+0000033C  323C 0008                438              MOVE.W  #8,D1                   ;8 BYTES QUE TIENE QUE IMPRIMIR
+00000340  4E4F                     439              TRAP    #15                     ;AQUI EN TEORIA VISUALIZA EL TEXTO, el score
+00000342                           440            
+00000342  5244                     441              ADDQ.W   #1,D4
+00000344  51CD 001A                442              DBRA    D5,.LOOP
+00000348                           443  *            MOVE.W  D4,POSRNK
+Line 444 ERROR: Symbol value differs between first and second pass
+00000348                           444  .END
+00000348  4CDF 023F                445              MOVEM.L (A7)+,D0-D5/A1
+0000034C  4E75                     446              RTS
+0000034E                           447  
+0000034E                           448  ;--------------------------------------------------------------------------------          
 Line 449 ERROR: Symbol value differs between first and second pass
-00000370                           449  .OCUPADO
-00000370                           450              ;A1 = TIENE LA PRIMERA POSICION DONDE ESCRIBE (LA MAS VIEJA)
-Line 451 ERROR: Undefined symbol
-00000370  32B9 004DBD16            451              MOVE.W  PSCORE,(A1)
-00000376  5489                     452              ADDA.L  #2,A1
+0000034E                           449  UTLWRRNK    
+0000034E  48E7 C0C0                450              MOVEM.L D0-D1/A0-A1,-(A7)
+00000352                           451              
+Line 452 ERROR: Undefined symbol
+00000352  43F9 004DBD16            452              LEA.L   RNKTABLE,A1
 Line 453 ERROR: Undefined symbol
-00000378  12B9 004DBD16            453              MOVE.B  PNAME,(A1)
-0000037E                           454              
-0000037E  4CDF 0203                455              MOVEM.L (A7)+,D0-D1/A1
-00000382  4E75                     456              RTS
-00000384                           457  ;--------------------------------------------------------------------------------- 
+00000358  2239 004DBD16            453              MOVE.L  POSRNK,D1
+0000035E                           454  *            SUBQ.W  #1,D1
+0000035E                           455  
+0000035E  D3C1                     456              ADDA.L  D1,A1
+00000360                           457              
 Line 458 ERROR: Symbol value differs between first and second pass
-00000384                           458  UTLWRFILE
-00000384  48E7 E040                459              MOVEM.L D0-D2/A1,-(A7)
-00000388  103C 0032                460              MOVE.B  #50,D0  ;CERRAMOS TODOS LOS FICHERO
-0000038C  4E4F                     461              TRAP    #15
-0000038E                           462              
+00000360                           458  .OCUPADO
+00000360                           459              ;A1 = TIENE LA PRIMERA POSICION DONDE ESCRIBE (LA MAS VIEJA)
+Line 460 ERROR: Undefined symbol
+00000360  32B9 004DBD16            460              MOVE.W  PSCORE,(A1)
+00000366  5489                     461              ADDA.L  #2,A1
+00000368  303C 0007                462              MOVE.W  #7,D0
 Line 463 ERROR: Undefined symbol
-0000038E  43F9 004DBD16            463              LEA.L   FILE,A1                 ;ABRE NUESTRO FICHERO
-00000394  103C 0033                464              MOVE.B  #51,D0                  
-00000398  4E4F                     465              TRAP    #15                     ;DEVUELVE EL ID DE FICHERO EN D1
-0000039A                           466              
-Line 467 ERROR: Undefined symbol
-0000039A  43F9 004DBD16            467              LEA.L   RNKTABLE,A1                ;escribimos en el fichero 
-000003A0                           468              ;D1 YA TINENE EL ID DEL FICHERO
-000003A0  343C 0064                469              MOVE.W  #100,D2              
-000003A4  5242                     470              ADD.W   #1,D2                   ;PARA EL CARACTER NULL
-000003A6  103C 0036                471              MOVE.B  #54,D0
-000003AA  4E4F                     472              TRAP    #15
-000003AC                           473             
-000003AC  103C 0038                474              MOVE.B  #56,D0                  ;cerramos fichero
-000003B0  4E4F                     475              TRAP    #15
-000003B2  4CDF 0207                476              MOVEM.L (A7)+,D0-D2/A1
-000003B6  4E75                     477              RTS
-Line 478 WARNING: END directive missing, starting address not set
+0000036C  41F9 004DBD16            463              LEA.L   PNAME,A0
+Line 464 ERROR: Symbol value differs between first and second pass
+00000372                           464  .LOOP
+00000372  12D8                     465              MOVE.B  (A0)+,(A1)+
+00000374  51C8 0048                466              DBRA    D0,.LOOP
+Line 467 ERROR: Symbol value differs between first and second pass
+00000378                           467  .END            
+00000378  4CDF 0303                468              MOVEM.L (A7)+,D0-D1/A0-A1
+0000037C  4E75                     469              RTS
+0000037E                           470  ;--------------------------------------------------------------------------------- 
+Line 471 ERROR: Symbol value differs between first and second pass
+0000037E                           471  UTLWRFILE
+0000037E  48E7 E040                472              MOVEM.L D0-D2/A1,-(A7)
+00000382  103C 0032                473              MOVE.B  #50,D0  ;CERRAMOS TODOS LOS FICHERO
+00000386  4E4F                     474              TRAP    #15
+00000388                           475              
+Line 476 ERROR: Undefined symbol
+00000388  43F9 004DBD16            476              LEA.L   FILE,A1                 ;ABRE NUESTRO FICHERO
+0000038E  103C 0033                477              MOVE.B  #51,D0                  
+00000392  4E4F                     478              TRAP    #15                     ;DEVUELVE EL ID DE FICHERO EN D1
+00000394                           479              
+Line 480 ERROR: Undefined symbol
+00000394  43F9 004DBD16            480              LEA.L   RNKTABLE,A1                ;escribimos en el fichero 
+0000039A                           481              ;D1 YA TINENE EL ID DEL FICHERO
+Line 482 ERROR: Undefined symbol
+0000039A  2439 004DBD16            482              MOVE.L  POSRNK,D2  
+000003A0  0642 000A                483              ADD.W   #10,D2         
+000003A4                           484              ;ADD.W   #1,D2                   ;PARA EL CARACTER NULL
+000003A4  103C 0036                485              MOVE.B  #54,D0
+000003A8  4E4F                     486              TRAP    #15
+000003AA                           487             
+000003AA  103C 0038                488              MOVE.B  #56,D0                  ;cerramos fichero
+000003AE  4E4F                     489              TRAP    #15
+000003B0  4CDF 0207                490              MOVEM.L (A7)+,D0-D2/A1
+000003B4  4E75                     491              RTS
+000003B6                           492  
+000003B6                           493  
+Line 494 WARNING: END directive missing, starting address not set
 
-93 errors detected
+97 errors detected
 1 warning generated
 
 
@@ -609,9 +629,11 @@ UTLCOLBL:TEST       1CE
 UTLCOLBL:TEST2      206
 UTLLOCT             3CF
 UTLREADFILE         306
-UTLREADRNK          33C
-UTLREADRNK:END      398
-UTLREADRNK:LOOP     354
+UTLREADFILE:LOOP    31A
+UTLREADFILE:SALTA   344
+UTLREADRNK          356
+UTLREADRNK:END      394
+UTLREADRNK:LOOP     360
 UTLSCTRLP           292
 UTLSCTRLP:TXTSCORE  2FE
 UTLSFIL             2A5
@@ -620,6 +642,8 @@ UTLSNDS             4F7
 UTLSNDST            6F3
 UTLSPEN             0
 UTLSVNAME           847
-UTLWRFILE           3D0
-UTLWRRNK            39E
-UTLWRRNK:OCUPADO    3BC
+UTLWRFILE           3CA
+UTLWRRNK            39A
+UTLWRRNK:END        3C4
+UTLWRRNK:LOOP       3BE
+UTLWRRNK:OCUPADO    3AC
