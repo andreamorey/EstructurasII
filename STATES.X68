@@ -96,6 +96,8 @@ STAPLAYI    ;DEL NIVEL1, COMIENZO
 ; NOTE     - JUST A WRAPPER FOR PLRINIT
 ; -----------------------------------------------------------------------------
             MOVEM.L D0-D7/A0-A6,-(A7)
+            
+            UTLSNDST
             MOVE.W  #BINPOSX,BPOSX1
             MOVE.W  #BINPOSY,BPOSY2
             MOVE.W  #BINPOSX+BDIAMET,BPOSX2
@@ -128,9 +130,6 @@ STAPLAYU
             JSR     PLRUPD
             JSR     BUPD    
             JSR     BLUPD
-            ;VISUALIZA RNKTABLE
-            
- 
             MOVEM.L (A7)+,D0-D7/A0-A6          
             RTS
 ; -----------------------------------------------------------------------------
@@ -146,7 +145,6 @@ STAPLAYP
             JSR     PPLOT
             JSR     BPLOT
             JSR     UTLSCTRLP
-            
             MOVEM.L (A7)+,D0-D7/A0-A6 
             RTS
 
@@ -178,7 +176,7 @@ STAINTRU
             
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
-            UTLSNDST
+            
             MOVE.W  #STASPACE,(STANEXT)
             JSR     BLINIT
             MOVE.W  #PINLIVE,PLIVES
@@ -227,11 +225,11 @@ STAGOVRU
             ;visualiza el fichero
             UTLSPEN #$00FFFFFF
             UTLSFIL #$00000000
-            LEA.L   PNAME,A1
-            MOVE.W  #LIVEPOSX,D1
-            MOVE.W  #200,D2
-            MOVE.B  #95,D0                   ;IMPRIME LA LINEA EN A1
-            TRAP    #15
+*            LEA.L   PNAME,A1
+*            MOVE.W  #LIVEPOSX,D1
+*            MOVE.W  #200,D2
+*            MOVE.B  #95,D0                   ;IMPRIME LA LINEA EN A1
+*            TRAP    #15
             
             BTST.B  #KBDBITF1,(KBDEDGE)
             BEQ     .END
@@ -261,6 +259,7 @@ STAGOVRP
             RTS
 .GOVSTR     DC.B    'GAME OVER',0
             DS.W    0
+
 
 
 

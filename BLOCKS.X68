@@ -30,7 +30,7 @@ BLINIT
             MOVE.W  #BINSPEED,BSPEEDX
             MOVE.W  #BINSPEED,BSPEEDY
             NEG.W   BSPEEDX
-            JMP     BLCONBL
+            JSR     BLCONBL
             RTS
 BLLEV2           
             
@@ -77,7 +77,7 @@ BLLEV2
             MOVE.W  D0,BSPEEDX
             MOVE.W  D0,BSPEEDY
             NEG.W   BSPEEDX
-            JMP     BLCONBL
+            JSR     BLCONBL
             RTS
             
 BLLEV3              
@@ -118,7 +118,7 @@ BLLEV3
             MOVE.W  D0,BSPEEDX
             MOVE.W  D0,BSPEEDY
             NEG.W   BSPEEDX
-            JMP     BLCONBL
+            JSR     BLCONBL
             RTS
             
 BLUPD       
@@ -207,6 +207,7 @@ BLCONBL
             ADDA.L  #1,A1
             DBRA    D5,.LOOP2
             RTS
+
 
 
 
